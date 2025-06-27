@@ -52,14 +52,14 @@ function EducationForm({ education, updateArrayItem, addArrayItem, removeArrayIt
                 value={edu.startDate ?? ""}
                 onChange={({ target }) => updateArrayItem('education', index, 'startDate', target.value)}
                 label="Start Date"
-                type="text"
+                type="month"
                 placeholder="Enter start date (e.g., MM/YYYY)"
               />
               <Input
                 value={edu.endDate ?? ""}
                 onChange={({ target }) => updateArrayItem('education', index, 'endDate', target.value)}
                 label="End Date"
-                type="text"
+                type="month"
                 placeholder="Enter end date (e.g., MM/YYYY or Present)"
               />
             </div>

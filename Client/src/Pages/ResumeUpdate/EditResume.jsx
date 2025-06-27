@@ -11,6 +11,7 @@ import ProfileInfoForm from './Forms/ProfileInfoForm.jsx';
 import ContactInfoForm from './Forms/ContactInfoForm.jsx';
 import WorkExperienceForm from './Forms/WorkExperienceForm.jsx';
 import EducationForm from './Forms/EducationForm.jsx';
+import SkillsForm from './Forms/SkillsForm.jsx';
 import {
   LuArrowLeft,
   LuCircleAlert,
@@ -38,7 +39,7 @@ function EditResume() {
 
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState("education");
+  const [currentPage, setCurrentPage] = useState("skills");
   const [resumeData, setResumeData] = useState({
     title: "",
     thumbnailLink: "",
@@ -111,16 +112,16 @@ function EditResume() {
   const renderFrom = () => {
     switch (currentPage) {
       case "profile-info":
-      return(
-        
-        <ProfileInfoForm
-           profileData={resumeData?.profileInfo}
-           updateSection={(key,value) =>{
-          updateSection("profileInfo",key,value);
-         }}
-         onNext={validateAndNext}
-        />
-      );
+        return (
+
+          <ProfileInfoForm
+            profileData={resumeData?.profileInfo}
+            updateSection={(key, value) => {
+              updateSection("profileInfo", key, value);
+            }}
+            onNext={validateAndNext}
+          />
+        );
       case "contact-info":
         return (
           <ContactInfoForm
@@ -135,30 +136,33 @@ function EditResume() {
         return (
           <WorkExperienceForm
             workExperience={resumeData?.workExperience}
-            updateSection={(key, value) => {
-              updateSection("workExperience", key, value);
+            updateArrayItem={(index, key, value) => {
+              updateArrayItem("workExperience", index, key, value);
             }}
-            onNext={validateAndNext}
+            addArrayItem={(newItem) => addArrayItem("workExperience", newItem)}
+            removeArrayItem={(index) => removeArrayItem("workExperience", index)}
           />
         );
       case "education":
         return (
           <EducationForm
             education={resumeData?.education}
-            updateSection={(key, value) => {
-              updateSection("education", key, value);
+            updateArrayItem={(index,key, value) => {
+              updateArrayItem("education",index, key, value);
             }}
-            onNext={validateAndNext}
+            addArrayItem={(newItem) => addArrayItem("education", newItem)}
+            removeArrayItem={(index) => removeArrayItem("education", index)}
           />
         );
       case "skills":
         return (
           <SkillsForm
             skills={resumeData?.skills}
-            updateSection={(key, value) => {
-              updateSection("skills", key, value);
+            updateArrayItem={(index, key, value) => {
+              updateArrayItem("skills", index, key, value);
             }}
-            onNext={validateAndNext}
+            addArrayItem={(newItem) => addArrayItem("skills", newItem)}
+            removeArrayItem={(index) => removeArrayItem("skills", index)}
           />
         );
       case "projects":
@@ -199,23 +203,55 @@ function EditResume() {
 
   //Update simple nested object(like profileInfo,contactInfo,etc.)
   const updateSection = (section, key, value) => {
-    setResumeData((prev) =>({
+    setResumeData((prev) => ({
       ...prev,
-      [section]:{
+      [section]: {
         ...prev[section],
-        [key]:value,
+        [key]: value,
       },
     }));
   }
 
   //Update array item (like workExperience,education,etc.)
-  const updateArrayItem = (section, index, key, value) => { }
+  const updateArrayItem = (section, index, key, value) => {
+    setResumeData((prev) => {
+      const updatedArray = [...prev[section]];
+
+      if (key === null) {
+        updatedArray[index] = value;
+      } else {
+        updatedArray[index] = {
+          ...updatedArray[index],
+          [key]: value,
+        }
+      }
+
+      return {
+        ...prev,
+        [section]: updatedArray,
+      };
+    });
+  }
 
   //Add item to array
-  const addArrayItem = (section, newItem) => { }
+  const addArrayItem = (section, newItem) => {
+    setResumeData((prev) => ({
+      ...prev,
+      [section]: [...prev[section], newItem],
+    }))
+  }
 
   //Remove item from array
-  const removeArrayItem = (section, index) => { }
+  const removeArrayItem = (section, index) => { 
+    setResumeData((prev) => {
+      const updatedArray = [...prev[section]];
+      updatedArray.splice(index, 1);
+      return {
+        ...prev,
+        [section]: updatedArray,
+      };
+    });
+  }
 
   //fetch resume info by Id
   console.log("Fetching resume with ID:", resumeId);
@@ -313,7 +349,7 @@ function EditResume() {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
           <div className='bg-white rounded-lg border border-purple-100 overflow-hidden px-4 mb-4'>
 
-            <StepProgress progress={0}/>
+            <StepProgress progress={0} />
 
             {renderFrom()}
 

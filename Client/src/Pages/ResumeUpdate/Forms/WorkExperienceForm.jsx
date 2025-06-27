@@ -52,22 +52,22 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                 value={exp.startDate ?? ""}
                 onChange={({ target }) => updateArrayItem('workExperience', index, 'startDate', target.value)}
                 label="Start Date"
-                type="text"
+                type="month"
                 placeholder="Enter start date (e.g., MM/YYYY)"
               />
               <Input
                 value={exp.endDate ?? ""}
                 onChange={({ target }) => updateArrayItem('workExperience', index, 'endDate', target.value)}
                 label="End Date"
-                type="text"
+                type="month"
                 placeholder="Enter end date (e.g., MM/YYYY or Present)"
               />
               <div className="col-span-2">
                 <label className="text-xs font-medium text-slate-600">Description</label>
                 <textarea
                   placeholder="Describe your responsibilities and achievements"
-                  className="form-input"
-                  rows={4}
+                  className="from-input"
+                  rows={3}
                   value={exp.description ?? ""}
                   onChange={({ target }) => updateArrayItem('workExperience', index, 'description', target.value)}
                 />
