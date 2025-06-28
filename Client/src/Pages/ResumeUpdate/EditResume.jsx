@@ -12,6 +12,9 @@ import ContactInfoForm from './Forms/ContactInfoForm.jsx';
 import WorkExperienceForm from './Forms/WorkExperienceForm.jsx';
 import EducationForm from './Forms/EducationForm.jsx';
 import SkillsForm from './Forms/SkillsForm.jsx';
+import ProjectsForm from './Forms/ProjectsForm.jsx';
+import CertificationsForm from './Forms/CertificationsForm.jsx';
+import AdditionalInfoForm from './Forms/AdditionalInfoForm.jsx';
 import {
   LuArrowLeft,
   LuCircleAlert,
@@ -39,7 +42,8 @@ function EditResume() {
 
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState("skills");
+  const steps = ["profile-info", "contact-info", "work-experience", "education", "skills", "projects", "certifications", "additionalInfo"];
+  const [currentPage, setCurrentPage] = useState("profile-info");
   const [resumeData, setResumeData] = useState({
     title: "",
     thumbnailLink: "",
@@ -101,13 +105,109 @@ function EditResume() {
   const [isLoading, setIsLoading] = useState(false);
 
   //Validate Input
-  const validateAndNext = (e) => { };
+  const validateAndNext = (e) => {
+    const errors = [];
+
+    switch (currentPage) {
+      case 'profile-info':
+        const { fullName, designation, summary } = resumeData.profileInfo;
+        if (!fullName.trim()) errors.push('Full Name is required');
+        if (!designation.trim()) errors.push('Designation is required');
+        if (!summary.trim()) errors.push('Summary is required');
+        break;
+      case 'contact-info':
+        const { email, phone } = resumeData.contactInfo;
+        if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) errors.push('Valid Email is required');
+        if (!phone.trim()) errors.push('Valid Phone number is required');
+        break;
+      case 'work-experience':
+        resumeData.workExperience.forEach(
+          ({ company, role, startDate, endDate }, index) => {
+            if (!company.trim()) errors.push(`Company ${index + 1} is required`);
+            if (!role.trim()) errors.push(`Role ${index + 1} is required`);
+            if (!startDate.trim()) errors.push(`Start Date ${index + 1} is required`);
+            if (!endDate.trim()) errors.push(`End Date ${index + 1} is required`);
+          }
+
+        );
+        break;
+      case 'education':
+        resumeData.education.forEach(
+          ({ degree, institution, startDate, endDate }, index) => {
+            if (!degree.trim()) errors.push(`Degree ${index + 1} is required`);
+            if (!institution.trim()) errors.push(`Institution ${index + 1} is required`);
+            if (!startDate.trim()) errors.push(`Start Date ${index + 1} is required`);
+            if (!endDate.trim()) errors.push(`End Date ${index + 1} is required`);
+          }
+        );
+        break;
+      case 'skills':
+        resumeData.skills.forEach(
+          ({ name, progress }, index) => {
+            if (!name.trim()) errors.push(`Name ${index + 1} is required`);
+            if (progress < 1 || progress > 100) errors.push(`Skill Progress must be between 1 and 100 in skill ${index + 1}`);
+          }
+        );
+        break;
+      case 'projects':
+        resumeData.projects.forEach(
+          ({ title, description }, index) => {
+            if (!title.trim()) errors.push(`Title ${index + 1} is required`);
+            if (!description.trim()) errors.push(`Description ${index + 1} is required`);
+
+          }
+        )
+        break;
+      case 'certifications':
+        resumeData.certifications.forEach(
+          ({ title, issuer }, index) => {
+            if (!title.trim()) errors.push(`Certification title is required in certification ${index + 1}`);
+            if (!issuer.trim()) errors.push(`Issuer is required in certification ${index + 1}`);
+          }
+        )
+        break;
+      case "additionalInfo":
+        
+        if(resumeData.languages.length === 0 ||
+          !resumeData.languages[0].name?.trim()
+        ) {
+          errors.push("At least one language is required");
+        }
+        if (resumeData.interests.length === 0 || !resumeData.interests[0]?.trim()) {
+          errors.push("At least one interest is required");
+        }
+        break;
+
+       default:
+        break; 
+    }
+
+    if(errors.length > 0) {
+      setErrorMsg(errors.join(", \n"));
+      return;
+    }
+
+    //Move to next step
+    setErrorMsg("");
+    goToNextStep();
+
+  };
 
   //Function to navigate to the next page
-  const goToNextStep = () => { };
+  const goToNextStep = () => {
+    const currentIndex = steps.indexOf(currentPage);
+    if (currentIndex < steps.length - 1) {
+      setCurrentPage(steps[currentIndex + 1]);
+    }
+  };
 
   //Function to navigate to the previous page
-  const goBack = () => { };
+  const goBack = () => {
+    const currentIndex = steps.indexOf(currentPage);
+    if (currentIndex > 0) {
+      setCurrentPage(steps[currentIndex - 1]);
+    }
+  };
 
   const renderFrom = () => {
     switch (currentPage) {
@@ -147,8 +247,8 @@ function EditResume() {
         return (
           <EducationForm
             education={resumeData?.education}
-            updateArrayItem={(index,key, value) => {
-              updateArrayItem("education",index, key, value);
+            updateArrayItem={(index, key, value) => {
+              updateArrayItem("education", index, key, value);
             }}
             addArrayItem={(newItem) => addArrayItem("education", newItem)}
             removeArrayItem={(index) => removeArrayItem("education", index)}
@@ -169,30 +269,34 @@ function EditResume() {
         return (
           <ProjectsForm
             projects={resumeData?.projects}
-            updateSection={(key, value) => {
-              updateSection("projects", key, value);
+            updateArrayItem={(index, key, value) => {
+              updateArrayItem("projects", index, key, value);
             }}
-            onNext={validateAndNext}
+            addArrayItem={(newItem) => addArrayItem("projects", newItem)}
+            removeArrayItem={(index) => removeArrayItem("projects", index)}
           />
         );
       case "certifications":
         return (
           <CertificationsForm
             certifications={resumeData?.certifications}
-            updateSection={(key, value) => {
-              updateSection("certifications", key, value);
+            updateArrayItem={(key, index, value) => {
+              updateArrayItem("certifications", index, key, value);
             }}
-            onNext={validateAndNext}
+            addArrayItem={(newItem) => addArrayItem("certifications", newItem)}
+            removeArrayItem={(index) => removeArrayItem("certifications", index)}
           />
         );
-      case "languages":
+      case "additionalInfo":
         return (
-          <LanguagesForm
-            languages={resumeData?.languages}
-            updateSection={(key, value) => {
-              updateSection("languages", key, value);
+          <AdditionalInfoForm
+            languages={resumeData.languages}
+            interests={resumeData.interests}
+            updateArrayItem={(section, key, index, value) => {
+              updateArrayItem(section, index, key, value);
             }}
-            onNext={validateAndNext}
+            addArrayItem={(section, newItem) => addArrayItem(section, newItem)}
+            removeArrayItem={(section, index) => removeArrayItem(section, index)}
           />
         );
 
@@ -242,7 +346,7 @@ function EditResume() {
   }
 
   //Remove item from array
-  const removeArrayItem = (section, index) => { 
+  const removeArrayItem = (section, index) => {
     setResumeData((prev) => {
       const updatedArray = [...prev[section]];
       updatedArray.splice(index, 1);

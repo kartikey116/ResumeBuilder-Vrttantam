@@ -2,9 +2,10 @@
 import React from 'react';
 import Input from '../../../Component/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
+import RatingInput from '../../../Component/ResumeSections/RatingInput.jsx';
 
 function SkillsForm({ skills, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
-  console.log("SkillsForm skills:", skills); // Debug
+  console.log("SkillsForm skills:", skills);
 
   const handleAddSkill = () => {
     addArrayItem('skills', {
@@ -33,23 +34,21 @@ function SkillsForm({ skills, updateArrayItem, addArrayItem, removeArrayItem, on
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <Input
-                value={skill.name ?? ""}
+                value={skill.name ||""}
                 onChange={({ target }) => updateArrayItem('skills', index, 'name', target.value)}
                 label="Skill Name"
                 type="text"
                 placeholder="Enter skill name (e.g., JavaScript)"
               />
-              <div>
-                <label className="text-xs font-medium text-slate-600">Proficiency (0-100)</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={skill.progress ?? 0}
-                  onChange={({ target }) => updateArrayItem('skills', index, 'progress', parseInt(target.value) || 0)}
-                  className="form-input"
-                  placeholder="Enter proficiency (0-100)"
-                />
+              <div className='flex flex-col'>
+                <label className="text-[13px] text-slate-800 mb-1">Proficiency ({Math.round((skill.progress / 100) * 5 * 10) / 10}/5)</label>
+                <div className='mt-5'>
+                  <RatingInput
+                    value = {skill.progress || 0}
+                    total = {5}
+                    onChange={(newValue) => updateArrayItem('skills', index, 'progress', newValue)}
+                  />
+                </div>
               </div>
             </div>
           </div>
