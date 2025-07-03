@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from '../../../Component/Inputs/Input.jsx';
+import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
 function CertificationsForm({ certifications, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
@@ -7,9 +7,9 @@ function CertificationsForm({ certifications, updateArrayItem, addArrayItem, rem
 
   const handleAddCertification = () => {
     addArrayItem('certifications', {
-      title: undefined,
-      issuer: undefined,
-      year: undefined,
+      title: "",
+      issuer:"",
+      year: "",
     });
   };
 
@@ -35,20 +35,20 @@ function CertificationsForm({ certifications, updateArrayItem, addArrayItem, rem
               <Input
                 label="Certification Title"
                 value={cert.title || ""}
-                onChange={({ target }) => updateArrayItem('certifications', index, 'title', target.value)}
+                onChange={(val) => updateArrayItem('certifications', index, 'title', val)}
                 type="text"
                 placeholder="AWS Certified Developer"
               />
               <Input
                 value={cert.issuer ?? ""}
-                onChange={({ target }) => updateArrayItem('certifications', index, 'issuer', target.value)}
+                onChange={(val) => updateArrayItem('certifications', index, 'issuer', val)}
                 label="Issuer"
                 type="text"
                 placeholder="Enter issuing organization (e.g., Amazon Web Services)"
               />
               <Input
                 value={cert.year ?? ""}
-                onChange={({ target }) => updateArrayItem('certifications', index, 'year', target.value)}
+                onChange={(val) => updateArrayItem('certifications', index, 'year', val)}
                 label="Year"
                 type="text"
                 placeholder="Enter year obtained (e.g., 2023)"

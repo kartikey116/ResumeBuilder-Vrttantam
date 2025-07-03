@@ -1,5 +1,5 @@
 import React from 'react'
-import Input from '../../../Component/Inputs/Input.jsx';
+import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
 function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem }) {
@@ -17,7 +17,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                                     placeholder="Portfolio Website"
                                     type="text"
                                     value={project.title || ""}
-                                    onChange={(e) => updateArrayItem("projects", index, "title", e.target.value)}
+                                    onChange={(val) => updateArrayItem("projects", index, "title", val)}
                                     className='w-full'
                                 />
                             </div>
@@ -40,7 +40,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                                 placeholder="https://github.com/username/repo"
                                 type="url"
                                 value={project.github || ""}
-                                onChange={({ target }) => updateArrayItem("projects", index, "github", target.value)}
+                                onChange={(val) => updateArrayItem("projects", index, "github", val)}
                                 className='w-full'
                             />
                             <Input
@@ -48,7 +48,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                                 placeholder="https://username.github.io/repo"
                                 type="url"
                                 value={project.liveDemo || ""}
-                                onChange={({ target }) => updateArrayItem("projects", index, "liveDemo", target.value)}
+                                onChange={(val) => updateArrayItem("projects", index, "liveDemo", val)}
                                 className='w-full'
                             />
                         </div>

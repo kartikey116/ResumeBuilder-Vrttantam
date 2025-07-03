@@ -88,28 +88,28 @@ function SignUp({ setCurrentPage }) {
         <div className='grid grid-cols-1 md:grid-cols-1 gap-2'>
           <Input
             value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            onChange={(val) => setFullName(val)}
             label='Full Name'
             type='text'
             placeholder='John Doe'
           />
           <Input
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(val) => setEmail(val)}
             label='Email Address'
             type='email'
             placeholder='john@example.com'
           />
           <Input
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(val) => setPassword(val)}
             label='Password'
             type='password'
             placeholder='Min 8 characters'
           />
           <Input
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(val) => setConfirmPassword(val)}
             label='Confirm Password'
             type='password'
             placeholder='Min 8 characters'
@@ -119,7 +119,7 @@ function SignUp({ setCurrentPage }) {
             SIGN UP
           </button>
           <p className='text-[13px] text-slate-800 mt-3'>
-            Already have an account?{ }
+            Already have an account?{" "}
             <button className='font-medium text-purple-700 underline cursor-pointer' onClick={() => setCurrentPage("login")}>
               Login
             </button>

@@ -19,7 +19,7 @@ function Input({value,onChange,label,type ,placeholder}) {
                 placeholder={placeholder}
                 className='w-full py-3 bg-transparent outline-none placeholder:text-slate-500 '
                 value={value}
-                onChange = {(e) => onChange(e)}
+                onChange={(e) => onChange(e.target.value)}
             />
              {type === "password" && (
                 <>

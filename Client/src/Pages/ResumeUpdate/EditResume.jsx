@@ -15,6 +15,7 @@ import SkillsForm from './Forms/SkillsForm.jsx';
 import ProjectsForm from './Forms/ProjectsForm.jsx';
 import CertificationsForm from './Forms/CertificationsForm.jsx';
 import AdditionalInfoForm from './Forms/AdditionalInfoForm.jsx';
+import RenderResume from '../../COmponent/ResumeTemplates/RenderResume.jsx';
 import {
   LuArrowLeft,
   LuCircleAlert,
@@ -38,12 +39,15 @@ function EditResume() {
 
   const [baseWidth, setBaseWidth] = useState(800);
 
+
   const [openThemeSelector, setOpenThemeSelector] = useState(false);
 
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
   const steps = ["profile-info", "contact-info", "work-experience", "education", "skills", "projects", "certifications", "additionalInfo"];
   const [currentPage, setCurrentPage] = useState("profile-info");
+  const [progress, setProgress] = useState(0);
+  const [isFetching, setIsFetching] = useState(true);
   const [resumeData, setResumeData] = useState({
     title: "",
     thumbnailLink: "",
@@ -167,8 +171,8 @@ function EditResume() {
         )
         break;
       case "additionalInfo":
-        
-        if(resumeData.languages.length === 0 ||
+
+        if (resumeData.languages.length === 0 ||
           !resumeData.languages[0].name?.trim()
         ) {
           errors.push("At least one language is required");
@@ -178,11 +182,11 @@ function EditResume() {
         }
         break;
 
-       default:
-        break; 
+      default:
+        break;
     }
 
-    if(errors.length > 0) {
+    if (errors.length > 0) {
       setErrorMsg(errors.join(", \n"));
       return;
     }
@@ -195,18 +199,32 @@ function EditResume() {
 
   //Function to navigate to the next page
   const goToNextStep = () => {
+    if (currentPage === "additionalInfo") setOpenPreviewModal(true);
     const currentIndex = steps.indexOf(currentPage);
     if (currentIndex < steps.length - 1) {
-      setCurrentPage(steps[currentIndex + 1]);
+      const nextIndex = currentIndex + 1;
+      setCurrentPage(steps[nextIndex]);
     }
+
+    // set progress as percentage
+    const percent = Math.round((nextIndex / (steps.length - 1)) * 100);
+    setProgress(percent);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   //Function to navigate to the previous page
   const goBack = () => {
+    if (currentPage === "profile-info") navigate("/dashboard");
     const currentIndex = steps.indexOf(currentPage);
     if (currentIndex > 0) {
-      setCurrentPage(steps[currentIndex - 1]);
+      const prevIndex = currentIndex - 1;
+      setCurrentPage(steps[prevIndex]);
     }
+
+    // set progress as percentage
+    const percent = Math.round((prevIndex / (steps.length - 1)) * 100);
+    setProgress(percent);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const renderFrom = () => {
@@ -236,55 +254,46 @@ function EditResume() {
         return (
           <WorkExperienceForm
             workExperience={resumeData?.workExperience}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("workExperience", index, key, value);
-            }}
-            addArrayItem={(newItem) => addArrayItem("workExperience", newItem)}
-            removeArrayItem={(index) => removeArrayItem("workExperience", index)}
+            updateArrayItem={updateArrayItem} // ✅ use directly
+            addArrayItem={addArrayItem}       // ✅ use directly
+            removeArrayItem={removeArrayItem} // ✅ use directly
           />
         );
+
       case "education":
         return (
           <EducationForm
             education={resumeData?.education}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("education", index, key, value);
-            }}
-            addArrayItem={(newItem) => addArrayItem("education", newItem)}
-            removeArrayItem={(index) => removeArrayItem("education", index)}
+            updateArrayItem={updateArrayItem} // ✅ use directly
+            addArrayItem={addArrayItem}       // ✅ use directly
+            removeArrayItem={removeArrayItem} // ✅ use directly
           />
         );
       case "skills":
         return (
           <SkillsForm
             skills={resumeData?.skills}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("skills", index, key, value);
-            }}
-            addArrayItem={(newItem) => addArrayItem("skills", newItem)}
-            removeArrayItem={(index) => removeArrayItem("skills", index)}
+            updateArrayItem={updateArrayItem} // ✅ use directly
+            addArrayItem={addArrayItem}       // ✅ use directly
+            removeArrayItem={removeArrayItem} // ✅ use directly
           />
         );
       case "projects":
         return (
           <ProjectsForm
             projects={resumeData?.projects}
-            updateArrayItem={(index, key, value) => {
-              updateArrayItem("projects", index, key, value);
-            }}
-            addArrayItem={(newItem) => addArrayItem("projects", newItem)}
-            removeArrayItem={(index) => removeArrayItem("projects", index)}
+            updateArrayItem={updateArrayItem}
+            addArrayItem={addArrayItem}
+            removeArrayItem={removeArrayItem}
           />
         );
       case "certifications":
         return (
           <CertificationsForm
             certifications={resumeData?.certifications}
-            updateArrayItem={(key, index, value) => {
-              updateArrayItem("certifications", index, key, value);
-            }}
-            addArrayItem={(newItem) => addArrayItem("certifications", newItem)}
-            removeArrayItem={(index) => removeArrayItem("certifications", index)}
+            updateArrayItem={updateArrayItem}
+            addArrayItem={addArrayItem}
+            removeArrayItem={removeArrayItem}
           />
         );
       case "additionalInfo":
@@ -292,11 +301,9 @@ function EditResume() {
           <AdditionalInfoForm
             languages={resumeData.languages}
             interests={resumeData.interests}
-            updateArrayItem={(section, key, index, value) => {
-              updateArrayItem(section, index, key, value);
-            }}
-            addArrayItem={(section, newItem) => addArrayItem(section, newItem)}
-            removeArrayItem={(section, index) => removeArrayItem(section, index)}
+            updateArrayItem={updateArrayItem}
+            addArrayItem={addArrayItem}
+            removeArrayItem={removeArrayItem}
           />
         );
 
@@ -383,6 +390,8 @@ function EditResume() {
       }
     } catch (error) {
       console.error("Error fetching resumes:", error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -398,7 +407,11 @@ function EditResume() {
   const reactToPrintFn = useReactToPrint({ contentRef: resumeDownloadRef });
 
   //Function to update baaeWidth based on the resume container size
-  const updateBaseWidth = () => { };
+  const updateBaseWidth = () => {
+    if (resumeRef.current) {
+      setBaseWidth(resumeRef.current.offsetWidth);
+    }
+  };
 
   useEffect(() => {
     updateBaseWidth();
@@ -491,8 +504,18 @@ function EditResume() {
             </div>
           </div>
 
-          <div className='h-[100vh]' ref={resumeRef}>
-            {/* Resume templates */}
+          <div className="h-[100vh]" ref={resumeRef}>
+            {isFetching ? (
+              <div className="text-center text-gray-500">Loading resume preview...</div>
+            ) : (
+              <RenderResume
+                templateId={resumeData.template?.theme || ''}
+                resumeData={resumeData}
+                colorPalette={resumeData.template?.colorPalette || []}
+                containerWidth={baseWidth}
+              />
+            )}
+
           </div>
         </div>
       </div>

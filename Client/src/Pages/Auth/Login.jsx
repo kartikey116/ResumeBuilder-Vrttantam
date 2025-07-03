@@ -85,14 +85,14 @@ function Login({ setCurrentPage }) {
       <form onSubmit={handleLogin}>
         <Input
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(val) => setEmail(val)}
           label='Email Address '
           type='text'
           placeholder='john@example.com'
         />
         <Input
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(val) => setPassword(val)}
           label='Password'
           type='password'
           placeholder='Min 8 characters'
@@ -102,7 +102,7 @@ function Login({ setCurrentPage }) {
           LOGIN
         </button>
         <p className='text-[13px] text-slate-800 mt-3'>
-          Don't have an account?{ }
+          Don't have an account?{" "}
           <button className='font-medium text-purple-700 underline cursor-pointer' onClick={() => setCurrentPage("signup")}>
             Sign Up
           </button>

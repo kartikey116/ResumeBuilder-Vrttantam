@@ -1,6 +1,6 @@
 import React from 'react';
-import ProfilePhotoSelector from '../../../Component/Inputs/ProfilePhotoSelector.jsx'; // Corrected path
-import Input from '../../../Component/Inputs/Input.jsx';
+import ProfilePhotoSelector from '../../../COmponent/Inputs/ProfilePhotoSelector.jsx'; // Corrected path
+import Input from '../../../COmponent/Inputs/Input.jsx';
 
 function ProfileInfoForm({ profileData, updateSection}) {
   return (
@@ -20,14 +20,14 @@ function ProfileInfoForm({ profileData, updateSection}) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <Input
             value={profileData?.fullName || ""}
-            onChange={({ target }) => updateSection("fullName", target.value)}
+            onChange={(val) => updateSection("fullName", val)}
             label="Full Name"
             type="text"
             placeholder="Enter your full name"
           />
           <Input
             value={profileData?.designation || ""}
-            onChange={({ target }) => updateSection("designation", target.value)}
+            onChange={(val) => updateSection("designation", val)}
             label="Designation"
             type="text"
             placeholder="Enter your designation"

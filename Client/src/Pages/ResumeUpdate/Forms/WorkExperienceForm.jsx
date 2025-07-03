@@ -1,17 +1,17 @@
 import React from 'react';
-import Input from '../../../Component/Inputs/Input.jsx';
+import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
-function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
+function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, removeArrayItem}) {
   console.log("WorkExperienceForm workExperience:", workExperience); // Debug
 
   const handleAddExperience = () => {
     addArrayItem('workExperience', {
-      company: undefined,
-      role: undefined,
-      startDate: undefined,
-      endDate: undefined,
-      description: undefined,
+      company: "",
+      role: "",
+      startDate: "",
+      endDate: "",
+      description: "",
     });
   };
 
@@ -35,31 +35,31 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <Input
-                value={exp.company ?? ""}
-                onChange={({ target }) => updateArrayItem('workExperience', index, 'company', target.value)}
+                value={exp?.company ?? ""}
+                onChange={(val) => updateArrayItem('workExperience', index, 'company', val)}
                 label="Company"
                 type="text"
                 placeholder="Enter company name"
               />
               <Input
-                value={exp.role ?? ""}
-                onChange={({ target }) => updateArrayItem('workExperience', index, 'role', target.value)}
+                value={exp?.role ?? ""}
+                onChange={(val) => updateArrayItem('workExperience', index, 'role', val)}
                 label="Role"
                 type="text"
                 placeholder="Enter your role or title"
               />
               <Input
-                value={exp.startDate ?? ""}
-                onChange={({ target }) => updateArrayItem('workExperience', index, 'startDate', target.value)}
+                value={exp?.startDate ?? ""}
+                onChange={(val) => updateArrayItem('workExperience', index, 'startDate', val)}
                 label="Start Date"
-                type="month"
+                type="text"
                 placeholder="Enter start date (e.g., MM/YYYY)"
               />
               <Input
-                value={exp.endDate ?? ""}
-                onChange={({ target }) => updateArrayItem('workExperience', index, 'endDate', target.value)}
+                value={exp?.endDate ?? ""}
+                onChange={(val) => updateArrayItem('workExperience', index, 'endDate', val)}
                 label="End Date"
-                type="month"
+                type="text"
                 placeholder="Enter end date (e.g., MM/YYYY or Present)"
               />
               <div className="col-span-2">
@@ -68,8 +68,8 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                   placeholder="Describe your responsibilities and achievements"
                   className="from-input"
                   rows={3}
-                  value={exp.description ?? ""}
-                  onChange={({ target }) => updateArrayItem('workExperience', index, 'description', target.value)}
+                  value={exp?.description ?? ""}
+                  onChange={(e) => updateArrayItem('workExperience', index, 'description',  e.target.value)}
                 />
               </div>
             </div>

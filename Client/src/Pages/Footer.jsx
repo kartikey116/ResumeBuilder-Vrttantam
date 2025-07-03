@@ -7,10 +7,10 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Resume Builder
+               वृत्तान्तम् (Vṛttāntam) – Account / report / summary
             </h3>
             <p className="text-gray-600">
-              Revolutionizing career advancement through AI-powered resume creation.
+              "Vṛttāntam: Redefining career growth through powerful professional summaries."
             </p>
           </div>
 

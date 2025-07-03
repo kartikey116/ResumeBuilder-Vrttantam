@@ -1,7 +1,7 @@
 import React from 'react';
-import Input from '../../../Component/Inputs/Input.jsx';
+import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
-import RatingInput from '../../../Component/ResumeSections/RatingInput';
+import RatingInput from '../../../COmponent/ResumeSections/RatingInput';
 
 function AdditionalInfoForm({ languages, interests, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
   console.log("AdditionalInfoForm languages:", languages); // Debug
@@ -9,7 +9,7 @@ function AdditionalInfoForm({ languages, interests, updateArrayItem, addArrayIte
 
   const handleAddLanguage = () => {
     addArrayItem('languages', {
-      name: undefined,
+      name: "",
       progress: 0,
     });
   };
@@ -42,7 +42,7 @@ function AdditionalInfoForm({ languages, interests, updateArrayItem, addArrayIte
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   value={lang.name ?? ""}
-                  onChange={({ target }) => updateArrayItem('languages', index, 'name', target.value)}
+                  onChange={(val) => updateArrayItem('languages', index, 'name', val)}
                   label="Language Name"
                   type="text"
                   placeholder="Enter language name (e.g., Spanish)"
@@ -88,7 +88,7 @@ function AdditionalInfoForm({ languages, interests, updateArrayItem, addArrayIte
               </div>
               <Input
                 value={interest ?? ""}
-                onChange={({ target }) => updateArrayItem('interests', index, null, target.value)}
+                onChange={(val) => updateArrayItem('interests', index, null, val)}
                 label="Interest"
                 type="text"
                 placeholder="Enter interest (e.g., Hiking)"

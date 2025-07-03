@@ -47,7 +47,7 @@ function CreateResumeForm() {
        <form onSubmit={handleCreateResume}>
          <Input
          value={title}
-         onChange={({target}) => setTitle(target.value)}
+         onChange={(val) => setTitle(val)}
          label='Resume Title'
          placeholder="Eg:Mike's Resume"
          type="text"

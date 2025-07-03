@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Input from '../../../Component/Inputs/Input.jsx';
+import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
 function EducationForm({ education, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
@@ -8,10 +8,10 @@ function EducationForm({ education, updateArrayItem, addArrayItem, removeArrayIt
 
   const handleAddEducation = () => {
     addArrayItem('education', {
-      degree: undefined,
-      institution: undefined,
-      startDate: undefined,
-      endDate: undefined,
+      degree: "",
+      institution: "",
+      startDate:"",
+      endDate: "",
     });
   };
 
@@ -36,28 +36,28 @@ function EducationForm({ education, updateArrayItem, addArrayItem, removeArrayIt
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <Input
                 value={edu.degree ?? ""}
-                onChange={({ target }) => updateArrayItem('education', index, 'degree', target.value)}
+                onChange={(val) => updateArrayItem('education', index, 'degree', val)}
                 label="Degree"
                 type="text"
                 placeholder="Enter your degree (e.g., B.S. Computer Science)"
               />
               <Input
                 value={edu.institution ?? ""}
-                onChange={({ target }) => updateArrayItem('education', index, 'institution', target.value)}
+                onChange={(val) => updateArrayItem('education', index, 'institution', val)}
                 label="Institution"
                 type="text"
                 placeholder="Enter institution name"
               />
               <Input
                 value={edu.startDate ?? ""}
-                onChange={({ target }) => updateArrayItem('education', index, 'startDate', target.value)}
+                onChange={(val) => updateArrayItem('education', index, 'startDate', val)}
                 label="Start Date"
                 type="month"
                 placeholder="Enter start date (e.g., MM/YYYY)"
               />
               <Input
                 value={edu.endDate ?? ""}
-                onChange={({ target }) => updateArrayItem('education', index, 'endDate', target.value)}
+                onChange={(val) => updateArrayItem('education', index, 'endDate', val)}
                 label="End Date"
                 type="month"
                 placeholder="Enter end date (e.g., MM/YYYY or Present)"

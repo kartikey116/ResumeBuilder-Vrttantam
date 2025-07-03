@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Input from '../../../Component/Inputs/Input.jsx';
+import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
-import RatingInput from '../../../Component/ResumeSections/RatingInput.jsx';
+import RatingInput from '../../../COmponent/ResumeSections/RatingInput.jsx';
 
 function SkillsForm({ skills, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
   console.log("SkillsForm skills:", skills);
@@ -35,7 +35,7 @@ function SkillsForm({ skills, updateArrayItem, addArrayItem, removeArrayItem, on
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <Input
                 value={skill.name ||""}
-                onChange={({ target }) => updateArrayItem('skills', index, 'name', target.value)}
+                onChange={(val) => updateArrayItem('skills', index, 'name', val)}
                 label="Skill Name"
                 type="text"
                 placeholder="Enter skill name (e.g., JavaScript)"
