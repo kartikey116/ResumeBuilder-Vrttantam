@@ -1,4 +1,3 @@
-import React from 'react'
 import {
     LuMail,
     LuMapPinHouse,
@@ -10,12 +9,13 @@ import {
 import { RiLinkedinLine } from 'react-icons/ri';
 import { useEffect, useRef, useState } from 'react';
 import ContactInfo from '../ResumeSections/ContactInfo.jsx';
-import EducationInfo from '../ResumeTemplates/EducationInfo.jsx';
+import EducationInfo from './EducationInfo.jsx';
 import { formatYearMonth } from '../../utils/helper.js';
-import Languagesection from '../ResumeTemplates/Languagesection.jsx';
-import ProjectInfo from '../ResumeTemplates/ProjectInfo.jsx';
+import Languagesection from './Languagesection.jsx';
+import ProjectInfo from './ProjectInfo.jsx';
 import SkillSection from '../ResumeSections/SkillSection.jsx';
 import CertificationInfo from '../ResumeSections/CertificationInfo.jsx';
+import WorkExperience from './WorkExperience.jsx';
 
 const DEFAULT_THEME = ["#EBFDFF", "#A1F4FD", "#CEFAFE", "#00B8DB", "#4A5565"];
 

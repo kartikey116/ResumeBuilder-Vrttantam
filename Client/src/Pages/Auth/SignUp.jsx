@@ -8,6 +8,7 @@ import axiosInstance from '../../utils/axiosinstance.js'
 import { API_PATHS } from '../../utils/apiPaths.js'
 import { UserContext } from '../../context/userContext.jsx';
 import uploadImage from '../../utils/uploadImage.js';
+import Dashboard from '../Home/Dashboard.jsx'
 
 function SignUp({ setCurrentPage }) {
   const [profilePic, setProfilePic] = useState(null);

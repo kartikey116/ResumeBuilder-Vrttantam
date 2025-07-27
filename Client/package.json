@@ -16,6 +16,8 @@
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.0",
+    "gsap": "^3.13.0",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.515.0",
     "moment": "^2.30.1",

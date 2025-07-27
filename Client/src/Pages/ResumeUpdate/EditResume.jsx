@@ -368,6 +368,7 @@ function EditResume() {
   console.log("Fetching resume with ID:", resumeId);
   console.log("GET URL:", API_PATHS.RESUMES.GET_RESUME_BY_ID(resumeId));
 
+  console.log(resumeData.profileInfo);
   const fetchResumeDetailsById = async () => {
     try {
       const response = await axiosInstance.get(API_PATHS.RESUMES.GET_RESUME_BY_ID(resumeId));
@@ -423,7 +424,7 @@ function EditResume() {
     return () => {
       window.removeEventListener('resize', updateBaseWidth);
     }
-  }, []);
+  }, [resumeId]);
 
   return (
     <DashboardLayout>
@@ -503,11 +504,13 @@ function EditResume() {
               </div>
             </div>
           </div>
+          
 
           <div className="h-[100vh]" ref={resumeRef}>
             {isFetching ? (
               <div className="text-center text-gray-500">Loading resume preview...</div>
             ) : (
+              
               <RenderResume
                 templateId={resumeData.template?.theme || ''}
                 resumeData={resumeData}
