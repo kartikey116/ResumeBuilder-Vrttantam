@@ -16,6 +16,9 @@ import ProjectsForm from './Forms/ProjectsForm.jsx';
 import CertificationsForm from './Forms/CertificationsForm.jsx';
 import AdditionalInfoForm from './Forms/AdditionalInfoForm.jsx';
 import RenderResume from '../../COmponent/ResumeTemplates/RenderResume.jsx';
+import { ToastContainer, toast } from 'react-toastify';
+import { fixTailwindColors } from '../../utils/helper.js';
+import { captureElementAsImage, dataURLtoFile } from '../../utils/helper.js';
 import {
   LuArrowLeft,
   LuCircleAlert,
@@ -397,9 +400,49 @@ function EditResume() {
   };
 
   // Upload thumbnail and resume profile img
-  const UploadResumeImages = async () => { };
+  const UploadResumeImages = async () => {
+    try{
+      setIsLoading(true);
 
-  const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => { };
+      fixTailwindColors(resumeRef.current);
+      const imageDataUrl = await captureElementAsImage(resumeRef.current);
+
+      // convert base64 to file
+      const thumbnailFile = dataUrltoFile(
+        imageDataUrl,
+        `resume-${resumeId}.png`
+      );
+      const profileImageFile = resumeData?.profileInfo?.profileImg || null;
+      const formData = new FormData();
+      if(profileImageFile) formData.append("profileImage", profileImageFile);
+      if(thumbnailFile) formData.append("thumbnail", thumbnailFile);
+
+      const uploadResponse = await axiosInstance.put(
+        API_PATHS.RESUMES.UPLOAD_RESUME_IMAGES(resumeId),
+        formData,
+        {
+          headers:{"Content-Type":"multipart/form-data"}
+        }
+      );
+
+      const { thumbnailLink, profilePreviewUrl } = uploadResponse.data;
+
+      console.log("RESUME_DATA__", resumeData);
+
+      //call the second api to update other resume details
+      await updateResumeDetails(thumbnailLink,profilePreviewUrl);
+
+      toast.success("Resume uploaded successfully!");
+      navigate("/dashboard");
+    } catch(error){
+      console.log("Error uploading resume images:", error);
+      toast.error("Error uploading resume images!");
+    } finally {
+      setIsLoading(false);
+    }
+   };
+
+  const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {};
 
   //Delete resume
   const handleDeleteResume = async () => { };

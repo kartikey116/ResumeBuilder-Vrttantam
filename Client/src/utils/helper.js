@@ -69,3 +69,38 @@ export const getLightColorFromImage = (imageUrl) =>{
 export function formatYearMonth(yearMonth){
     return yearMonth ? moment(yearMonth,"YYYY-MM").format("YYYY - MMM") : "";
 }
+
+export const fixTailwindColors = (element) => {
+    const elements = element.querySelectorAll('*');
+
+    elements.forEach((el) => {
+        const style = window.getComputedStyle(el);
+
+        ["color","backgroundColor","borderColor"].forEach((prop) => {
+            const value = style[prop];
+            if(value.includes("oklch")){
+                el.style[prop] = "#000";
+            }
+        });
+    })
+}
+
+// convert component to image 
+export async function captureElementAsImage(element){
+    if(!element) throw new Error("No element provided");
+    const canvas = await html2canvas(element);
+    return canvas.toDataURL("image/png");
+}
+
+//Utility to convert base64 data url to a file object
+export const dataURLtoFile = (dataUrl ,fileName) =>{
+ const arr = dataUrl.spilt(',');
+ const mime = arr[0].match(/:(.*?);/)[1];
+ const bstr = atob(arr[1]);
+ let n = bstr.length;
+ const u8arr = new Uint8Array(n);
+ while(n--){
+     u8arr[n] = bstr.charCodeAt(n);
+}
+ return new File([u8arr], fileName, {type:mime});
+};

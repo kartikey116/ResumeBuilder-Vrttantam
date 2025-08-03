@@ -47,7 +47,6 @@ function Modal({
 
                 </button>
 
-                {/* Modal Body (Scrollable) */}
 
                 <div className='flex-1 overflow-y-auto custom-scrollbar'>
                     {children}

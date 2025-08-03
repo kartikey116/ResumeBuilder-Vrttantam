@@ -28,8 +28,9 @@ function CreateResumeForm() {
       });
       console.log("response hai bhaiya",response.data);
 
-      if(response.data?._id){
-        navigate(`/resume/${response.data?._id}`);
+      if(response.data?.resume?._id){
+        navigate(`/resume/${response.data?.resume?._id}`);
+        return;
       }
     } catch (error) {
       if(error.response && error.response.data.message){
