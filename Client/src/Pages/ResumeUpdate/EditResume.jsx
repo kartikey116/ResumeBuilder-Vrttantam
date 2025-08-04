@@ -16,7 +16,6 @@ import ProjectsForm from './Forms/ProjectsForm.jsx';
 import CertificationsForm from './Forms/CertificationsForm.jsx';
 import AdditionalInfoForm from './Forms/AdditionalInfoForm.jsx';
 import RenderResume from '../../COmponent/ResumeTemplates/RenderResume.jsx';
-import { ToastContainer, toast } from 'react-toastify';
 import { fixTailwindColors } from '../../utils/helper.js';
 import { captureElementAsImage, dataURLtoFile } from '../../utils/helper.js';
 import {
