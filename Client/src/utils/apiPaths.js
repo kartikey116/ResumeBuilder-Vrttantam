@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:4000";
+export const BASE_URL = "https://resumebuilder-vrttantam.onrender.com";
 
 export const API_PATHS = {
     AUTH: {
