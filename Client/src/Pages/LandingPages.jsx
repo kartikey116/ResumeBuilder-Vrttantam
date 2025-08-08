@@ -7,7 +7,7 @@ import Login from '../Pages/Auth/Login.jsx'
 import Signup from '../Pages/Auth/SignUp.jsx'
 import { UserContext } from "../context/userContext.jsx";
 import { useContext } from 'react';
-import ProfileInfoCard from '../COmponent/cards/ProfileInfoCard.jsx';
+import ProfileInfoCard from '../COmponent/Cards/ProfileInfoCard.jsx';
 import Footer from '../Pages/Footer.jsx';
 import { features, testimonials, faqs } from "../assets/Constant.jsx";
 
