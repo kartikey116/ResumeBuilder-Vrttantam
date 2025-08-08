@@ -1,5 +1,5 @@
 import React from 'react'
-import ProfileInfoCard from '../cards/ProfileInfoCard.jsx';
+import ProfileInfoCard from '../Cards/ProfileInfoCard.jsx';
 import {Link} from 'react-router-dom';
 
 function Navbar() {
