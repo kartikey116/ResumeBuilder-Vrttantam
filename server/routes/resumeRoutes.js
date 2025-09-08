@@ -7,7 +7,7 @@ import{
     deleteResume
 } from '../controllers/resumeController.js';
 import {protect} from '../middlewares/authMiddleware.js';
-import {uploadResumeImages} from '../controllers/uploadimages.js';
+import {uploadResumeImages,uploadResumeImagesSimple} from '../controllers/uploadimages.js';
 
 const router = express.Router();
 
@@ -16,6 +16,7 @@ router.get('/',protect, getUserResumes); //get resumes
 router.get('/:id',protect, getResumeById); //get resume by id
 router.put('/:id',protect, updateResume); //update resume
 router.put('/upload-images',protect,uploadResumeImages); //upload resume images
+router.put('/:id/upload-images-simple', protect, uploadResumeImagesSimple);
 router.delete('/:id',protect, deleteResume); //delete resume
 
 export default router;

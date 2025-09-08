@@ -1,4 +1,5 @@
 import moment from 'moment';
+import html2canvas from 'html2canvas';
 
 export const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,31 +71,62 @@ export function formatYearMonth(yearMonth){
     return yearMonth ? moment(yearMonth,"YYYY-MM").format("YYYY - MMM") : "";
 }
 
-export const fixTailwindColors = (element) => {
-    const elements = element.querySelectorAll('*');
+export function fixTailwindColors(element) {
+  if (!element) return;
 
-    elements.forEach((el) => {
-        const style = window.getComputedStyle(el);
+  const traverse = (el) => {
+    if (el.style) {
+      // Check background-color and color
+      ["backgroundColor", "color", "borderColor"].forEach((prop) => {
+        if (el.style[prop] && el.style[prop].includes("oklch")) {
+          // Convert to a safe fallback color
+          el.style[prop] = "transparent"; // fallback, or choose closest hex
+        }
+      });
+    }
+    // Traverse child nodes
+    el.childNodes.forEach(traverse);
+  };
 
-        ["color","backgroundColor","borderColor"].forEach((prop) => {
-            const value = style[prop];
-            if(value.includes("oklch")){
-                el.style[prop] = "#000";
-            }
-        });
-    })
+  traverse(element);
 }
 
-// convert component to image 
-export async function captureElementAsImage(element){
-    if(!element) throw new Error("No element provided");
-    const canvas = await html2canvas(element);
-    return canvas.toDataURL("image/png");
+//convert component to image 
+// export async function captureElementAsImage(element){
+//     if(!element) throw new Error("No element provided");
+//     const canvas = await html2canvas(element);
+//     return canvas.toDataURL("image/png");
+//}
+
+export async function captureElementAsImage(element) {
+  if (!element) throw new Error("No element provided");
+  
+  try {
+    const canvas = await html2canvas(element, {
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      allowTaint: true,
+      scale: 1,
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: element.offsetWidth,
+      windowHeight: element.offsetHeight,
+      onclone: (clonedDoc) => {
+        // Fix any issues in the cloned document
+        fixTailwindColors(clonedDoc.body);
+      }
+    });
+    
+    return canvas.toDataURL("image/png", 0.95);
+  } catch (error) {
+    console.error('html2canvas error:', error);
+    throw new Error(`Failed to capture element as image: ${error.message}`);
+  }
 }
 
 //Utility to convert base64 data url to a file object
 export const dataURLtoFile = (dataUrl ,fileName) =>{
- const arr = dataUrl.spilt(',');
+ const arr = dataUrl.split(',');
  const mime = arr[0].match(/:(.*?);/)[1];
  const bstr = atob(arr[1]);
  let n = bstr.length;
@@ -104,3 +136,5 @@ export const dataURLtoFile = (dataUrl ,fileName) =>{
 }
  return new File([u8arr], fileName, {type:mime});
 };
+
+

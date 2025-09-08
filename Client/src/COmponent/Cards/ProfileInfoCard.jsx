@@ -10,7 +10,7 @@ function ProfileInfoCard() {
   const handleLogout = () => {
   const confirmLogout = window.confirm("Are you sure you want to log out?");
   if (confirmLogout) {
-    localStorage.clear();
+   localStorage.clear();
     clearUser();
     navigate('/');
   }

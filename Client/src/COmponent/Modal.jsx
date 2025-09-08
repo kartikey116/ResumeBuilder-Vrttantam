@@ -9,6 +9,7 @@ function Modal({
     actionBtnIcon = null,
     actionBtnText,
     onActionClick,
+    title
 }) {
 
     if (!isOpen) return null;

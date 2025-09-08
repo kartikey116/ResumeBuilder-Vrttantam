@@ -4,7 +4,7 @@ import axiosInstance from '../utils/axiosinstance';
 
 export const UserContext = createContext();
 
-const UserProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -32,11 +32,22 @@ const UserProvider = ({ children }) => {
         fetchUser();
     }, []);
 
+    // const updateUser = (userData) => {
+    //     setUser(userData);
+    //     localStorage.setItem("token", userData.token);
+    //     setLoading(false);
+    // };
+
     const updateUser = (userData) => {
+    if (userData && userData.token) {
         setUser(userData);
         localStorage.setItem("token", userData.token);
-        setLoading(false);
-    };
+    } else {
+        // This case would be for logging out or if invalid data is passed
+        clearUser(); 
+    }
+    setLoading(false);
+};
 
     const clearUser = () => {
         setUser(null);

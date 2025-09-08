@@ -61,12 +61,21 @@ function SignUp({ setCurrentPage }) {
         profileImageUrl,
       });
 
-      const {token} = response.data;
-      if(token){
-        localStorage.setItem('token', token);
-        updateUser(response.data);
-        navigate('/dashboard');
+      // if (response.data.message) {
+      //   setError(response.data.message);
+      //   return;
+      // }
+
+      if(response.data){
+        setCurrentPage("login");
       }
+
+      // const {token} = response.data;
+      // if(token){
+      //   localStorage.setItem('token', token);
+      //   updateUser(response.data);
+      //   navigate('/dashboard');
+      // }
 
     } catch (error) {
       if (error.response && error.response.data.message) {
