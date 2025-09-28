@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: process.env.CLIENT_URL || "*" || "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "*" || "http://localhost:5173"||"https://resume-builder-vrttantam-git-main-kartikeys-projects-6ba48c84.vercel.app/"||"https://resume-builder-vrttantam.vercel.app/"||"https://resume-builder-vrttantam-87wd8c0if-kartikeys-projects-6ba48c84.vercel.app/",
     credentials: true,
     methods:["GET", "POST", "PUT", "DELETE"],
     allowedHeaders:["Content-Type", "Authorization"]
