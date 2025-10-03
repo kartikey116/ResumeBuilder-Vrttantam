@@ -182,7 +182,7 @@ function LandingPages() {
   // --- END: Canvas Animation Logic ---
 
   return (
-    <UserContext.Provider value={{ user }}>
+    <>
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
@@ -223,16 +223,13 @@ function LandingPages() {
             margin-left: 4px;
           }
           
-          /* The previous floating-shapes and polkadot-background CSS is no longer needed */
-          /* and has been effectively replaced by the canvas animation. */
-
           .interactive-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Ensure it's behind content but visible */
+            z-index: -1;
           }
         `}
       </style>
@@ -292,9 +289,8 @@ function LandingPages() {
         {/* Hero Section */}
         <div className="flex flex-col items-center justify-center text-center mt-5 md:mt-5 py-20 relative z-10">
           
-          {/* --- START: Canvas for interactive dot animation --- */}
+          {/* Canvas for interactive dot animation */}
           <canvas ref={canvasRef} className="interactive-canvas"></canvas>
-          {/* --- END: Canvas for interactive dot animation --- */}
 
           <div className="max-w-3xl animate-fade-in-down" style={{ animationDelay: '0.6s' }}>
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight">
@@ -387,8 +383,6 @@ function LandingPages() {
           </button>
         </section>
 
-        
-
         {/* Auth Modal */}
         <Modal
           isOpen={openAuthModal}
@@ -450,10 +444,8 @@ function LandingPages() {
             </div>
           </div>
         </footer>
-
-      
     </div>
-    </UserContext.Provider>
+    </>
   );
 }
 

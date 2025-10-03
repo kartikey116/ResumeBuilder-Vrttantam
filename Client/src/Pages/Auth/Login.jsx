@@ -12,15 +12,24 @@ function Login({ setCurrentPage }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { updateUser } = useContext(UserContext);
+  const context = useContext(UserContext);
+  
+  // Debug: Check if context is received
+  console.log("UserContext in Login:", context);
+  
+  if (!context) {
+    console.error("UserContext is undefined! Make sure UserProvider wraps this component.");
+  }
 
+  const { updateUser } = context || {};
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // --- Client-side validation with corrected toasts ---
+    // --- Client-side validation ---
     if (!validateEmail(email)) {
       const message = "Please enter a valid email address";
       setError(message);
@@ -41,26 +50,38 @@ function Login({ setCurrentPage }) {
     }
 
     setError(null);
+    setIsLoading(true);
 
     // --- API call to login ---
     try {
+      console.log("Sending login request to:", API_PATHS.AUTH.LOGIN);
       const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
         email,
-        password
+        password,
       });
+      
       console.log("API Response Data:", response.data);
       
       const { token } = response.data;
 
       if (token) {
         localStorage.setItem("token", token);
-        updateUser(response.data);
-        navigate("/dashboard");
-        toast.success("Login successful!"); // Optional: Add a success toast
+        
+        // Check if updateUser exists before calling
+        if (typeof updateUser === 'function') {
+          updateUser(response.data);
+          toast.success("Login successful!");
+          navigate("/dashboard");
+        } else {
+          console.error("updateUser is not a function:", updateUser);
+          toast.error("Login error: Context not initialized properly");
+        }
       }
     } catch (error) {
-      // --- Server-side error handling with corrected toasts ---
-      if (error.response && error.response.data && error.response.data.message) {
+      console.error("Login error:", error);
+      
+      // --- Server-side error handling ---
+      if (error.response?.data?.message) {
         const serverMessage = error.response.data.message;
         const msg = serverMessage.toLowerCase();
         
@@ -68,7 +89,7 @@ function Login({ setCurrentPage }) {
           const customMessage = "Incorrect password. Please try again.";
           setError(customMessage);
           toast.error(customMessage);
-        } else if (msg.includes("user") || msg.includes("email")) {
+        } else if (msg.includes("user") || msg.includes("not found")) {
           const customMessage = "No account found with this email.";
           setError(customMessage);
           toast.error(customMessage);
@@ -76,11 +97,17 @@ function Login({ setCurrentPage }) {
           setError(serverMessage);
           toast.error(serverMessage);
         }
+      } else if (error.code === 'ERR_NETWORK') {
+        const networkMessage = "Cannot connect to server. Please check if the server is running.";
+        setError(networkMessage);
+        toast.error(networkMessage);
       } else {
         const fallbackMessage = "An unexpected error occurred. Please try again.";
         setError(fallbackMessage);
         toast.error(fallbackMessage);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,7 +116,7 @@ function Login({ setCurrentPage }) {
       <h3 className='text-lg font-semibold text-black'>
         Welcome Back
       </h3>
-      <p className='text-xs text-state-700 mt-[5px] mb-6'>
+      <p className='text-xs text-slate-700 mt-[5px] mb-6'>
         Please enter your email and password to login
       </p>
 
@@ -97,7 +124,7 @@ function Login({ setCurrentPage }) {
         <Input
           value={email}
           onChange={(val) => setEmail(val)}
-          label='Email Address '
+          label='Email Address'
           type='text'
           placeholder='john@example.com'
         />
@@ -109,12 +136,20 @@ function Login({ setCurrentPage }) {
           placeholder='Min 8 characters'
         />
         {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
-        <button type='submit' className='btn-primary'>
-          LOGIN
+        <button 
+          type='submit' 
+          className='btn-primary'
+          disabled={isLoading}
+        >
+          {isLoading ? 'LOGGING IN...' : 'LOGIN'}
         </button>
         <p className='text-[13px] text-slate-800 mt-3'>
           Don't have an account?{" "}
-          <button type='button' className='font-medium text-purple-700 underline cursor-pointer' onClick={() => setCurrentPage("signup")}>
+          <button 
+            type='button' 
+            className='font-medium text-purple-700 underline cursor-pointer' 
+            onClick={() => setCurrentPage("signup")}
+          >
             Sign Up
           </button>
         </p>

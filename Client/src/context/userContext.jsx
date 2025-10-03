@@ -2,22 +2,25 @@ import React, { createContext, useState, useEffect } from 'react';
 import { API_PATHS } from '../utils/apiPaths';
 import axiosInstance from '../utils/axiosinstance';
 
-export const UserContext = createContext();
+export const UserContext = createContext({
+    user: null,
+    loading: true,
+    updateUser: () => {},
+    clearUser: () => {}
+});
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (user) return;
+        const initializeUser = async () => {
+            const accessToken = localStorage.getItem("token");
+            if (!accessToken) {
+                setLoading(false);
+                return;
+            }
 
-        const accessToken = localStorage.getItem("token");
-        if (!accessToken) {
-            setLoading(false);
-            return;
-        }
-
-        const fetchUser = async () => {
             try {
                 const response = await axiosInstance.get(API_PATHS.AUTH.PROFILE);
                 setUser(response.data);
@@ -29,33 +32,36 @@ export const UserProvider = ({ children }) => {
             }
         };
 
-        fetchUser();
+        initializeUser();
     }, []);
 
-    // const updateUser = (userData) => {
-    //     setUser(userData);
-    //     localStorage.setItem("token", userData.token);
-    //     setLoading(false);
-    // };
-
     const updateUser = (userData) => {
-    if (userData && userData.token) {
-        setUser(userData);
-        localStorage.setItem("token", userData.token);
-    } else {
-        // This case would be for logging out or if invalid data is passed
-        clearUser(); 
-    }
-    setLoading(false);
-};
+        console.log("updateUser called with:", userData);
+        if (userData && userData.token) {
+            setUser(userData);
+            localStorage.setItem("token", userData.token);
+            setLoading(false);
+        } else {
+            console.error("Invalid user data passed to updateUser");
+            clearUser(); 
+        }
+    };
 
     const clearUser = () => {
         setUser(null);
         localStorage.removeItem("token");
+        setLoading(false);
+    };
+
+    const value = {
+        user,
+        loading,
+        updateUser,
+        clearUser
     };
 
     return (
-        <UserContext.Provider value={{ user, loading, updateUser, clearUser }}>
+        <UserContext.Provider value={value}>
             {children}
         </UserContext.Provider>
     );

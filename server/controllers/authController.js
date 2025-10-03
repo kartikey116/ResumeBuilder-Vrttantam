@@ -4,19 +4,31 @@ import jwt from 'jsonwebtoken';
 
 //Generate JWT token
 const generateToken = (user) => {
-    return jwt.sign({id: user._id}, process.env.JWT_SECRET,{expiresIn:"7d"});
+    return jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn:"7d"});
 };
-
 
 const registerUser = async (req, res) => {
     try{
-        const {name, password, profileImageUrl} = req.body;
+        const {name, password, confirmPassword, profileImageUrl} = req.body;
         const email = req.body.email.toLowerCase().trim();
 
+        // Validation
+        if (!name || !email || !password) {
+            return res.status(400).json({message: "Please provide all required fields"});
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({message: "Password must be at least 8 characters"});
+        }
+
+        if (confirmPassword && password !== confirmPassword) {
+            return res.status(400).json({message: "Passwords do not match"});
+        }
+
         //Check if user already exists
-        const userExixsts = await User.findOne({email});
-        if(userExixsts){
-            return res.status(400).json({msg: "User already exists"});
+        const userExists = await User.findOne({email});
+        if(userExists){
+            return res.status(400).json({message: "User already exists"});
         }
 
         //Hash password
@@ -24,14 +36,27 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         //Create new user
-        const newUser = await User.create({name, email, password: hashedPassword, profileImageUrl});
+        const newUser = await User.create({
+            name, 
+            email, 
+            password: hashedPassword, 
+            profileImageUrl: profileImageUrl || ""
+        });
 
-        //Return user data with Jwt
-        res.status(201).json({msg: "User created successfully"});
+        //Return success message
+        return res.status(201).json({
+            message: "User created successfully",
+            user: {
+                _id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                profileImageUrl: newUser.profileImageUrl
+            }
+        });
     } catch (error){
-        res.status(500).json({msg: "Error creating user", error: error.message});
+        console.error("Register error:", error);
+        return res.status(500).json({message: "Error creating user", error: error.message});
     }
-
 }
 
 const loginUser = async (req, res) => {
@@ -40,37 +65,43 @@ const loginUser = async (req, res) => {
     const email = req.body.email.toLowerCase().trim();
     const { password } = req.body;
 
-     const user = await User.findOne({email});
-     if(!user){
-       return res.status(404).json({msg: "User not found"});
-     }
+    // Find user by email
+    const user = await User.findOne({email});
+    if(!user){
+       return res.status(404).json({message: "User not found"});
+    }
 
-     //Check password
-     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-     if(!isPasswordCorrect){
-       return res.status(401).json({msg: "Incorrect password"});
-     }
+    // Check password
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if(!isPasswordCorrect){
+       return res.status(401).json({message: "Incorrect password"});
+    }
 
-     res.json({
+    // Return user data with token
+    return res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         profileImageUrl: user.profileImageUrl,
         token: generateToken(user),
-     })
+    });
    } catch (error) {
-     res.status(500).json({msg: "Error logging in user", error: error.message});
+     console.error("Login error:", error);
+     return res.status(500).json({message: "Error logging in user", error: error.message});
    }
 }    
 
 const getUserProfile = async (req, res) => {
-
+    try {
         const user = await User.findById(req.user._id).select('-password');
         if(!user){
-            return res.status(404).json({msg: "User not found"});
+            return res.status(404).json({message: "User not found"});
         }
-        res.json(user);
-    
+        return res.json(user);
+    } catch (error) {
+        console.error("Get profile error:", error);
+        return res.status(500).json({message: "Error fetching user profile", error: error.message});
+    }
 }
 
 export {registerUser, loginUser, getUserProfile};

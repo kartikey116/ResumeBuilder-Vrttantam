@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState , useContext } from 'react'
+import { useState, useContext } from 'react'
 import Input from '../../COmponent/Inputs/Input'
 import { useNavigate } from 'react-router-dom'
 import { validateEmail } from '../../utils/helper.js'
@@ -8,7 +8,7 @@ import axiosInstance from '../../utils/axiosinstance.js'
 import { API_PATHS } from '../../utils/apiPaths.js'
 import { UserContext } from '../../context/userContext.jsx';
 import uploadImage from '../../utils/uploadimage';
-import Dashboard from '../Home/Dashboard.jsx'
+import toast from 'react-hot-toast';
 
 function SignUp({ setCurrentPage }) {
   const [profilePic, setProfilePic] = useState(null);
@@ -17,8 +17,9 @@ function SignUp({ setCurrentPage }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   
-  const {updateUser} = useContext(UserContext);
+  const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   //Handle Signup Form Submit
@@ -27,30 +28,52 @@ function SignUp({ setCurrentPage }) {
 
     let profileImageUrl = "";
 
+    // Client-side validation
     if (!fullName) {
-      setError("Please enter your full name");
+      const message = "Please enter your full name";
+      setError(message);
+      toast.error(message);
       return;
     }
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
+      const message = "Please enter a valid email address";
+      setError(message);
+      toast.error(message);
       return;
     }
     if (!password) {
-      setError("Please enter a password");
+      const message = "Please enter a password";
+      setError(message);
+      toast.error(message);
       return;
     }
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      const message = "Password must be at least 8 characters";
+      setError(message);
+      toast.error(message);
+      return;
+    }
+    if (password !== confirmPassword) {
+      const message = "Passwords do not match";
+      setError(message);
+      toast.error(message);
       return;
     }
 
     setError(null);
+    setIsLoading(true);
+
     // API call to signup
     try {
-      // upload image if present
-      if(profilePic){
-        const imgUploadRes = await uploadImage(profilePic);
-        profileImageUrl = imgUploadRes.imageUrl || "";
+      // Upload image if present
+      if (profilePic) {
+        try {
+          const imgUploadRes = await uploadImage(profilePic);
+          profileImageUrl = imgUploadRes.imageUrl || "";
+        } catch (imgError) {
+          console.error("Image upload failed:", imgError);
+          toast.error("Failed to upload profile picture, continuing without it");
+        }
       }
 
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
@@ -61,36 +84,34 @@ function SignUp({ setCurrentPage }) {
         profileImageUrl,
       });
 
-      // if (response.data.message) {
-      //   setError(response.data.message);
-      //   return;
-      // }
-
-      if(response.data){
+      if (response.data) {
+        toast.success("Account created successfully! Please login.");
         setCurrentPage("login");
       }
 
-      // const {token} = response.data;
-      // if(token){
-      //   localStorage.setItem('token', token);
-      //   updateUser(response.data);
-      //   navigate('/dashboard');
-      // }
-
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      console.error("Signup error:", error);
+      if (error.response?.data?.message) {
         setError(error.response.data.message);
+        toast.error(error.response.data.message);
+      } else if (error.code === 'ERR_NETWORK') {
+        const message = "Cannot connect to server. Please check if the server is running.";
+        setError(message);
+        toast.error(message);
       } else {
-        setError("An error occurred. Please try again.");
+        const message = "An error occurred. Please try again.";
+        setError(message);
+        toast.error(message);
       }
+    } finally {
+      setIsLoading(false);
     }
-
   }
 
   return (
     <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
       <h3 className='text-lg font-bold text-black'>Create an Account</h3>
-      <p className='text-s text-slate-700 mt-[5px] mb-6 '>Join us and start building your resume today!</p>
+      <p className='text-s text-slate-700 mt-[5px] mb-6'>Join us and start building your resume today!</p>
       <form onSubmit={handleSignup}>
 
         <ProfilePhotoSelector image={profilePic} setImage={setProfilePic} />
@@ -125,12 +146,20 @@ function SignUp({ setCurrentPage }) {
             placeholder='Min 8 characters'
           />
           {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
-          <button type='submit' className='btn-primary'>
-            SIGN UP
+          <button 
+            type='submit' 
+            className='btn-primary'
+            disabled={isLoading}
+          >
+            {isLoading ? 'SIGNING UP...' : 'SIGN UP'}
           </button>
           <p className='text-[13px] text-slate-800 mt-3'>
             Already have an account?{" "}
-            <button className='font-medium text-purple-700 underline cursor-pointer' onClick={() => setCurrentPage("login")}>
+            <button 
+              type='button'
+              className='font-medium text-purple-700 underline cursor-pointer' 
+              onClick={() => setCurrentPage("login")}
+            >
               Login
             </button>
           </p>
@@ -138,7 +167,6 @@ function SignUp({ setCurrentPage }) {
       </form>
     </div>
   )
-
 }
 
 export default SignUp

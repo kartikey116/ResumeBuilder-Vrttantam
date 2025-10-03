@@ -5,9 +5,12 @@ import upload from '../middlewares/uploadMiddleware.js';
 
 const router = express.Router();
 
+console.log("--- [authRoutes.js] File is being read, router object created. ---"); // <-- ADD THIS
+
 //Auth Routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+console.log("--- [authRoutes.js] POST /login route has been defined. ---"); // <-- ADD THIS
 router.get('/profile', protect, getUserProfile);
 
 router.post("/upload-image",upload.single("image"),(req,res)=>{

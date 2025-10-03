@@ -11,15 +11,13 @@ function App() {
   return (
     <Router>
       <UserProvider>
-        <>
-          <Toaster />
+          <Toaster position="top-center"/>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/resume/:resumeId" element={<EditResume />} />
           </Routes>
-        </>
       </UserProvider>
     </Router>
   );
