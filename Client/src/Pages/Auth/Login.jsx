@@ -16,9 +16,6 @@ function Login({ setCurrentPage }) {
 
   const context = useContext(UserContext);
   
-  // Debug: Check if context is received
-  console.log("UserContext in Login:", context);
-  
   if (!context) {
     console.error("UserContext is undefined! Make sure UserProvider wraps this component.");
   }

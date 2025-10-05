@@ -29,7 +29,6 @@ function ThemeSelector({
         index:-1,
     });
 
-    // Handle theme change
     const handleThemeSelection = () =>{
         setSelectedTheme({
             colorPalette: selectedColorPalette?.colors,
@@ -62,7 +61,7 @@ function ThemeSelector({
         </button>
       </div>
 
-      <div className='grid grid-cols-12 gaps-5'>
+      <div className='grid grid-cols-12 gap-5'>
         <div className='col-span-12 md:col-span-5 bg-white'>
             <div className='grid grid-cols-2 gap-5 max-h-[80vh] overflow-scroll custom-scrollbar md:pr-5'>
                 {tabValue === "Templates" &&
@@ -77,9 +76,9 @@ function ThemeSelector({
                     />
                    ))}
 
-                   {tabValue === "color Palettes" && 
+                   {tabValue === "Color Palettes" && 
                    themeColorPalette.themeOne.map((colors, index) =>(
-                    <colorPalette
+                    <ColorPalette
                       key={`palette_${index}`}
                       colors={colors}
                       isSelected={selectedColorPalette?.index === index}
@@ -105,15 +104,17 @@ function ThemeSelector({
 
 export default ThemeSelector
 
-const colorPalette = ({colors, isSelected, onSelect}) => {
+const ColorPalette = ({colors, isSelected, onSelect}) => {
     return (
-        <div className={`h-28 bg-purple-50 flex rounded-lg overflow-hidden border-2 ${isSelected ? "border-purple-500" : "border-none"}`}>
+        <div 
+            className={`h-28 bg-purple-50 flex rounded-lg overflow-hidden border-2 cursor-pointer ${isSelected ? "border-purple-500" : "border-transparent"}`}
+            onClick={onSelect}
+        >
             {colors.map((color, index) => (
                 <div
                     key={`color_${index}`}
                     className='flex-1'
-                    style={{backgroundColor:colors[index]}}
-                    onClick={onSelect}
+                    style={{backgroundColor:color}}
                 />    
             ))}
         </div>

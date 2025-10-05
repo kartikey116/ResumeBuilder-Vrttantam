@@ -6,16 +6,12 @@ export const validateEmail = (email) => {
     return re.test(email);
 };
 
-
-//get light color from image
 export const getLightColorFromImage = (imageUrl) =>{
     return new Promise((resolve, reject) =>{
         if(!imageUrl || typeof imageUrl !== 'string'){
             return reject(new Error("Invalid image url"));
         }
         const img = new Image();
-
-        //If not a base64 string, set crossOrigin (important for CORS)
 
         if(!imageUrl.startsWith('data:')){
             img.crossOrigin = 'anonymous';
@@ -40,7 +36,6 @@ export const getLightColorFromImage = (imageUrl) =>{
                 const blue = data[i+2];
                 const brightness = (red +green +blue)/3;
 
-                // only count light pixels
                 if(brightness > 180){
                     r += red;
                     g += green;
@@ -61,71 +56,28 @@ export const getLightColorFromImage = (imageUrl) =>{
 
         img.onerror = (error) => {
             console.log('Failed to load image:', error);
-            reject(new Error('Image could not be loaded or is vlocked by CORS'));
+            reject(new Error('Image could not be loaded or is blocked by CORS'));
         };
     });
 };
 
-//
 export function formatYearMonth(yearMonth){
     return yearMonth ? moment(yearMonth,"YYYY-MM").format("YYYY - MMM") : "";
 }
 
+// Not needed anymore - kept for backwards compatibility
 export function fixTailwindColors(element) {
-  if (!element) return;
-
-  const traverse = (el) => {
-    if (el.style) {
-      // Check background-color and color
-      ["backgroundColor", "color", "borderColor"].forEach((prop) => {
-        if (el.style[prop] && el.style[prop].includes("oklch")) {
-          // Convert to a safe fallback color
-          el.style[prop] = "transparent"; // fallback, or choose closest hex
-        }
-      });
-    }
-    // Traverse child nodes
-    el.childNodes.forEach(traverse);
-  };
-
-  traverse(element);
+  // This function is now handled directly in UploadResumeImages
+  console.log('fixTailwindColors called - handled in upload function');
 }
 
-//convert component to image 
-// export async function captureElementAsImage(element){
-//     if(!element) throw new Error("No element provided");
-//     const canvas = await html2canvas(element);
-//     return canvas.toDataURL("image/png");
-//}
-
+// Not needed anymore - captureElementAsImage is now handled directly in UploadResumeImages
 export async function captureElementAsImage(element) {
-  if (!element) throw new Error("No element provided");
-  
-  try {
-    const canvas = await html2canvas(element, {
-      backgroundColor: "#ffffff",
-      useCORS: true,
-      allowTaint: true,
-      scale: 1,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: element.offsetWidth,
-      windowHeight: element.offsetHeight,
-      onclone: (clonedDoc) => {
-        // Fix any issues in the cloned document
-        fixTailwindColors(clonedDoc.body);
-      }
-    });
-    
-    return canvas.toDataURL("image/png", 0.95);
-  } catch (error) {
-    console.error('html2canvas error:', error);
-    throw new Error(`Failed to capture element as image: ${error.message}`);
-  }
+  console.warn('captureElementAsImage called - this should be handled in UploadResumeImages');
+  throw new Error('Please use the capture logic in UploadResumeImages directly');
 }
 
-//Utility to convert base64 data url to a file object
-export const dataURLtoFile = (dataUrl ,fileName) =>{
+export const dataURLtoFile = (dataUrl, fileName) =>{
  const arr = dataUrl.split(',');
  const mime = arr[0].match(/:(.*?);/)[1];
  const bstr = atob(arr[1]);
@@ -133,8 +85,6 @@ export const dataURLtoFile = (dataUrl ,fileName) =>{
  const u8arr = new Uint8Array(n);
  while(n--){
      u8arr[n] = bstr.charCodeAt(n);
-}
+ }
  return new File([u8arr], fileName, {type:mime});
 };
-
-

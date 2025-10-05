@@ -1,4 +1,5 @@
 import React from 'react'
+import html2canvas from 'html2canvas';
 import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../COmponent/layouts/DashboardLayout.jsx';
@@ -16,8 +17,7 @@ import ProjectsForm from './Forms/ProjectsForm.jsx';
 import CertificationsForm from './Forms/CertificationsForm.jsx';
 import AdditionalInfoForm from './Forms/AdditionalInfoForm.jsx';
 import RenderResume from '../../COmponent/ResumeTemplates/RenderResume.jsx';
-import { fixTailwindColors } from '../../utils/helper.js';
-import { captureElementAsImage, dataURLtoFile } from '../../utils/helper.js';
+import { dataURLtoFile } from '../../utils/helper.js';
 import {
   LuArrowLeft,
   LuCircleAlert,
@@ -136,7 +136,6 @@ function EditResume() {
             if (!startDate.trim()) errors.push(`Start Date ${index + 1} is required`);
             if (!endDate.trim()) errors.push(`End Date ${index + 1} is required`);
           }
-
         );
         break;
       case 'education':
@@ -401,94 +400,114 @@ function EditResume() {
   };
 
   // Upload thumbnail and resume profile img
-  // const UploadResumeImages = async () => {
-  //   try{
-  //     setIsLoading(true);
+ const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {
+  try {
+    // Clean data - File object ko remove karo
+    const cleanResumeData = {
+      ...resumeData,
+      thumbnailLink: thumbnailLink || "",
+      profileInfo: {
+        fullName: resumeData.profileInfo.fullName,
+        designation: resumeData.profileInfo.designation,
+        summary: resumeData.profileInfo.summary,
+        profilePreviewUrl: profilePreviewUrl || "",
+        // profileImg ko bhejo hi mat
+      },
+    };
 
-  //     fixTailwindColors(resumeRef.current);
-  //     const imageDataUrl = await captureElementAsImage(resumeRef.current);
+    const response = await axiosInstance.put(
+      API_PATHS.RESUMES.UPDATE_RESUME(resumeId),
+      cleanResumeData
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating resume details:", error);
+    throw error;
+  }
+};
 
-  //     // convert base64 to file
-  //     const thumbnailFile = dataURLtoFile(
-  //       imageDataUrl,
-  //       `resume-${resumeId}.png`
-  //     );
-  //     const profileImageFile = resumeData?.profileInfo?.profileImg || null;
-  //     const formData = new FormData();
-  //     if(profileImageFile) formData.append("profileImage", profileImageFile);
-  //     if(thumbnailFile) formData.append("thumbnail", thumbnailFile);
-
-  //     const uploadResponse = await axiosInstance.put(
-  //       API_PATHS.RESUMES.UPLOAD_RESUME_IMAGES(resumeId),
-  //       formData,
-  //       {
-  //         headers:{"Content-Type":"multipart/form-data"}
-  //       }
-  //     );
-
-  //     const { thumbnailLink, profilePreviewUrl } = uploadResponse.data;
-
-  //     console.log("RESUME_DATA__", resumeData);
-
-  //     //call the second api to update other resume details
-  //     await updateResumeDetails(thumbnailLink,profilePreviewUrl);
-
-  //     toast.success("Resume uploaded successfully!");
-  //     navigate("/dashboard");
-  //   } catch(error){
-  //     console.log("Error uploading resume images:", error);
-  //     toast.error("Error uploading resume images!");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  //  };
-
-  // const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {
-  //   try{
-  //     setIsLoading(true);
-
-  //     const response = await axiosInstance.put(
-  //       API_PATHS.RESUMES.UPDATE_RESUME(resumeId),
-  //       {
-  //         ...resumeData,
-  //         thumbnailLink: thumbnailLink || "",
-  //         profileInfo: {
-  //           ...resumeData.profileInfo,
-  //           profilePreviewUrl: profilePreviewUrl || "",
-  //         },
-  //       }
-  //     );
-  //   } catch(error){
-  //     console.log("Error updating resume details:", error);
-  //     toast.error("Error updating resume details!");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  const UploadResumeImages = async () => {
+const UploadResumeImages = async () => {
   try {
     setIsLoading(true);
 
-    // ensure styles are fixed
-    fixTailwindColors(resumeRef.current);
+    if (!resumeRef.current) {
+      throw new Error("Resume reference not found");
+    }
 
-    // capture resume preview as image
-    const imageDataUrl = await captureElementAsImage(resumeRef.current);
+    const fixAllColors = (element) => {
+      const allElements = element.querySelectorAll('*');
+      
+      const computedStyle = window.getComputedStyle(element);
+      ['backgroundColor', 'color', 'borderColor'].forEach(prop => {
+        const value = computedStyle[prop];
+        if (value && (value.includes('oklch') || value.includes('lab'))) {
+          element.style[prop] = prop === 'backgroundColor' ? '#ffffff' : 
+                                 prop === 'color' ? '#000000' : '#cccccc';
+        } else if (value && value !== 'rgba(0, 0, 0, 0)' && value !== 'transparent') {
+          element.style[prop] = value;
+        }
+      });
 
-    // convert to file
+      allElements.forEach(el => {
+        const computed = window.getComputedStyle(el);
+        
+        const propsToFix = [
+          'backgroundColor',
+          'color',
+          'borderColor',
+          'borderTopColor',
+          'borderRightColor',
+          'borderBottomColor',
+          'borderLeftColor',
+        ];
+
+        propsToFix.forEach(prop => {
+          const value = computed[prop];
+          
+          if (value && (value.includes('oklch') || value.includes('lab'))) {
+            if (prop === 'backgroundColor') {
+              el.style[prop] = '#ffffff';
+            } else if (prop === 'color') {
+              el.style[prop] = '#000000';
+            } else {
+              el.style[prop] = '#cccccc';
+            }
+          } else if (value && value !== 'rgba(0, 0, 0, 0)' && value !== 'transparent') {
+            el.style[prop] = value;
+          }
+        });
+      });
+    };
+
+    fixAllColors(resumeRef.current);
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const canvas = await html2canvas(resumeRef.current, {
+      backgroundColor: "#ffffff",
+      useCORS: true,
+      allowTaint: false,
+      scale: 2,
+      logging: false,
+      windowWidth: resumeRef.current.offsetWidth,
+      windowHeight: resumeRef.current.offsetHeight,
+      onclone: (clonedDoc) => {
+        const clonedElement = clonedDoc.body;
+        fixAllColors(clonedElement);
+      }
+    });
+
+    const imageDataUrl = canvas.toDataURL("image/png", 0.95);
+
     const thumbnailFile = dataURLtoFile(
       imageDataUrl,
       `resume-${resumeId}.png`
     );
     const profileImageFile = resumeData?.profileInfo?.profileImg || null;
 
-    // build form data
     const formData = new FormData();
     if (profileImageFile) formData.append("profileImage", profileImageFile);
     if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
 
-    // upload images
     const uploadResponse = await axiosInstance.put(
       API_PATHS.RESUMES.UPLOAD_RESUME_IMAGES(resumeId),
       formData,
@@ -499,18 +518,63 @@ function EditResume() {
 
     const { thumbnailLink, profilePreviewUrl } = uploadResponse.data;
 
-    // update resume record with thumbnail + profile
     await updateResumeDetails(thumbnailLink, profilePreviewUrl);
 
-    toast.success("Resume uploaded successfully!");
+    toast.success("Resume saved successfully!");
     navigate("/dashboard");
   } catch (err) {
     console.error("Error uploading resume images:", err);
-    toast.error("Error uploading resume images!");
+    toast.error("Error saving resume. Please try again.");
   } finally {
     setIsLoading(false);
   }
 };
+
+//   const UploadResumeImages = async () => {
+//   try {
+//     setIsLoading(true);
+
+//     // ensure styles are fixed
+//     fixTailwindColors(resumeRef.current);
+
+//     // capture resume preview as image
+//     const imageDataUrl = await captureElementAsImage(resumeRef.current);
+
+//     // convert to file
+//     const thumbnailFile = dataURLtoFile(
+//       imageDataUrl,
+//       `resume-${resumeId}.png`
+//     );
+//     const profileImageFile = resumeData?.profileInfo?.profileImg || null;
+
+//     // build form data
+//     const formData = new FormData();
+//     if (profileImageFile) formData.append("profileImage", profileImageFile);
+//     if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
+
+//     // upload images
+//     const uploadResponse = await axiosInstance.put(
+//       API_PATHS.RESUMES.UPLOAD_RESUME_IMAGES(resumeId),
+//       formData,
+//       {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       }
+//     );
+
+//     const { thumbnailLink, profilePreviewUrl } = uploadResponse.data;
+
+//     // update resume record with thumbnail + profile
+//     await updateResumeDetails(thumbnailLink, profilePreviewUrl);
+
+//     toast.success("Resume uploaded successfully!");
+//     navigate("/dashboard");
+//   } catch (err) {
+//     console.error("Error uploading resume images:", err);
+//     toast.error("Error uploading resume images!");
+//   } finally {
+//     setIsLoading(false);
+//   }
+// };
 
 
   //Delete resume
