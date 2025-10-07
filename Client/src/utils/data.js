@@ -2,6 +2,7 @@
 import TEMPLATE_ONE_IMG from '../assets/template-one.png'
 import TEMPLATE_TWO_IMG from '../assets/template-two.png'
 import TEMPLATE_THREE_IMG from '../assets/template-three.png'
+import TEMPLATE_FOUR_IMG from '../assets/template-four.png'
 
 export const resumeTemplates = [
   {
@@ -19,10 +20,76 @@ export const resumeTemplates = [
     thumbnailImg:  TEMPLATE_ONE_IMG,
     colorPaletteCode: 'themeThree',
   },
+  {
+    id:'04',
+    thumbnailImg: TEMPLATE_FOUR_IMG,
+    colorPaletteCode: 'themeFour',
+  },
+  {
+    id:'05',
+    thumbnailImg: TEMPLATE_FOUR_IMG,
+    colorPaletteCode: 'themeFour',
+  },
+  {
+    id:'06',
+    thumbnailImg: TEMPLATE_FOUR_IMG,
+    colorPaletteCode: 'themeFour',
+  },
+  {
+    id:'07',
+    thumbnailImg: TEMPLATE_FOUR_IMG,
+    colorPaletteCode: 'themeFour',
+  }
+
 ]
 
 export const themeColorPalette = {
   themeOne: [
+    ["#EBFDFE", "#A1F4FD", "#CEFAFE", "#0088DB", "#4A5565"],
+    ["#E9FBF8", "#B4EFE7", "#93E2DA", "#2AC9AE", "#3D4C5A"],
+    ["#F5F4FF", "#E0DBFF", "#C9C2F8", "#8579D1", "#4B4B5C"],
+    ["#F0FAFF", "#D6F0FF", "#AFDFFF", "#3399FF", "#445361"],
+    ["#FFF5F7", "#FFE0EC", "#FAC604", "#F6729C", "#5A5A5A"],
+    ["#F9FAFB", "#E4E7EB", "#C8D5E0", "#7F9CF5", "#2D3748"],
+    ["#F4FFFD", "#D3FDF2", "#B0E9D4", "#34C79D", "#384C48"],
+    ["#FFEFF0", "#FF6D9F", "#FFD2BA", "#FF9561", "#4C4743"],
+    ["#F9FCFF", "#E3F7FD", "#C0DDEE", "#6CA6CF", "#465454"],
+    ["#FFFD6E", "#FFF4D7", "#FFE7A0", "#FF0000", "#57534E"],
+    ["#EFFFDF", "#C8F0FF", "#99E0FF", "#00787A", "#2B3A42"],
+    ["#F7F7F7", "#E4E4E4", "#CFCFCF", "#4A4A4A", "#222222"],
+    ["#E3F2FD", "#90CAF9", "#A8D24F", "#1E88E5", "#0D47A1"],
+  ],
+  themeTwo: [
+    ["#EBFDFE", "#A1F4FD", "#CEFAFE", "#0088DB", "#4A5565"],
+    ["#E9FBF8", "#B4EFE7", "#93E2DA", "#2AC9AE", "#3D4C5A"],
+    ["#F5F4FF", "#E0DBFF", "#C9C2F8", "#8579D1", "#4B4B5C"],
+    ["#F0FAFF", "#D6F0FF", "#AFDFFF", "#3399FF", "#445361"],
+    ["#FFF5F7", "#FFE0EC", "#FAC604", "#F6729C", "#5A5A5A"],
+    ["#F9FAFB", "#E4E7EB", "#C8D5E0", "#7F9CF5", "#2D3748"],
+    ["#F4FFFD", "#D3FDF2", "#B0E9D4", "#34C79D", "#384C48"],
+    ["#FFEFF0", "#FF6D9F", "#FFD2BA", "#FF9561", "#4C4743"],
+    ["#F9FCFF", "#E3F7FD", "#C0DDEE", "#6CA6CF", "#465454"],
+    ["#FFFD6E", "#FFF4D7", "#FFE7A0", "#FF0000", "#57534E"],
+    ["#EFFFDF", "#C8F0FF", "#99E0FF", "#00787A", "#2B3A42"],
+    ["#F7F7F7", "#E4E4E4", "#CFCFCF", "#4A4A4A", "#222222"],
+    ["#E3F2FD", "#90CAF9", "#A8D24F", "#1E88E5", "#0D47A1"],
+  ],
+  themeThree: [
+    ["#EBFDFE", "#A1F4FD", "#CEFAFE", "#0088DB", "#4A5565"],
+    ["#E9FBF8", "#B4EFE7", "#93E2DA", "#2AC9AE", "#3D4C5A"],
+    ["#F5F4FF", "#E0DBFF", "#C9C2F8", "#8579D1", "#4B4B5C"],
+    ["#F0FAFF", "#D6F0FF", "#AFDFFF", "#3399FF", "#445361"],
+    ["#FFF5F7", "#FFE0EC", "#FAC604", "#F6729C", "#5A5A5A"],
+    ["#F9FAFB", "#E4E7EB", "#C8D5E0", "#7F9CF5", "#2D3748"],
+    ["#F4FFFD", "#D3FDF2", "#B0E9D4", "#34C79D", "#384C48"],
+    ["#FFEFF0", "#FF6D9F", "#FFD2BA", "#FF9561", "#4C4743"],
+    ["#F9FCFF", "#E3F7FD", "#C0DDEE", "#6CA6CF", "#465454"],
+    ["#FFFD6E", "#FFF4D7", "#FFE7A0", "#FF0000", "#57534E"],
+    ["#EFFFDF", "#C8F0FF", "#99E0FF", "#00787A", "#2B3A42"],
+    ["#F7F7F7", "#E4E4E4", "#CFCFCF", "#4A4A4A", "#222222"],
+    ["#E3F2FD", "#90CAF9", "#A8D24F", "#1E88E5", "#0D47A1"],
+  ],
+  themeFour: [
     ["#EBFDFE", "#A1F4FD", "#CEFAFE", "#0088DB", "#4A5565"],
     ["#E9FBF8", "#B4EFE7", "#93E2DA", "#2AC9AE", "#3D4C5A"],
     ["#F5F4FF", "#E0DBFF", "#C9C2F8", "#8579D1", "#4B4B5C"],

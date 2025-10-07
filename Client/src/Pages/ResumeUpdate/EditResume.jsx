@@ -257,9 +257,9 @@ function EditResume() {
         return (
           <WorkExperienceForm
             workExperience={resumeData?.workExperience}
-            updateArrayItem={updateArrayItem} // ✅ use directly
-            addArrayItem={addArrayItem}       // ✅ use directly
-            removeArrayItem={removeArrayItem} // ✅ use directly
+            updateArrayItem={updateArrayItem} 
+            addArrayItem={addArrayItem}       
+            removeArrayItem={removeArrayItem} 
           />
         );
 
@@ -267,18 +267,18 @@ function EditResume() {
         return (
           <EducationForm
             education={resumeData?.education}
-            updateArrayItem={updateArrayItem} // ✅ use directly
-            addArrayItem={addArrayItem}       // ✅ use directly
-            removeArrayItem={removeArrayItem} // ✅ use directly
+            updateArrayItem={updateArrayItem} 
+            addArrayItem={addArrayItem}       
+            removeArrayItem={removeArrayItem} 
           />
         );
       case "skills":
         return (
           <SkillsForm
             skills={resumeData?.skills}
-            updateArrayItem={updateArrayItem} // ✅ use directly
-            addArrayItem={addArrayItem}       // ✅ use directly
-            removeArrayItem={removeArrayItem} // ✅ use directly
+            updateArrayItem={updateArrayItem}
+            addArrayItem={addArrayItem}       
+            removeArrayItem={removeArrayItem} 
           />
         );
       case "projects":

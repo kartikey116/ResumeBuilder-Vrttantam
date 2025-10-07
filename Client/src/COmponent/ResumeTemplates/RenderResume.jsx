@@ -1,43 +1,41 @@
-import React from 'react'
-import TemplateOne from './TemplateOne.jsx';
-import TemplateTwo from './TemplateTwo.jsx';
-import TemplateThree from './TemplateThree.jsx';
+import React from 'react';
+import TemplateOne from './TemplateOne';
+import TemplateTwo from './TemplateTwo';
+import TemplateThree from './TemplateThree';
+import TemplateFour from './TemplateFour';
+import TemplateFive from './TemplateFive';
+import TemplateSix from './TemplateSix'; // Import new template
+import TemplateSeven from './TemplateSeven'; // Import new template
 
-function RenderResume({templateId,resumeData,colorPalette,containerWidth}) {
-    switch(templateId){
-        case "01":
-            return (
-                <TemplateOne
-                   resumeData={resumeData}
-                   colorPalette={colorPalette}
-                   containerWidth={containerWidth}
-                />
-            );
-        case "02":
-            return (
-                <TemplateTwo
-                   resumeData={resumeData}
-                   colorPalette={colorPalette}
-                   containerWidth={containerWidth}
-                />
-            );
-        case "03":
-            return (
-                <TemplateThree
-                   resumeData={resumeData}
-                   colorPalette={colorPalette}
-                   containerWidth={containerWidth}
-                />
-            );        
-        default :
-            return (
-                <TemplateOne
-                   resumeData={resumeData}
-                   colorPalette={colorPalette}
-                   containerWidth={containerWidth}
-                />
-            );
+function RenderResume({ templateId, resumeData, containerWidth, colorPalette }) {
+    const renderTemplate = () => {
+        switch (templateId) {
+            case '01':
+                return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '02':
+                return <TemplateTwo resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '03':
+                return <TemplateThree resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '04':
+                return <TemplateFour resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '05':
+                return <TemplateFive resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '06': // Add case for TemplateSix
+                return <TemplateSix resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '07': // Add case for TemplateSeven
+                return <TemplateSeven resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            default:
+                // Fallback to TemplateOne if no templateId is matched
+                return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+        }
     };
+
+    return (
+        <div className="w-full h-full overflow-auto custom-scrollbar">
+            {renderTemplate()}
+        </div>
+    );
 }
 
-export default RenderResume
+export default RenderResume;
+
