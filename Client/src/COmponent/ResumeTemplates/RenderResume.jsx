@@ -4,8 +4,9 @@ import TemplateTwo from './TemplateTwo';
 import TemplateThree from './TemplateThree';
 import TemplateFour from './TemplateFour';
 import TemplateFive from './TemplateFive';
-import TemplateSix from './TemplateSix'; // Import new template
-import TemplateSeven from './TemplateSeven'; // Import new template
+import TemplateSix from './TemplateSix'; 
+import TemplateSeven from './TemplateSeven';
+import TemplateEight from './TemplateEight';
 
 function RenderResume({ templateId, resumeData, containerWidth, colorPalette }) {
     const renderTemplate = () => {
@@ -20,12 +21,13 @@ function RenderResume({ templateId, resumeData, containerWidth, colorPalette }) 
                 return <TemplateFour resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
             case '05':
                 return <TemplateFive resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
-            case '06': // Add case for TemplateSix
+            case '06': 
                 return <TemplateSix resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
-            case '07': // Add case for TemplateSeven
+            case '07': 
                 return <TemplateSeven resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+            case '08':
+                return <TemplateEight resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette}/>    
             default:
-                // Fallback to TemplateOne if no templateId is matched
                 return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
         }
     };
