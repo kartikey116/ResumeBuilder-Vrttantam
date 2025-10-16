@@ -1,3 +1,4 @@
+// server/models/Resume.js
 import mongoose from 'mongoose';
 
 const ResumeSchema = new mongoose.Schema({
@@ -11,76 +12,170 @@ const ResumeSchema = new mongoose.Schema({
         required: true
     },
     thumbnailLink: {
-        type: String
+        type: String,
+        default: ""
     },
     template: {
-        type: String,
-        colorPalette: [String]
+        theme: {
+            type: String,
+            default: ""
+        },
+        colorPalette: {
+            type: [String],
+            default: []
+        },
+        fontFamily: {
+            type: String,
+            default: ""
+        }
     },
     profileInfo: {
-        profilePreviewUrl: String,
-        fullName: String,
-        designation: String,
-        summary: String,
+        profilePreviewUrl: {
+            type: String,
+            default: ""
+        },
+        fullName: {
+            type: String,
+            default: ""
+        },
+        designation: {
+            type: String,
+            default: ""
+        },
+        summary: {
+            type: String,
+            default: ""
+        },
     },
     contactInfo: {
-        email: String,
-        phone: String,
-        location: String,
-        linkedin: String,
-        github: String,
-        website: String
+        email: {
+            type: String,
+            default: ""
+        },
+        phone: {
+            type: String,
+            default: ""
+        },
+        location: {
+            type: String,
+            default: ""
+        },
+        linkedin: {
+            type: String,
+            default: ""
+        },
+        github: {
+            type: String,
+            default: ""
+        },
+        website: {
+            type: String,
+            default: ""
+        }
     },
-    workExperience: [
-        {
-            company: String,
-            role: String,
-            startDate: String,
-            endDate: String,
-            description: String,
+    workExperience: [{
+        company: {
+            type: String,
+            default: ""
         },
-    ],
-    education:[
-        {
-            degree: String,
-            field: String,
-            startDate: String,
-            endDate: String,
-        }
-    ],
-    skills: [
-        {
-            name: String,
-            progress:Number,
+        role: {
+            type: String,
+            default: ""
         },
-    ],
-    projects: [
-        {
-            title: String,
-            description: String,
-            github:String,
-            liveDemo:String,
-        }
-    ],
-    certifications:[
-        {
-            title: String,
-            issuer: String,
-            year: String,
-        }
-    ],
-    languages:[
-        {
-            name: String,
-            progress:Number,
-        }
-    ],
-    interests:[String],
-
+        startDate: {
+            type: String,
+            default: ""
+        },
+        endDate: {
+            type: String,
+            default: ""
+        },
+        description: {
+            type: String,
+            default: ""
+        },
+    }],
+    education: [{
+        degree: {
+            type: String,
+            default: ""
+        },
+        institution: {
+            type: String,
+            default: ""
+        },
+        startDate: {
+            type: String,
+            default: ""
+        },
+        endDate: {
+            type: String,
+            default: ""
+        },
+    }],
+    skills: [{
+        name: {
+            type: String,
+            default: ""
+        },
+        progress: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 100
+        },
+    }],
+    projects: [{
+        title: {
+            type: String,
+            default: ""
+        },
+        description: {
+            type: String,
+            default: ""
+        },
+        github: {
+            type: String,
+            default: ""
+        },
+        liveDemo: {
+            type: String,
+            default: ""
+        },
+    }],
+    certifications: [{
+        title: {
+            type: String,
+            default: ""
+        },
+        issuer: {
+            type: String,
+            default: ""
+        },
+        year: {
+            type: String,
+            default: ""
+        },
+    }],
+    languages: [{
+        name: {
+            type: String,
+            default: ""
+        },
+        progress: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 100
+        },
+    }],
+    interests: [{
+        type: String,
+        default: ""
+    }],
 },
 {
-    timestamps:{createdAt:'createdAt', updatedAt:'updatedAt'}
-}
-);
+    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
+});
 
 export default mongoose.model('Resume', ResumeSchema);

@@ -5,9 +5,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-//@desc create a new resueme 
-//@route POST /api/resume
-//@access private
 const createResume = async (req,res) => {
     try {
         const {title} = req.body;
@@ -88,9 +85,7 @@ const createResume = async (req,res) => {
     }
 };
 
-//@desc Get all resumes for logged-in user
-//@route GET /api/resume
-//@access private
+
 const getUserResumes = async (req,res) => {
     try {
         const resumes = await Resume.find({userId:req.user._id}).sort({updatedAt:-1});
@@ -100,9 +95,6 @@ const getUserResumes = async (req,res) => {
     }
 }
 
-// @desc Get resume by id
-// @route GET /api/resume/:id
-// @access private
 const getResumeById = async (req,res) => {
     try {
         if(!req.params.id){
@@ -119,28 +111,78 @@ const getResumeById = async (req,res) => {
 }
 
 
-// Update resume
-// @route PUT /api/resume/:id
-// @access private
-const updateResume = async (req,res) => {
+
+const updateResume = async (req, res) => {
     try {
-        const resume = await Resume.findOne({_id:req.params.id,userId:req.user._id});
-        if(!resume){
-            res.status(404).json({message:"Resume not found"});
-        }    
-        //Merge updates from req.body into existing resume
-        Object.assign(resume, req.body);
-        //Save and return updated resume
+        console.log("Update resume request for ID:", req.params.id);
+        console.log("Request body:", JSON.stringify(req.body, null, 2));
+
+        const resume = await Resume.findOne({
+            _id: req.params.id,
+            userId: req.user._id
+        });
+
+        if (!resume) {
+            console.log("Resume not found");
+            return res.status(404).json({ message: "Resume not found" });
+        }
+
+        // Safely update each field
+        if (req.body.title !== undefined) resume.title = req.body.title;
+        if (req.body.thumbnailLink !== undefined) resume.thumbnailLink = req.body.thumbnailLink;
+        
+        // Update template
+        if (req.body.template) {
+            resume.template = {
+                theme: req.body.template.theme || resume.template?.theme || "",
+                colorPalette: req.body.template.colorPalette || resume.template?.colorPalette || [],
+                fontFamily: req.body.template.fontFamily || resume.template?.fontFamily || ""
+            };
+        }
+
+        // Update profileInfo
+        if (req.body.profileInfo) {
+            resume.profileInfo = {
+                ...resume.profileInfo,
+                fullName: req.body.profileInfo.fullName || resume.profileInfo?.fullName || "",
+                designation: req.body.profileInfo.designation || resume.profileInfo?.designation || "",
+                summary: req.body.profileInfo.summary || resume.profileInfo?.summary || "",
+                profilePreviewUrl: req.body.profileInfo.profilePreviewUrl || resume.profileInfo?.profilePreviewUrl || "",
+            };
+        }
+
+        // Update contactInfo
+        if (req.body.contactInfo) {
+            resume.contactInfo = {
+                ...resume.contactInfo,
+                ...req.body.contactInfo
+            };
+        }
+
+        // Update arrays
+        if (req.body.workExperience) resume.workExperience = req.body.workExperience;
+        if (req.body.education) resume.education = req.body.education;
+        if (req.body.skills) resume.skills = req.body.skills;
+        if (req.body.projects) resume.projects = req.body.projects;
+        if (req.body.certifications) resume.certifications = req.body.certifications;
+        if (req.body.languages) resume.languages = req.body.languages;
+        if (req.body.interests) resume.interests = req.body.interests;
+
+        // Save the updated resume
         const savedResume = await resume.save();
+        console.log("Resume updated successfully");
+        
         res.status(200).json(savedResume);
     } catch (error) {
-        res.status(500).json({message:"Failed to update resume",error:error.message});
+        console.error("Update resume error:", error);
+        res.status(500).json({
+            message: "Failed to update resume",
+            error: error.message
+        });
     }
-}
+};
 
-// Delete resume
-// @route DELETE /api/resume/:id
-// @access private
+
 const deleteResume = async (req,res) => {
     try {
         const resume = await Resume.findOne({_id:req.params.id,userId:req.user._id});

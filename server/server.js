@@ -52,10 +52,12 @@ app.use("/api/resume",ResumeRoutes);
 
 //Serve uploads folder
 app.use (
-  "/uploads"
-  ,express.static(path.join(__dirname,"uploads"),{
-    setHeaders:(res,path) =>{
-      res.set("Access-Control-Allow-Origin","http://localhost:3000");
+  "/uploads",
+  express.static(path.join(__dirname,"uploads"),{
+    setHeaders:(res, filePath) =>{
+      res.set("Access-Control-Allow-Origin","*"); 
+      res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+      res.set("Access-Control-Allow-Headers", "Content-Type");
     },
   })
 )
