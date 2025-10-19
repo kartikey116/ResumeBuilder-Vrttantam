@@ -1,7 +1,6 @@
 import React from "react";
-// --- START: useMemo is imported to solve the re-render issue ---
-import { useState, useEffect, useContext, useMemo, useRef } from "react"; // Added useRef
-// --- END: useMemo is imported ---
+import { useState, useEffect, useContext, useMemo, useRef } from "react"; 
+
 import { useNavigate } from "react-router-dom";
 import Modal from "../COmponent/Modal.jsx";
 import Login from "../Pages/Auth/Login.jsx";
@@ -123,8 +122,8 @@ function LandingPages() {
         let radius = dotRadius;
         let x = Math.random() * (canvas.width - radius * 2) + radius;
         let y = Math.random() * (canvas.height - radius * 2) + radius;
-        let dx = (Math.random() - 0.5) * 0.5; // Slower speed
-        let dy = (Math.random() - 0.5) * 0.5; // Slower speed
+        let dx = (Math.random() - 0.5) * 0.5; 
+        let dy = (Math.random() - 0.5) * 0.5;
         let color = colors[Math.floor(Math.random() * colors.length)];
         dots.push(new Dot(x, y, dx, dy, radius, color));
       }
@@ -165,7 +164,7 @@ function LandingPages() {
             ctx.lineTo(mouse.current.x, mouse.current.y);
             ctx.strokeStyle = `rgba(236, 72, 153, ${
               1 - distToMouse / mouseConnectDistance
-            })`; // Pink tint
+            })`; 
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -182,8 +181,7 @@ function LandingPages() {
       window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId.current);
     };
-  }, []); // Empty dependency array means this effect runs once on mount
-  // --- END: Canvas Animation Logic ---
+  }, []); 
 
   return (
     <>
@@ -318,7 +316,6 @@ function LandingPages() {
             </div>
           </div>
 
-          {/* Features Section */}
           <section className="mt-24 relative z-10">
             <h2
               className="text-4xl font-bold text-center text-gray-900 dark:text-gray-100 mb-12 animate-fade-in-down"

@@ -2,7 +2,7 @@ import React from 'react';
 import Input from '../../../COmponent/Inputs/Input.jsx';
 
 function ContactInfoForm({ contactInfo, updateSection, onNext }) {
-  console.log("ContactInfoForm contactInfo:", contactInfo); // Debug
+  console.log("ContactInfoForm contactInfo:", contactInfo); 
 
   return (
     <div className="px-5 pt-5">
