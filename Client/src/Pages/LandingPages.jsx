@@ -52,7 +52,6 @@ function LandingPages() {
     return () => clearTimeout(startTypingTimeout);
   }, []);
 
-  // --- START: Canvas Animation Logic ---
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
   const mouse = useRef({ x: undefined, y: undefined });
@@ -253,7 +252,7 @@ function LandingPages() {
                   lineHeight: "1",
                 }}
               >
-                R
+                V
               </span>
               <span
                 className="font-dancing-script text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-pink-700 animate-shimmer"
@@ -265,18 +264,18 @@ function LandingPages() {
                   marginLeft: "-0.2em",
                 }}
               >
-                esume
+                ṛttāntam
               </span>
               <span
                 className="font-dancing-script text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-pink-700 animate-shimmer ml-4"
                 style={{
-                  fontSize: "3.5rem",
+                  fontSize: "1.25rem",
                   fontFamily: "'Dancing Script', cursive",
                   backgroundSize: "200% auto",
                   animationDelay: "0.4s",
                 }}
               >
-                Builder
+                (वृत्तान्तम्)
               </span>
             </div>
             {user ? (

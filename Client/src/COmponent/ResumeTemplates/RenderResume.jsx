@@ -10,25 +10,27 @@ import TemplateEight from './TemplateEight';
 
 function RenderResume({ templateId, resumeData, containerWidth, colorPalette }) {
     const renderTemplate = () => {
+        const fontFamily = resumeData?.template?.fontFamily || 'Arial, sans-serif';
+        
         switch (templateId) {
             case '01':
-                return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '02':
-                return <TemplateTwo resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateTwo resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '03':
-                return <TemplateThree resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateThree resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '04':
-                return <TemplateFour resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateFour resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '05':
-                return <TemplateFive resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateFive resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '06': 
-                return <TemplateSix resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateSix resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '07': 
-                return <TemplateSeven resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateSeven resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
             case '08':
-                return <TemplateEight resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette}/>    
+                return <TemplateEight resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />    
             default:
-                return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} />;
+                return <TemplateOne resumeData={resumeData} containerWidth={containerWidth} colorPalette={colorPalette} fontFamily={fontFamily} />;
         }
     };
 
@@ -40,4 +42,3 @@ function RenderResume({ templateId, resumeData, containerWidth, colorPalette }) 
 }
 
 export default RenderResume;
-

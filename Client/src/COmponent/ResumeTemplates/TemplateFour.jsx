@@ -1,7 +1,7 @@
 import React from 'react';
 import { Mail, Phone, Linkedin, Github, Globe } from 'lucide-react';
 
-const TemplateFour = ({ resumeData, colorPalette }) => {
+const TemplateFour = ({ resumeData, colorPalette, fontFamily }) => {
     const {
         profileInfo = {},
         contactInfo = {},
@@ -18,12 +18,13 @@ const TemplateFour = ({ resumeData, colorPalette }) => {
     const secondaryColor = colorPalette ? colorPalette[1] : '#ecf0f1';
     const textColor = colorPalette ? colorPalette[4] : '#34495e';
     const headerTextColor = '#ffffff';
+    const appliedFont = fontFamily || resumeData?.template?.fontFamily || 'Arial, sans-serif';
 
     const containerStyle = {
-        fontFamily: resumeData?.template?.fontFamily || 'Arial, sans-serif',
+        fontFamily: appliedFont,
         backgroundColor: '#fff',
         color: textColor,
-        minHeight: '1122px', // A4 height
+        minHeight: '1122px',
     };
 
     const headerStyle = {
@@ -56,7 +57,6 @@ const TemplateFour = ({ resumeData, colorPalette }) => {
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px' }}>
-                    {/* Left Column */}
                     <div>
                         <section>
                             <h3 style={sectionTitleStyle}>Contact</h3>
@@ -99,7 +99,6 @@ const TemplateFour = ({ resumeData, colorPalette }) => {
                         </section>
                     </div>
 
-                    {/* Right Column */}
                     <div>
                         <section>
                             <h3 style={sectionTitleStyle}>Work Experience</h3>

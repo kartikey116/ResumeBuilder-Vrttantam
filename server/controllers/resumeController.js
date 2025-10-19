@@ -33,6 +33,7 @@ const createResume = async (req,res) => {
                     startDate:" ",
                     endDate:" ",
                     description:" ",
+                    isCurrentlyWorking:false,
                 },
             ],
             education:[

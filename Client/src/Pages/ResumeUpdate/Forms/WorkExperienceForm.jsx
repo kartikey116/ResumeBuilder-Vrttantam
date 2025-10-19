@@ -2,7 +2,7 @@ import React from 'react';
 import Input from '../../../COmponent/Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
-function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, removeArrayItem}) {
+function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, removeArrayItem }) {
   console.log("WorkExperienceForm workExperience:", workExperience); // Debug
 
   const handleAddExperience = () => {
@@ -12,7 +12,17 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
       startDate: "",
       endDate: "",
       description: "",
+      isCurrentlyWorking: false,
     });
+  };
+
+  const handleCurrentlyWorkingChange = (index, isChecked) => {
+    updateArrayItem('workExperience', index, 'isCurrentlyWorking', isChecked);
+    if (isChecked) {
+      updateArrayItem('workExperience', index, 'endDate', 'Present');
+    } else {
+      updateArrayItem('workExperience', index, 'endDate', '');
+    }
   };
 
   return (
@@ -52,16 +62,27 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                 value={exp?.startDate ?? ""}
                 onChange={(val) => updateArrayItem('workExperience', index, 'startDate', val)}
                 label="Start Date"
-                type="text"
+                type="month"
                 placeholder="Enter start date (e.g., MM/YYYY)"
               />
               <Input
                 value={exp?.endDate ?? ""}
                 onChange={(val) => updateArrayItem('workExperience', index, 'endDate', val)}
                 label="End Date"
-                type="text"
+                type="month"
                 placeholder="Enter end date (e.g., MM/YYYY or Present)"
+                disabled={exp.isCurrentlyWorking}
               />
+              <div className="col-span-2 flex items-center">
+                <input
+                  type="checkbox"
+                  id={`currentlyWorking-${index}`}
+                  checked={exp.isCurrentlyWorking}
+                  onChange={(e) => handleCurrentlyWorkingChange(index, e.target.checked)}
+                  className="mr-2"
+                />
+                <label htmlFor={`currentlyWorking-${index}`} className="text-sm font-medium text-gray-700">I am currently working here</label>
+              </div>
               <div className="col-span-2">
                 <label className="text-xs font-medium text-slate-600">Description</label>
                 <textarea
@@ -69,7 +90,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                   className="from-input"
                   rows={3}
                   value={exp?.description ?? ""}
-                  onChange={(e) => updateArrayItem('workExperience', index, 'description',  e.target.value)}
+                  onChange={(e) => updateArrayItem('workExperience', index, 'description', e.target.value)}
                 />
               </div>
             </div>

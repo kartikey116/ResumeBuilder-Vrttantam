@@ -3,6 +3,10 @@ import TEMPLATE_ONE_IMG from '../assets/template-one.png'
 import TEMPLATE_TWO_IMG from '../assets/template-two.png'
 import TEMPLATE_THREE_IMG from '../assets/template-three.png'
 import TEMPLATE_FOUR_IMG from '../assets/template-four.png'
+import TEMPLATE_FIVE_IMG from '../assets/template-five.png'
+import TEMPLATE_SIX_IMG from '../assets/template-six.png'
+import TEMPLATE_SEVEN_IMG from '../assets/template-seven.png'
+import TEMPLATE_EIGHT_IMG from '../assets/template-eight.png'
 
 export const resumeTemplates = [
   {
@@ -17,7 +21,7 @@ export const resumeTemplates = [
   },
   {
     id: '03',
-    thumbnailImg:  TEMPLATE_ONE_IMG,
+    thumbnailImg:  TEMPLATE_THREE_IMG,
     colorPaletteCode: 'themeThree',
   },
   {
@@ -27,17 +31,21 @@ export const resumeTemplates = [
   },
   {
     id:'05',
-    thumbnailImg: TEMPLATE_FOUR_IMG,
+    thumbnailImg: TEMPLATE_FIVE_IMG,
     colorPaletteCode: 'themeFour',
   },
   {
     id:'06',
-    thumbnailImg: TEMPLATE_FOUR_IMG,
+    thumbnailImg: TEMPLATE_SIX_IMG,
     colorPaletteCode: 'themeFour',
   },
   {
     id:'07',
-    thumbnailImg: TEMPLATE_FOUR_IMG,
+    thumbnailImg: TEMPLATE_SEVEN_IMG,
+    colorPaletteCode: 'themeFour',
+  },{
+    id:'08',
+    thumbnailImg: TEMPLATE_EIGHT_IMG,
     colorPaletteCode: 'themeFour',
   }
 

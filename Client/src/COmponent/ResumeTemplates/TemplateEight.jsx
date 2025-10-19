@@ -8,7 +8,8 @@ const TemplateEight = ({ resumeData }) => {
         education = [],
         workExperience = [],
         projects = [],
-        skills = []
+        skills = [],
+        certifications = []
     } = resumeData || {};
 
     const styles = {
@@ -90,6 +91,13 @@ const TemplateEight = ({ resumeData }) => {
         skillItem: {
             fontSize: '0.95rem',
             lineHeight: '1.6'
+        },
+        link: {
+            display: 'inline-block',
+            marginRight: '10px',
+            fontSize: '0.9rem',
+            color: '#0056b3',
+            textDecoration: 'none',
         }
     };
 
@@ -113,18 +121,18 @@ const TemplateEight = ({ resumeData }) => {
             </header>
 
             <main>
-                {education.length > 0 && (
-                    <section style={styles.section}>
-                        <h2 style={styles.sectionTitle}>Education</h2>
-                        {education.map((edu, index) => (
-                            <div key={index} style={{ marginBottom: '15px' }}>
-                                <Subheading left={edu.institution} right={edu.location || ''} />
-                                <Subheading left={edu.degree} right={`${edu.startDate} – ${edu.endDate}`} leftItalic />
-                            </div>
-                        ))}
+                {skills.length > 0 && (
+                     <section style={styles.section}>
+                        <h2 style={styles.sectionTitle}>Technical Skills</h2>
+                         <div style={styles.skillsContainer}>
+                            <p style={styles.skillItem}>
+                                <strong style={{fontWeight: 'bold'}}>Skills: </strong>
+                                {skills.map(skill => skill.name).join(', ')}
+                            </p>
+                        </div>
                     </section>
                 )}
-
+               
                 {workExperience.length > 0 && (
                     <section style={styles.section}>
                         <h2 style={styles.sectionTitle}>Experience</h2>
@@ -151,6 +159,10 @@ const TemplateEight = ({ resumeData }) => {
                         {projects.map((project, index) => (
                             <div key={index} style={{ marginBottom: '20px' }}>
                                 <Subheading left={project.title} />
+                                <div>
+                                    {project.githubLink && <a href={project.githubLink} style={styles.link}>GitHub</a>}
+                                    {project.liveDemoLink && <a href={project.liveDemoLink} style={styles.link}>Live Demo</a>}
+                                </div>
                                 <ul style={styles.itemList}>
                                     {project.description.split('\n').map((desc, i) => desc && (
                                         <li key={i} style={styles.item}>
@@ -164,15 +176,27 @@ const TemplateEight = ({ resumeData }) => {
                     </section>
                 )}
 
-                {skills.length > 0 && (
-                     <section style={styles.section}>
-                        <h2 style={styles.sectionTitle}>Technical Skills</h2>
-                         <div style={styles.skillsContainer}>
-                            <p style={styles.skillItem}>
-                                <strong style={{fontWeight: 'bold'}}>Skills: </strong>
-                                {skills.map(skill => skill.name).join(', ')}
-                            </p>
-                        </div>
+                 {education.length > 0 && (
+                    <section style={styles.section}>
+                        <h2 style={styles.sectionTitle}>Education</h2>
+                        {education.map((edu, index) => (
+                            <div key={index} style={{ marginBottom: '15px' }}>
+                                <Subheading left={edu.institution} right={edu.location || ''} />
+                                <Subheading left={edu.degree} right={`${edu.startDate} – ${edu.endDate}`} leftItalic />
+                            </div>
+                        ))}
+                    </section>
+                )}
+                
+                {certifications.length > 0 && (
+                    <section style={styles.section}>
+                        <h2 style={styles.sectionTitle}>Certifications</h2>
+                        {certifications.map((cert, index) => (
+                            <div key={index} style={{ marginBottom: '14px' }}>
+                                <h4 style={{ margin: 0, fontWeight: 'bold' }}>{cert.title}</h4>
+                                    <p style={{ margin: '2px 0' }}>{cert.issuer} ({cert.year})</p>
+                            </div>
+                        ))}
                     </section>
                 )}
             </main>

@@ -94,6 +94,10 @@ const ResumeSchema = new mongoose.Schema({
             type: String,
             default: ""
         },
+        isCurrentlyWorking: {
+            type: Boolean,
+            default: false
+        },
     }],
     education: [{
         degree: {

@@ -1,6 +1,4 @@
 import React from 'react';
-
-// Expanded list of professional and stylish fonts
 const fonts = [
     { name: 'Arial', family: 'Arial, sans-serif' },
     { name: 'Calibri', family: 'Calibri, sans-serif' },

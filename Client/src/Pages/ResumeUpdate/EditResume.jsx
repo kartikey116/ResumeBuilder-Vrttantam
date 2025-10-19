@@ -790,7 +790,7 @@ const UploadResumeImages = async () => {
         actionBtnOnClick={<LuDownload className="text-[16px]" />}
         onActionClick={() => reactToPrintFn()}
       >
-        <div ref={resumeDownloadRef} className="w-[98vw] h-90vh">
+        <div ref={resumeDownloadRef} className="w-[95vw] md:w-[80vw] h-[80vh]">
           <RenderResume
             templateId={resumeData.template?.theme || ""}
             resumeData={resumeData}
