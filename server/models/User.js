@@ -12,13 +12,25 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: function() { return this.authProvider === 'local'; }
     },
     profileImageUrl:{
         type: String,
         default:null
+    },
+    googleId: {
+        type: String,
+        default: null,
+    },
+    githubId: {
+        type: String,
+        default: null,
+    },
+    authProvider: {
+        type: String,
+        enum: ['local', 'google', 'github'],
+        default: 'local'
     }
-
 } , {timestamps: true});
 
 export default mongoose.model('User', userSchema);

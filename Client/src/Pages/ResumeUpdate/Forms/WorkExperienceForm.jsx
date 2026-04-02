@@ -33,7 +33,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
           <div key={index} className="mb-6 border-b border-slate-100 pb-4">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-sm font-medium text-gray-700">Experience {index + 1}</h3>
-              {workExperience.length > 1 && (
+              {true && (
                 <button
                   className="text-red-500 hover:text-red-600 flex items-center gap-1 text-sm"
                   onClick={() => removeArrayItem('workExperience', index)}

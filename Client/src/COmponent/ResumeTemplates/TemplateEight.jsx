@@ -133,7 +133,7 @@ const TemplateEight = ({ resumeData }) => {
                     </section>
                 )}
                
-                {workExperience.length > 0 && (
+                {workExperience && workExperience.length > 0 && workExperience[0]?.company?.trim() !== "" && (
                     <section style={styles.section}>
                         <h2 style={styles.sectionTitle}>Experience</h2>
                         {workExperience.map((job, index) => (

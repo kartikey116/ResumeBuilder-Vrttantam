@@ -6,18 +6,25 @@ import Dashboard from './Pages/Home/Dashboard.jsx';
 import EditResume from './Pages/ResumeUpdate/EditResume.jsx';
 import UserProvider from './context/userContext.jsx';
 import Footer from './Pages/Footer.jsx';
+import OAuthSuccess from './Pages/OAuthSuccess.jsx';
+import ResumeProvider from './context/ResumeContext.jsx';
+import AtsVisualizer from './Pages/ATSCheck/AtsVisualizer.jsx';
 
 function App() {
   return (
     <Router>
       <UserProvider>
+        <ResumeProvider>
           <Toaster position="top-center"/>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/footer" element={<Footer />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/resume/:resumeId" element={<EditResume />} />
+            <Route path="/oauth-success" element={<OAuthSuccess />} />
+            <Route path="/ats-check" element={<AtsVisualizer />} />
           </Routes>
+        </ResumeProvider>
       </UserProvider>
     </Router>
   );

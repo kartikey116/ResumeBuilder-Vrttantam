@@ -62,7 +62,7 @@ const TemplateSeven = ({ resumeData, colorPalette }) => {
                         <p>{profileInfo.summary}</p>
                     </section>
 
-                    <section style={{ marginTop: '30px' }}>
+                    {workExperience && workExperience.length > 0 && workExperience[0]?.company?.trim() !== "" && ( <section style={{ marginTop: '30px' }}>
                         <h3 style={sectionTitleStyle}>Experience</h3>
                         {workExperience.map((job, index) => (
                             <div key={index} style={{ marginBottom: '20px' }}>
@@ -74,7 +74,7 @@ const TemplateSeven = ({ resumeData, colorPalette }) => {
                                 <p style={{ margin: 0, fontSize: '0.9rem' }}>{job.description}</p>
                             </div>
                         ))}
-                    </section>
+                    </section> )}
                 </main>
                 
                 {/* Right Column */}

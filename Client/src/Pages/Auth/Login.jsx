@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import Input from '../../COmponent/Inputs/Input.jsx';
 import { validateEmail } from '../../utils/helper.js';
 import axiosInstance from '../../utils/axiosinstance.js';
-import { API_PATHS } from '../../utils/apiPaths.js';
+import { API_PATHS, BASE_URL } from '../../utils/apiPaths.js';
 import { UserContext } from '../../context/userContext.jsx';
 import toast from 'react-hot-toast';
+import { FaGoogle, FaGithub } from 'react-icons/fa';
 
 function Login({ setCurrentPage }) {
   const [email, setEmail] = useState('');
@@ -116,6 +117,29 @@ function Login({ setCurrentPage }) {
       <p className='text-xs text-slate-700 mt-[5px] mb-6'>
         Please enter your email and password to login
       </p>
+
+      <div className="flex flex-col gap-3 mb-6">
+        <a 
+          href={`${BASE_URL}/api/auth/google`} 
+          className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-md py-2.5 hover:bg-gray-50 transition-colors"
+        >
+          <FaGoogle className="text-red-500" />
+          <span className="text-sm font-medium text-gray-700">Continue with Google</span>
+        </a>
+        <a 
+          href={`${BASE_URL}/api/auth/github`} 
+          className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-md py-2.5 hover:bg-gray-50 transition-colors"
+        >
+          <FaGithub className="text-gray-900" />
+          <span className="text-sm font-medium text-gray-700">Continue with GitHub</span>
+        </a>
+      </div>
+
+      <div className="relative flex py-2 items-center mb-6">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="flex-shrink-0 mx-4 text-xs text-gray-400 uppercase">Or log in with email</span>
+          <div className="flex-grow border-t border-gray-300"></div>
+      </div>
 
       <form onSubmit={handleLogin}>
         <Input

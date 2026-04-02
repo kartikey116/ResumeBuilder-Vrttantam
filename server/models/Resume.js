@@ -177,6 +177,10 @@ const ResumeSchema = new mongoose.Schema({
         type: String,
         default: ""
     }],
+    atsScore: {
+        type: Number,
+        default: null
+    },
 },
 {
     timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }

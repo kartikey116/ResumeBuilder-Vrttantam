@@ -69,7 +69,7 @@ const TemplateFive = ({ resumeData, colorPalette }) => {
         </p>
       </section>
 
-      <section style={sectionStyle}>
+      {workExperience && workExperience.length > 0 && workExperience[0]?.company?.trim() !== "" && ( <section style={sectionStyle}>
         <h2 style={sectionTitleStyle}>Experience</h2>
         {workExperience.map((job, index) => (
           <div key={index} style={{ marginBottom: "15px" }}>
@@ -92,7 +92,7 @@ const TemplateFive = ({ resumeData, colorPalette }) => {
             <p style={{ margin: 0 }}>{job.description}</p>
           </div>
         ))}
-      </section>
+      </section> )}
 
       <section style={sectionStyle}>
         <h2 style={sectionTitleStyle}>Skills</h2>

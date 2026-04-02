@@ -166,7 +166,7 @@ const TemplateTwo = ({ resumeData, colorPalette, containerWidth }) => {
             </p>
           </div>
 
-          <div className="mt-4">
+          {resumeData.workExperience && resumeData.workExperience.length > 0 && resumeData.workExperience[0]?.company?.trim() !== "" && ( <div className="mt-4">
             <Title text="Work Experience" color={themeColors[1]} />
             {resumeData.workExperience.map((data, index) => (
               <WorkExperience
@@ -180,7 +180,7 @@ const TemplateTwo = ({ resumeData, colorPalette, containerWidth }) => {
                 description={data.description}
               />
             ))}
-          </div>
+          </div> )}
 
           <div className="mt-4">
             <Title text="Projects" color={themeColors[1]} />

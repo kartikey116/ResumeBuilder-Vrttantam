@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 //Generate JWT token
-const generateToken = (user) => {
+export const generateToken = (user) => {
     return jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn:"7d"});
 };
 
