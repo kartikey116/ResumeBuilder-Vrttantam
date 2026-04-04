@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Input from '../../COmponent/Inputs/Input.jsx';
 import { validateEmail } from '../../utils/helper.js';
 import axiosInstance from '../../utils/axiosinstance.js';
@@ -8,6 +9,7 @@ import { API_PATHS, BASE_URL } from '../../utils/apiPaths.js';
 import { UserContext } from '../../context/userContext.jsx';
 import toast from 'react-hot-toast';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
+import AuthBackground from '../../COmponent/AuthBackground.jsx';
 
 function Login({ setCurrentPage }) {
   const [email, setEmail] = useState('');
@@ -16,167 +18,173 @@ function Login({ setCurrentPage }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const context = useContext(UserContext);
-  
-  if (!context) {
-    console.error("UserContext is undefined! Make sure UserProvider wraps this component.");
-  }
-
   const { updateUser } = context || {};
   const navigate = useNavigate();
 
+  // 3D Tilt Logic
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    // --- Client-side validation ---
     if (!validateEmail(email)) {
-      const message = "Please enter a valid email address";
-      setError(message);
-      toast.error(message);
+      toast.error("Please enter a valid email address");
       return;
     }
-    if (!password) {
-      const message = "Please enter a password";
-      setError(message);
-      toast.error(message);
-      return;
-    }
-    if (password.length < 8) {
-      const message = "Password must be at least 8 characters";
-      setError(message);
-      toast.error(message);
+    if (!password || password.length < 8) {
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
     setError(null);
     setIsLoading(true);
 
-    // --- API call to login ---
     try {
-      console.log("Sending login request to:", API_PATHS.AUTH.LOGIN);
-      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
-        email,
-        password,
-      });
-      
-      console.log("API Response Data:", response.data);
-      
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, { email, password });
       const { token } = response.data;
 
       if (token) {
         localStorage.setItem("token", token);
-        
-        // Check if updateUser exists before calling
         if (typeof updateUser === 'function') {
           updateUser(response.data);
-          toast.success("Login successful!");
+          toast.success("Welcome back!");
           navigate("/dashboard");
-        } else {
-          console.error("updateUser is not a function:", updateUser);
-          toast.error("Login error: Context not initialized properly");
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
-      
-      // --- Server-side error handling ---
-      if (error.response?.data?.message) {
-        const serverMessage = error.response.data.message;
-        const msg = serverMessage.toLowerCase();
-        
-        if (msg.includes("password")) {
-          const customMessage = "Incorrect password. Please try again.";
-          setError(customMessage);
-          toast.error(customMessage);
-        } else if (msg.includes("user") || msg.includes("not found")) {
-          const customMessage = "No account found with this email.";
-          setError(customMessage);
-          toast.error(customMessage);
-        } else {
-          setError(serverMessage);
-          toast.error(serverMessage);
-        }
-      } else if (error.code === 'ERR_NETWORK') {
-        const networkMessage = "Cannot connect to server. Please check if the server is running.";
-        setError(networkMessage);
-        toast.error(networkMessage);
-      } else {
-        const fallbackMessage = "An unexpected error occurred. Please try again.";
-        setError(fallbackMessage);
-        toast.error(fallbackMessage);
-      }
+       const msg = error.response?.data?.message || "An unexpected error occurred.";
+       setError(msg);
+       toast.error(msg);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleSwitchToSignup = () => {
+    if (setCurrentPage) {
+      setCurrentPage('signup');
+    } else {
+      navigate('/signup');
+    }
+  };
+
   return (
-    <div className='w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center'>
-      <h3 className='text-lg font-semibold text-black'>
-        Welcome Back
-      </h3>
-      <p className='text-xs text-slate-700 mt-[5px] mb-6'>
-        Please enter your email and password to login
-      </p>
-
-      <div className="flex flex-col gap-3 mb-6">
-        <a 
-          href={`${BASE_URL}/api/auth/google`} 
-          className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-md py-2.5 hover:bg-gray-50 transition-colors"
+    <AuthBackground>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="w-full max-w-[450px] p-1 shadow-2xl rounded-[2.5rem] bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-white/10"
+      >
+        <div 
+          className="bg-[#0f0f13]/90 rounded-[2.4rem] p-8 md:p-10"
+          style={{ transform: "translateZ(50px)" }}
         >
-          <FaGoogle className="text-red-500" />
-          <span className="text-sm font-medium text-gray-700">Continue with Google</span>
-        </a>
-        <a 
-          href={`${BASE_URL}/api/auth/github`} 
-          className="flex items-center justify-center gap-3 w-full border border-gray-300 rounded-md py-2.5 hover:bg-gray-50 transition-colors"
-        >
-          <FaGithub className="text-gray-900" />
-          <span className="text-sm font-medium text-gray-700">Continue with GitHub</span>
-        </a>
-      </div>
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+            <p className="text-gray-400 text-sm">Elevate your career narrative today.</p>
+          </div>
 
-      <div className="relative flex py-2 items-center mb-6">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="flex-shrink-0 mx-4 text-xs text-gray-400 uppercase">Or log in with email</span>
-          <div className="flex-grow border-t border-gray-300"></div>
-      </div>
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <a 
+              href={`${BASE_URL}/api/auth/google`} 
+              className="flex items-center justify-center gap-2 border border-white/5 bg-white/5 rounded-2xl py-3 hover:bg-white/10 transition-all group"
+            >
+              <FaGoogle className="text-red-400 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-gray-300">Google</span>
+            </a>
+            <a 
+              href={`${BASE_URL}/api/auth/github`} 
+              className="flex items-center justify-center gap-2 border border-white/5 bg-white/5 rounded-2xl py-3 hover:bg-white/10 transition-all group"
+            >
+              <FaGithub className="text-white group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-gray-300">GitHub</span>
+            </a>
+          </div>
 
-      <form onSubmit={handleLogin}>
-        <Input
-          value={email}
-          onChange={(val) => setEmail(val)}
-          label='Email Address'
-          type='text'
-          placeholder='john@example.com'
-        />
-        <Input
-          value={password}
-          onChange={(val) => setPassword(val)}
-          label='Password'
-          type='password'
-          placeholder='Min 8 characters'
-        />
-        {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
-        <button 
-          type='submit' 
-          className='btn-primary'
-          disabled={isLoading}
-        >
-          {isLoading ? 'LOGGING IN...' : 'LOGIN'}
-        </button>
-        <p className='text-[13px] text-slate-800 mt-3'>
-          Don't have an account?{" "}
-          <button 
-            type='button' 
-            className='font-medium text-purple-700 underline cursor-pointer' 
-            onClick={() => setCurrentPage("signup")}
-          >
-            Sign Up
-          </button>
-        </p>
-      </form>
-    </div>
+          <div className="relative flex py-4 items-center mb-6">
+              <div className="flex-grow border-t border-white/5"></div>
+              <span className="flex-shrink-0 mx-4 text-[10px] text-gray-500 uppercase tracking-widest font-bold">Or use email</span>
+              <div className="flex-grow border-t border-white/5"></div>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-400 ml-1">Email</label>
+              <div className="bg-white/5 border border-white/5 rounded-xl px-4 py-1 focus-within:border-purple-500/50 transition-all">
+                <input 
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full bg-transparent border-none outline-none text-white text-sm py-2 placeholder:text-gray-600"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-400 ml-1">Password</label>
+              <div className="bg-white/5 border border-white/5 rounded-xl px-4 py-1 focus-within:border-purple-500/50 transition-all">
+                 <input 
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-transparent border-none outline-none text-white text-sm py-2 placeholder:text-gray-600"
+                />
+              </div>
+            </div>
+
+            {error && <p className="text-red-400 text-[11px] font-medium text-center">{error}</p>}
+
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit" 
+              className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl text-sm font-bold shadow-lg shadow-purple-900/20 hover:shadow-purple-700/40 transition-all disabled:opacity-50"
+              disabled={isLoading}
+            >
+              {isLoading ? 'SECURELY LOGGING IN...' : 'CONTINUE'}
+            </motion.button>
+
+            <p className="text-center text-xs text-gray-500 pt-4">
+              New to Vṛttāntam?{" "}
+              <button 
+                type="button" 
+                className="text-purple-400 font-bold hover:underline" 
+                onClick={handleSwitchToSignup}
+              >
+                Create Account
+              </button>
+            </p>
+          </form>
+        </div>
+      </motion.div>
+    </AuthBackground>
   );
 }
 
-export default Login;
+export default Login;

@@ -1,15 +1,17 @@
-import React from 'react'
-import { useState, useContext } from 'react'
-import Input from '../../COmponent/Inputs/Input'
-import { useNavigate } from 'react-router-dom'
-import { validateEmail } from '../../utils/helper.js'
-import ProfilePhotoSelector from '../../COmponent/Inputs/ProfilePhotoSelector.jsx'
-import axiosInstance from '../../utils/axiosinstance.js'
-import { API_PATHS, BASE_URL } from '../../utils/apiPaths.js'
+import React from 'react';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import Input from '../../COmponent/Inputs/Input';
+import { validateEmail } from '../../utils/helper.js';
+import ProfilePhotoSelector from '../../COmponent/Inputs/ProfilePhotoSelector.jsx';
+import axiosInstance from '../../utils/axiosinstance.js';
+import { API_PATHS, BASE_URL } from '../../utils/apiPaths.js';
 import { UserContext } from '../../context/userContext.jsx';
 import uploadImage from '../../utils/uploadimage';
 import toast from 'react-hot-toast';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
+import AuthBackground from '../../COmponent/AuthBackground.jsx';
 
 function SignUp({ setCurrentPage }) {
   const [profilePic, setProfilePic] = useState(null);
@@ -23,58 +25,47 @@ function SignUp({ setCurrentPage }) {
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  //Handle Signup Form Submit
+  // 3D Tilt Logic
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
-
     let profileImageUrl = "";
 
-    // Client-side validation
-    if (!fullName) {
-      const message = "Please enter your full name";
-      setError(message);
-      toast.error(message);
-      return;
-    }
-    if (!validateEmail(email)) {
-      const message = "Please enter a valid email address";
-      setError(message);
-      toast.error(message);
-      return;
-    }
-    if (!password) {
-      const message = "Please enter a password";
-      setError(message);
-      toast.error(message);
-      return;
-    }
-    if (password.length < 8) {
-      const message = "Password must be at least 8 characters";
-      setError(message);
-      toast.error(message);
-      return;
-    }
-    if (password !== confirmPassword) {
-      const message = "Passwords do not match";
-      setError(message);
-      toast.error(message);
+    if (!fullName || !validateEmail(email) || !password || password !== confirmPassword) {
+      toast.error("Please fill all fields correctly");
       return;
     }
 
     setError(null);
     setIsLoading(true);
 
-    // API call to signup
     try {
-      // Upload image if present
       if (profilePic) {
-        try {
-          const imgUploadRes = await uploadImage(profilePic);
-          profileImageUrl = imgUploadRes.imageUrl || "";
-        } catch (imgError) {
-          console.error("Image upload failed:", imgError);
-          toast.error("Failed to upload profile picture, continuing without it");
-        }
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.imageUrl || "";
       }
 
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
@@ -87,111 +78,135 @@ function SignUp({ setCurrentPage }) {
 
       if (response.data) {
         toast.success("Account created successfully! Please login.");
-        setCurrentPage("login");
+        handleSwitchToLogin();
       }
-
     } catch (error) {
-      console.error("Signup error:", error);
-      if (error.response?.data?.message) {
-        setError(error.response.data.message);
-        toast.error(error.response.data.message);
-      } else if (error.code === 'ERR_NETWORK') {
-        const message = "Cannot connect to server. Please check if the server is running.";
-        setError(message);
-        toast.error(message);
-      } else {
-        const message = "An error occurred. Please try again.";
-        setError(message);
-        toast.error(message);
-      }
+      const msg = error.response?.data?.message || "An error occurred. Please try again.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
+
+  const handleSwitchToLogin = () => {
+    if (setCurrentPage) {
+      setCurrentPage('login');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
-    <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
-      <h3 className='text-lg font-bold text-black'>Create an Account</h3>
-      <p className='text-s text-slate-700 mt-[5px] mb-6'>Join us and start building your resume today!</p>
-      
-      <div className="flex flex-col gap-3 mb-6">
-        <a 
-          href={`${BASE_URL}/api/auth/google`} 
-          className="flex items-center justify-center gap-3 w-full border border-gray-300 bg-white rounded-md py-2.5 hover:bg-gray-50 transition-colors"
+    <AuthBackground>
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="w-full max-w-[500px] p-1 shadow-2xl rounded-[2.5rem] bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-white/10 my-10"
+      >
+        <div 
+          className="bg-[#0f0f13]/90 rounded-[2.4rem] p-8 md:p-10"
+          style={{ transform: "translateZ(50px)" }}
         >
-          <FaGoogle className="text-red-500" />
-          <span className="text-sm font-medium text-gray-700">Sign Up with Google</span>
-        </a>
-        <a 
-          href={`${BASE_URL}/api/auth/github`} 
-          className="flex items-center justify-center gap-3 w-full border border-gray-300 bg-white rounded-md py-2.5 hover:bg-gray-50 transition-colors"
-        >
-          <FaGithub className="text-gray-900" />
-          <span className="text-sm font-medium text-gray-700">Sign Up with GitHub</span>
-        </a>
-      </div>
+          <div className="mb-4">
+            <h2 className="text-3xl font-bold text-white mb-1">Create Account</h2>
+            <p className="text-gray-400 text-sm">Start building your professional story.</p>
+          </div>
 
-      <div className="relative flex py-2 items-center mb-6">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="flex-shrink-0 mx-4 text-xs text-gray-400 uppercase">Or sign up with email</span>
-          <div className="flex-grow border-t border-gray-300"></div>
-      </div>
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <a href={`${BASE_URL}/api/auth/google`} className="flex items-center justify-center gap-2 border border-white/5 bg-white/5 rounded-2xl py-2.5 hover:bg-white/10 transition-all group">
+              <FaGoogle className="text-red-400 group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-gray-300">Google</span>
+            </a>
+            <a href={`${BASE_URL}/api/auth/github`} className="flex items-center justify-center gap-2 border border-white/5 bg-white/5 rounded-2xl py-2.5 hover:bg-white/10 transition-all group">
+              <FaGithub className="text-white group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-semibold text-gray-300">GitHub</span>
+            </a>
+          </div>
 
-      <form onSubmit={handleSignup}>
+          <form onSubmit={handleSignup} className="space-y-4">
+            <div className="flex justify-center mb-2">
+              <div className="transform scale-90">
+                <ProfilePhotoSelector image={profilePic} setImage={setProfilePic} />
+              </div>
+            </div>
 
-        <ProfilePhotoSelector image={profilePic} setImage={setProfilePic} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Full Name</label>
+                <input 
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="John Doe"
+                  className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-purple-500/50 transition-all"
+                />
+              </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-1 gap-2'>
-          <Input
-            value={fullName}
-            onChange={(val) => setFullName(val)}
-            label='Full Name'
-            type='text'
-            placeholder='John Doe'
-          />
-          <Input
-            value={email}
-            onChange={(val) => setEmail(val)}
-            label='Email Address'
-            type='email'
-            placeholder='john@example.com'
-          />
-          <Input
-            value={password}
-            onChange={(val) => setPassword(val)}
-            label='Password'
-            type='password'
-            placeholder='Min 8 characters'
-          />
-          <Input
-            value={confirmPassword}
-            onChange={(val) => setConfirmPassword(val)}
-            label='Confirm Password'
-            type='password'
-            placeholder='Min 8 characters'
-          />
-          {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
-          <button 
-            type='submit' 
-            className='btn-primary'
-            disabled={isLoading}
-          >
-            {isLoading ? 'SIGNING UP...' : 'SIGN UP'}
-          </button>
-          <p className='text-[13px] text-slate-800 mt-3'>
-            Already have an account?{" "}
-            <button 
-              type='button'
-              className='font-medium text-purple-700 underline cursor-pointer' 
-              onClick={() => setCurrentPage("login")}
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Email</label>
+                <input 
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-purple-500/50 transition-all"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Password</label>
+                <input 
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-purple-500/50 transition-all"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-gray-500 uppercase ml-1">Confirm</label>
+                <input 
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-purple-500/50 transition-all"
+                />
+              </div>
+            </div>
+
+            {error && <p className="text-red-400 text-[11px] font-medium text-center">{error}</p>}
+
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit" 
+              className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl text-sm font-bold shadow-lg shadow-purple-900/20 hover:shadow-purple-700/40 transition-all disabled:opacity-50 mt-4"
+              disabled={isLoading}
             >
-              Login
-            </button>
-          </p>
+              {isLoading ? 'CREATING SECURE ACCOUNT...' : 'CREATE ACCOUNT'}
+            </motion.button>
+
+            <p className="text-center text-xs text-gray-500 pt-2">
+              Already have an account?{" "}
+              <button 
+                type="button" 
+                className="text-purple-400 font-bold hover:underline" 
+                onClick={handleSwitchToLogin}
+              >
+                Login here
+              </button>
+            </p>
+          </form>
         </div>
-      </form>
-    </div>
-  )
+      </motion.div>
+    </AuthBackground>
+  );
 }
 
-export default SignUp
+export default SignUp;

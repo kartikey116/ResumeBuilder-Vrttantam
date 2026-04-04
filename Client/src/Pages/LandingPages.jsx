@@ -22,7 +22,7 @@ function LandingPages() {
 
   const handleCTA = () => {
     if (!user) {
-      setOpenAuthModal(true);
+      navigate("/login");
     } else {
       navigate("/dashboard");
     }
@@ -281,7 +281,7 @@ function LandingPages() {
             ) : (
               <button
                 className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
-                onClick={() => setOpenAuthModal(true)}
+                onClick={() => navigate("/login")}
               >
                 Login / Sign Up
               </button>
