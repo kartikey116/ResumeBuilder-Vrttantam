@@ -11,6 +11,7 @@ import ResumeProvider from './context/ResumeContext.jsx';
 import AtsVisualizer from './Pages/ATSCheck/AtsVisualizer.jsx';
 import Login from './Pages/Auth/Login.jsx';
 import SignUp from './Pages/Auth/SignUp.jsx';
+import TemplateGallery from './Pages/Community/TemplateGallery.jsx';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/ats-check" element={<AtsVisualizer />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/community" element={<TemplateGallery />} />
 
           </Routes>
         </ResumeProvider>

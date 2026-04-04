@@ -5,17 +5,21 @@ import axiosInstance from '../../utils/axiosinstance.js';
 import { API_PATHS } from '../../utils/apiPaths.js';
 import DashboardLayout from '../../COmponent/layouts/DashboardLayout.jsx';
 import { LuCirclePlus } from 'react-icons/lu';
-import { FiActivity, FiFileText, FiTarget } from 'react-icons/fi';
-import { motion } from 'framer-motion';
+import { FiActivity, FiFileText, FiTarget, FiUsers, FiX } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 import Modal from '../../COmponent/Modal.jsx';
 import ResumeSummaryCard from '../../COmponent/Cards/ResumeSummaryCard.jsx';
 import CreateResumeForm from '../Home/CreateResumeForm.jsx';
+import toast from 'react-hot-toast';
 
 function Dashboard() {
   const navigate = useNavigate();
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [allresumes, setAllResumes] = useState([]);
+  const [publishModal, setPublishModal] = useState(null); // { resumeId, title }
+  const [publishing, setPublishing] = useState(false);
+  const [publishName, setPublishName] = useState('');
 
   const fetchAllResumes = async () => {
     try {
@@ -30,7 +34,24 @@ function Dashboard() {
     fetchAllResumes();
   }, []);
 
-  // Stats calculation
+  const handlePublishTemplate = async () => {
+    if (!publishModal) return;
+    setPublishing(true);
+    try {
+      await axiosInstance.post('/api/ai/anonymize-publish', {
+        resumeId: publishModal.resumeId,
+        creatorName: publishName || 'Anonymous',
+      });
+      toast.success('🎉 Template published to Community Gallery!');
+      setPublishModal(null);
+      setPublishName('');
+    } catch (error) {
+      toast.error('Failed to publish. Please try again.');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   const totalResumes = allresumes.length;
   const scoredResumes = allresumes.filter(r => r.atsScore > 0);
   const avgAtsScore = scoredResumes.length > 0 
@@ -50,7 +71,7 @@ function Dashboard() {
          
          <div className="relative z-10 space-y-2 text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Career Hub</span></h1>
-            <p className="text-slate-400 text-sm max-w-sm">Manage your resumes and instantly simulate an enterprise ATS scan on any PDF.</p>
+            <p className="text-slate-400 text-sm max-w-sm">Manage your resumes, run ATS scans, and publish templates to the Community Gallery.</p>
          </div>
          
          <div className="flex gap-4 md:gap-6 relative z-10">
@@ -66,13 +87,20 @@ function Dashboard() {
             </div>
          </div>
 
-         <div className="relative z-10 w-full md:w-auto mt-4 md:mt-0">
+         <div className="relative z-10 w-full md:w-auto mt-4 md:mt-0 flex flex-col gap-3">
              <button 
                 onClick={() => navigate('/ats-check')}
-                className="w-full bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white px-8 py-4 rounded-2xl font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all flex items-center justify-center gap-2 transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white px-8 py-3 rounded-2xl font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all flex items-center justify-center gap-2 transform hover:scale-105"
              >
                 <FiTarget className="w-5 h-5"/>
                 Global ATS Scan
+             </button>
+             <button 
+                onClick={() => navigate('/community')}
+                className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-3 rounded-2xl font-bold transition-all flex items-center justify-center gap-2"
+             >
+                <FiUsers className="w-5 h-5"/>
+                Community Gallery
              </button>
          </div>
       </motion.div>
@@ -101,7 +129,7 @@ function Dashboard() {
           <h3 className='font-bold text-slate-700 tracking-wide'>Create New Resume</h3>
         </motion.div>
         
-        {allresumes?.map((resume,index) => (
+        {allresumes?.map((resume, index) => (
           <motion.div key={resume._id || `resume-${index}`} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
              <ResumeSummaryCard
                imgUrl={resume.thumbnailLink || null} 
@@ -114,14 +142,61 @@ function Dashboard() {
                atsScore={resume.atsScore}
                onAtsCheck={() => navigate(`/ats-check?resumeId=${resume._id}`)}
                onSelect={() => navigate(`/resume/${resume._id}`)}
+               onPublish={() => setPublishModal({ resumeId: resume._id, title: resume.title })}
              />
           </motion.div>
         ))}
       </motion.div>
 
+      {/* Create Resume Modal */}
       <Modal isOpen={openCreateModal} onClose={() => setOpenCreateModal(false)} hideHeader>
          <div className=''><CreateResumeForm/></div>
       </Modal>
+
+      {/* Publish Template Modal */}
+      <AnimatePresence>
+        {publishModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative"
+            >
+              <button onClick={() => setPublishModal(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <FiX size={20}/>
+              </button>
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">Publish Template</h2>
+              <p className="text-gray-500 text-sm mb-6">
+                AI will anonymize <span className="font-semibold text-purple-600">"{publishModal.title}"</span> — removing ALL personal data — before making it public.
+              </p>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+                🔒 <strong>Privacy First:</strong> Gemini AI will replace your name, email, company, and all personal details with fictional dummy data.
+              </div>
+              <label className="block text-sm font-semibold text-gray-600 mb-2">Your display name (optional)</label>
+              <input
+                type="text"
+                value={publishName}
+                onChange={(e) => setPublishName(e.target.value)}
+                placeholder="Anonymous"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition-colors mb-6"
+              />
+              <div className="flex gap-3">
+                <button onClick={() => setPublishModal(null)} className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                  Cancel
+                </button>
+                <button
+                  onClick={handlePublishTemplate}
+                  disabled={publishing}
+                  className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl text-sm font-bold disabled:opacity-50"
+                >
+                  {publishing ? '🤖 AI Processing...' : '🚀 Publish Template'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </DashboardLayout>
   )
