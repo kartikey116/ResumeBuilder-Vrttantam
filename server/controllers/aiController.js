@@ -19,30 +19,57 @@ const getAiClient = () => {
 
 // ✅ Robust JSON extractor — handles plain JSON and markdown-wrapped JSON
 const extractJson = (rawText) => {
-    if (!rawText) throw new Error('Empty response from Gemini');
+    if (!rawText) throw new Error('Empty response from AI engine');
+
+    // Ensure rawText is a string (if the SDK returns a function or object)
+    let clean = String(rawText);
+
     // Strip markdown code fences if present
-    const clean = rawText.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
+    clean = clean.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
+
     try {
         return JSON.parse(clean);
     } catch (e) {
+        console.warn('First JSON parse attempt failed, trying fallback search...', e.message);
         // Last resort: find the first { or [ and parse from there
         const jsonStart = clean.search(/[{[]/);
         if (jsonStart !== -1) {
-            return JSON.parse(clean.substring(jsonStart));
+            try {
+                return JSON.parse(clean.substring(jsonStart));
+            } catch (inner) {
+                throw new Error(`AI returned invalid JSON structure: ${clean.slice(0, 200)}...`);
+            }
         }
-        throw new Error(`Gemini returned non-JSON: ${clean.slice(0, 200)}`);
+        throw new Error(`AI returned non-JSON content type: ${clean.slice(0, 200)}...`);
     }
 };
 
 // Helper to call Gemini and get JSON response
 const callGemini = async (prompt) => {
-    const ai = getAiClient();
-    const response = await ai.models.generateContent({
-        model: GEMINI_MODEL,
-        contents: prompt,
-        config: { responseMimeType: 'application/json' }
-    });
-    return extractJson(response.text);
+    try {
+        const ai = getAiClient();
+        console.log(`[AI] Calling model: ${GEMINI_MODEL}`);
+
+        const response = await ai.models.generateContent({
+            model: GEMINI_MODEL,
+            contents: prompt,
+            config: { responseMimeType: 'application/json' }
+        });
+
+        // SDK check: handle both .text property and .text() function
+        const text = (typeof response.text === 'function') ? await response.text() : response.text;
+
+        if (!text) {
+            console.error('[AI] Empty response received from model.');
+            throw new Error('Empty response from AI model.');
+        }
+
+        return extractJson(text);
+    } catch (error) {
+        console.error('[AI] Gemini API Error:', error.message);
+        // Rethrow with more context for the controller to handle
+        throw error;
+    }
 };
 
 // --- Parse PDF to generic JSON (no auth required, for ATS scanner) ---
@@ -60,8 +87,13 @@ export const parseResumeToJSON = async (req, res) => {
         const parsedJson = await callGemini(prompt);
         res.status(200).json({ success: true, parsed: parsedJson });
     } catch (error) {
-        console.error('Error parsing resume:', error);
-        res.status(500).json({ success: false, message: 'Failed to process the uploaded resume.', error: error.message });
+        console.error('Error parsing resume (parseResumeToJSON):', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to process the uploaded resume.',
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 
@@ -157,6 +189,11 @@ export const atsScore = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Both resume JSON and target Job Description are required.' });
         }
 
+        // Ensure we're passing clean JSON (toObject if it's a Mongoose document)
+        const resumeContext = (typeof targetResumeData.toObject === 'function')
+            ? targetResumeData.toObject()
+            : targetResumeData;
+
         //         const prompt = `You are a brutally strict, enterprise-grade Applicant Tracking System (ATS) performing a resume scan. Compare the Candidate Resume JSON against the Job Description. You must be extremely critical. Most resumes should score between 40-65%.
 
         // Scoring Rules:
@@ -229,7 +266,7 @@ Job Description:
 ${jobDescription}
 
 Candidate Resume JSON:
-${JSON.stringify(targetResumeData)}`;
+${JSON.stringify(resumeContext)}`;
 
         const resultJson = await callGemini(prompt);
 
@@ -242,8 +279,14 @@ ${JSON.stringify(targetResumeData)}`;
 
         res.status(200).json({ success: true, analysis: resultJson });
     } catch (error) {
-        console.error('Error in ATS check:', error);
-        res.status(500).json({ success: false, message: 'Failed to complete ATS Analysis.' });
+        console.error('--- ATS CHECK ERROR ---');
+        console.error('Message:', error.message);
+        console.error('Full Error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to complete ATS Analysis.',
+            error: error.message
+        });
     }
 };
 

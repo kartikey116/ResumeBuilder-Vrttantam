@@ -47,7 +47,6 @@ const dimColor = (n) => {
 };
 
 /* ─── Sub-components ─────────────────────────────────────────────────── */
-
 const ScoreRing = ({ score }) => {
   const r = 54;
   const circ = 2 * Math.PI * r;
@@ -149,9 +148,12 @@ const AtsVisualizer = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext) || {};
 
+  // View state: 'INPUT' | 'LOADING' | 'RESULTS'
+  const [appView, setAppView] = useState('INPUT');
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
   const [jobDesc, setJobDesc] = useState('');
   const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [aiData, setAiData] = useState(null);
   const [parsedFileData, setParsedFileData] = useState(null);
   const [importing, setImporting] = useState(false);
@@ -159,6 +161,45 @@ const AtsVisualizer = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('01');
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef();
+
+  const loadingSteps = [
+    "Extracting text from PDF...",
+    "Formatting data structure...",
+    "Analyzing keywords and structure...",
+    "Comparing against job description...",
+    "Calculating ATS score...",
+    "Generating insights and improvements...",
+    "Finalizing report..."
+  ];
+
+  // Derive the active step strictly from the progress percentage
+  let currentStepIndex = 0;
+  if (loadingProgress === 100) currentStepIndex = 7; // All Done
+  else if (loadingProgress >= 95) currentStepIndex = 6;
+  else if (loadingProgress >= 80) currentStepIndex = 5;
+  else if (loadingProgress >= 60) currentStepIndex = 4;
+  else if (loadingProgress >= 40) currentStepIndex = 3;
+  else if (loadingProgress >= 25) currentStepIndex = 2;
+  else if (loadingProgress >= 10) currentStepIndex = 1;
+
+  React.useEffect(() => {
+    let progressInterval;
+
+    if (appView === 'LOADING') {
+      // Simulate an AI progress bar creeping up with an exponential slow-down
+      progressInterval = setInterval(() => {
+        setLoadingProgress((prev) => {
+          if (prev >= 98) return prev; // Stall at 98% until API is actually finished
+
+          // Fast at first (parsing), then slower for analysis and insights
+          const increment = prev < 25 ? 3 : prev < 60 ? 1.5 : prev < 85 ? 0.8 : 0.2;
+          return prev + increment;
+        });
+      }, 250); // Tick every 250ms for smooth animation
+    }
+
+    return () => clearInterval(progressInterval);
+  }, [appView]);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -172,33 +213,49 @@ const AtsVisualizer = () => {
     if (!resumeId && !file) return toast.error('No resume selected. Upload a PDF or go to Dashboard.');
     if (!jobDesc.trim()) return toast.error('Please paste a Job Description.');
 
-    setLoading(true);
+    // Start loading sequence
+    setAppView('LOADING');
+    setLoadingProgress(0);
     setParsedFileData(null);
+
     try {
       let targetResumeData = null;
       if (file) {
         const fd = new FormData();
         fd.append('resumePdf', file);
-        toast.loading('Parsing PDF structure…', { id: 'ats' });
+
         const r = await axiosInstance.post('/api/ai/parse-resume', fd, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
+
         targetResumeData = r.data.parsed;
         setParsedFileData(targetResumeData);
+
+        // Jump progress forward when PDF parsing is successfully done
+        setLoadingProgress((prev) => Math.max(prev, 25));
       }
-      toast.loading('Running ATS analysis…', { id: 'ats' });
+
       const res = await axiosInstance.post('/api/ai/ats-score', {
         resumeId: !file ? resumeId : undefined,
         resumeDataJson: targetResumeData,
         jobDescription: jobDesc,
       });
+
       setAiData(res.data.analysis);
-      toast.success('Analysis complete!', { id: 'ats' });
+
+      // API is finished! Snap progress to 100%, checking off all remaining steps instantly
+      setLoadingProgress(100);
+
+      // Give it 600ms so the user sees all the green ticks check off before the screen swaps
+      setTimeout(() => {
+        setAppView('RESULTS');
+        toast.success('Analysis complete!', { id: 'ats-success' });
+      }, 600);
+
     } catch (err) {
       console.error(err);
-      toast.error('Analysis failed. Check your Gemini API key.', { id: 'ats' });
-    } finally {
-      setLoading(false);
+      toast.error('Analysis failed. Check your Gemini API key.', { id: 'ats-err' });
+      setAppView('INPUT');
     }
   };
 
@@ -245,7 +302,7 @@ const AtsVisualizer = () => {
       {/* ── Google Font ── */}
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');`}</style>
 
-      <div className="min-h-screen bg-[#f8fafc] font-sans">
+      <div className="min-h-screen bg-[#f8fafc] font-sans pb-20">
 
         {/* ── Top Nav ── */}
         <div className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-100">
@@ -263,145 +320,201 @@ const AtsVisualizer = () => {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-8">
 
-          {/* ── Hero ── */}
-          <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: .5 }}
-            className="text-center space-y-3"
-          >
-            <h1
-              className="text-4xl md:text-5xl font-black text-slate-900 leading-tight"
-              style={{ fontFamily: "'DM Serif Display', serif" }}
+          {/* ═════════ INPUT VIEW ═════════ */}
+          {appView === 'INPUT' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
             >
-              Is your resume{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-pink-500">
-                ATS-ready?
-              </span>
-            </h1>
-            <p className="text-slate-500 text-base max-w-xl mx-auto leading-relaxed">
-              75% of resumes are filtered out before a human reads them. Get a detailed breakdown — score, missing keywords, weak phrases, and exactly what to fix.
-            </p>
-          </motion.div>
+              {/* ── Hero ── */}
+              <div className="text-center space-y-3 mb-8">
+                <h1
+                  className="text-4xl md:text-5xl font-black text-slate-900 leading-tight"
+                  style={{ fontFamily: "'DM Serif Display', serif" }}
+                >
+                  Is your resume{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-pink-500">
+                    ATS-ready?
+                  </span>
+                </h1>
+                <p className="text-slate-500 text-base max-w-xl mx-auto leading-relaxed">
+                  75% of resumes are filtered out before a human reads them. Get a detailed breakdown — score, missing keywords, weak phrases, and exactly what to fix.
+                </p>
+              </div>
 
-          {/* ── Guide ── */}
-          <GuideBanner />
+              {/* ── Guide ── */}
+              <div className="mb-8">
+                <GuideBanner />
+              </div>
 
-          {/* ── Input Card ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
-          >
-            <div className="grid md:grid-cols-2 gap-0">
-
-              {/* Drop Zone */}
-              <div
-                className={`p-6 border-b md:border-b-0 md:border-r border-slate-100 flex flex-col gap-3 transition-colors ${dragOver ? 'bg-violet-50' : 'bg-slate-50/40'
-                  }`}
-                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
-                onClick={() => fileRef.current?.click()}
-              >
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
-                  onChange={e => setFile(e.target.files[0])}
-                />
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-                  <FiUpload size={12} /> Resume PDF
-                </label>
-                <div className={`flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed rounded-xl p-8 cursor-pointer transition-all ${file ? 'border-violet-400 bg-violet-50/60' : 'border-slate-200 hover:border-slate-300'
-                  }`}>
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${file ? 'bg-violet-100' : 'bg-slate-100'
-                    }`}>
-                    <FiFileText size={22} className={file ? 'text-violet-600' : 'text-slate-400'} />
-                  </div>
-                  <div className="text-center">
-                    <p className={`text-sm font-bold ${file ? 'text-violet-700' : 'text-slate-600'}`}>
-                      {file ? file.name : 'Drop your PDF here'}
-                    </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {file ? 'Click to swap file' : 'or click to browse'}
-                    </p>
-                  </div>
-                  {!file && resumeId && (
-                    <div className="mt-1 flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
-                      <FiCheckCircle size={12} /> Dashboard resume loaded
+              {/* ── Input Card ── */}
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="grid md:grid-cols-2 gap-0">
+                  {/* Drop Zone */}
+                  <div
+                    className={`p-6 border-b md:border-b-0 md:border-r border-slate-100 flex flex-col gap-3 transition-colors ${dragOver ? 'bg-violet-50' : 'bg-slate-50/40'
+                      }`}
+                    onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      onChange={e => setFile(e.target.files[0])}
+                    />
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <FiUpload size={12} /> Resume PDF
+                    </label>
+                    <div className={`flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed rounded-xl p-8 cursor-pointer transition-all ${file ? 'border-violet-400 bg-violet-50/60' : 'border-slate-200 hover:border-slate-300'
+                      }`}>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${file ? 'bg-violet-100' : 'bg-slate-100'
+                        }`}>
+                        <FiFileText size={22} className={file ? 'text-violet-600' : 'text-slate-400'} />
+                      </div>
+                      <div className="text-center">
+                        <p className={`text-sm font-bold ${file ? 'text-violet-700' : 'text-slate-600'}`}>
+                          {file ? file.name : 'Drop your PDF here'}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {file ? 'Click to swap file' : 'or click to browse'}
+                        </p>
+                      </div>
+                      {!file && resumeId && (
+                        <div className="mt-1 flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
+                          <FiCheckCircle size={12} /> Dashboard resume loaded
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+
+                  {/* JD Textarea */}
+                  <div className="p-6 flex flex-col gap-3">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <FiTarget size={12} /> Target Job Description
+                    </label>
+                    <textarea
+                      className="flex-1 min-h-[160px] w-full border border-slate-200 rounded-xl p-4 text-sm text-slate-700 bg-slate-50/40 focus:ring-2 focus:ring-violet-400 focus:outline-none resize-none placeholder:text-slate-300 leading-relaxed"
+                      placeholder="Paste the full job description here…&#10;&#10;The more detail you include, the more accurate your score will be."
+                      value={jobDesc}
+                      onChange={e => setJobDesc(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Footer Bar */}
+                <div className="bg-slate-50/50 border-t border-slate-100 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+                    <span className={`w-2 h-2 rounded-full ${(file || resumeId) && jobDesc.trim() ? 'bg-emerald-400' : 'bg-slate-300'
+                      }`} />
+                    {file ? `PDF ready · ${(file.size / 1024).toFixed(0)} KB`
+                      : resumeId ? 'Dashboard resume loaded'
+                        : 'No resume selected'}
+                  </div>
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={!jobDesc.trim() || (!resumeId && !file)}
+                    className="flex items-center gap-2 text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 px-8 py-3 rounded-xl shadow-md shadow-violet-200 disabled:opacity-40 disabled:shadow-none transition-all"
+                  >
+                    <FiZap size={16} /> Analyse Resume
+                  </button>
                 </div>
               </div>
+            </motion.div>
+          )}
 
-              {/* JD Textarea */}
-              <div className="p-6 flex flex-col gap-3">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-                  <FiTarget size={12} /> Target Job Description
-                </label>
-                <textarea
-                  className="flex-1 min-h-[160px] w-full border border-slate-200 rounded-xl p-4 text-sm text-slate-700 bg-slate-50/40 focus:ring-2 focus:ring-violet-400 focus:outline-none resize-none placeholder:text-slate-300 leading-relaxed"
-                  placeholder="Paste the full job description here…&#10;&#10;The more detail you include, the more accurate your score will be."
-                  value={jobDesc}
-                  onChange={e => setJobDesc(e.target.value)}
-                />
-              </div>
-            </div>
+          {/* ═════════ LOADING VIEW ═════════ */}
+          {appView === 'LOADING' && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="min-h-[50vh] flex flex-col items-center justify-center pt-10"
+            >
+              <div className="bg-white p-10 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 w-full max-w-lg mx-auto text-center">
+                <h2 className="text-2xl font-black text-slate-800 mb-6" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                  Analyzing your resume...
+                </h2>
 
-            {/* Footer Bar */}
-            <div className="bg-slate-50/50 border-t border-slate-100 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
-                <span className={`w-2 h-2 rounded-full ${(file || resumeId) && jobDesc.trim() ? 'bg-emerald-400' : 'bg-slate-300'
-                  }`} />
-                {file ? `PDF ready · ${(file.size / 1024).toFixed(0)} KB`
-                  : resumeId ? 'Dashboard resume loaded'
-                    : 'No resume selected'}
-              </div>
-              <div className="flex items-center gap-3">
-                {file && aiData && (
-                  <button
-                    onClick={() => setShowImportModal(true)}
-                    disabled={importing}
-                    className="flex items-center gap-2 text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
-                  >
-                    <FiDownload size={14} />
-                    {importing ? 'Importing…' : 'Import to Dashboard'}
-                  </button>
-                )}
-                <button
-                  onClick={handleAnalyze}
-                  disabled={loading || !jobDesc.trim() || (!resumeId && !file)}
-                  className="flex items-center gap-2 text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 px-6 py-2.5 rounded-xl shadow-md shadow-violet-200 disabled:opacity-40 disabled:shadow-none transition-all"
-                >
-                  {loading ? (
-                    <>
-                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                      Scanning…
-                    </>
-                  ) : (
-                    <><FiZap size={14} /> Analyse Resume</>
-                  )}
-                </button>
-              </div>
-            </div>
-          </motion.div>
+                {/* Progress Bar */}
+                <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden mb-6 relative">
+                  <motion.div
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-violet-500 to-pink-500"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${loadingProgress}%` }}
+                    transition={{ ease: "linear", duration: 0.2 }}
+                  />
+                </div>
 
-          {/* ── Results ── */}
+                {/* Sequential Checklist */}
+                <div className="space-y-3 text-left w-max mx-auto pl-4">
+                  {loadingSteps.map((step, index) => {
+                    const isDone = currentStepIndex > index;
+                    const isActive = currentStepIndex === index;
+                    const isPending = currentStepIndex < index;
+
+                    return (
+                      <div
+                        key={index}
+                        className={`flex items-center gap-3 transition-opacity duration-300 ${isPending ? 'opacity-30' : 'opacity-100'}`}
+                      >
+                        <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                          {isDone && <FiCheckCircle className="text-green-500 text-lg" />}
+                          {isActive && (
+                            <svg className="animate-spin h-4 w-4 text-violet-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          )}
+                          {isPending && <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />}
+                        </div>
+                        <span className={`text-sm font-medium transition-colors duration-300 ${isActive ? 'text-slate-800' : isDone ? 'text-slate-500' : 'text-slate-400'}`}>
+                          {step}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ═════════ RESULTS VIEW ═════════ */}
           <AnimatePresence>
-            {(aiData || loading) && (
+            {appView === 'RESULTS' && aiData && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: loading ? 0.5 : 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: .4 }}
                 className="space-y-6"
               >
+
+                {/* ── Action Bar for Results ── */}
+                <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => { setAppView('INPUT'); setAiData(null); }}
+                      className="text-sm font-semibold text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-4 py-2 rounded-xl transition-colors flex items-center gap-2"
+                    >
+                      <FiArrowLeft size={14} /> Scan Another Resume
+                    </button>
+                  </div>
+
+                  {file && (
+                    <button
+                      onClick={() => setShowImportModal(true)}
+                      className="flex items-center gap-2 text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-5 py-2 rounded-xl transition-colors"
+                    >
+                      <FiDownload size={15} />
+                      Import to Dashboard
+                    </button>
+                  )}
+                </div>
 
                 {/* ── Row 1: Score + Quick Stats ── */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -673,8 +786,8 @@ const AtsVisualizer = () => {
                     key={t.id}
                     onClick={() => setSelectedTemplate(t.id)}
                     className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 transition-all ${selectedTemplate === t.id
-                        ? 'border-violet-500 bg-violet-50 shadow-lg shadow-violet-100'
-                        : 'border-slate-100 hover:border-slate-200 bg-slate-50'
+                      ? 'border-violet-500 bg-violet-50 shadow-lg shadow-violet-100'
+                      : 'border-slate-100 hover:border-slate-200 bg-slate-50'
                       }`}
                   >
                     <div
