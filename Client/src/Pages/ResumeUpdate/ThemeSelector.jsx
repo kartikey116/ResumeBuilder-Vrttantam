@@ -130,6 +130,8 @@ function ThemeSelector({ selectedTheme, setSelectedTheme, resumeData, onClose })
                   thumbnailImg={template.thumbnailImg}
                   isSelected={selectedTemplate?.id === template.id}
                   onSelect={() => handleTemplateSelect(template)}
+                  label={template.label || `Template ${template.id}`}
+                  badge={template.badge}
                 />
               ))}
 

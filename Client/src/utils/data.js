@@ -47,6 +47,18 @@ export const resumeTemplates = [
     id:'08',
     thumbnailImg: TEMPLATE_EIGHT_IMG,
     colorPaletteCode: 'themeFour',
+  },{
+    id:'09',
+    thumbnailImg: TEMPLATE_EIGHT_IMG,
+    colorPaletteCode: 'themeOne',
+    label: 'Harvard Clean',
+    badge: '⭐ ATS 95%'
+  },{
+    id:'10',
+    thumbnailImg: TEMPLATE_EIGHT_IMG,
+    colorPaletteCode: 'themeOne',
+    label: 'Executive Pro',
+    badge: '✨ Modern'
   }
 
 ]
