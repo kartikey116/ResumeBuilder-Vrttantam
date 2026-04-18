@@ -2,16 +2,16 @@ import React from 'react';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import Input from '../../COmponent/Inputs/Input';
+import Input from '../../components/Inputs/Input';
 import { validateEmail } from '../../utils/helper.js';
-import ProfilePhotoSelector from '../../COmponent/Inputs/ProfilePhotoSelector.jsx';
+import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector.jsx';
 import axiosInstance from '../../utils/axiosinstance.js';
 import { API_PATHS, BASE_URL } from '../../utils/apiPaths.js';
 import { UserContext } from '../../context/userContext.jsx';
 import uploadImage from '../../utils/uploadimage';
 import toast from 'react-hot-toast';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
-import AuthBackground from '../../COmponent/AuthBackground.jsx';
+import AuthBackground from '../../components/ui/AuthBackground.jsx';
 
 function SignUp({ setCurrentPage }) {
   const [profilePic, setProfilePic] = useState(null);

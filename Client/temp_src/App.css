@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
+/* If needed, you can add this to your Tailwind config or global CSS */
+.font-dancing-script {
+  font-family: 'Dancing Script', cursive;
+}

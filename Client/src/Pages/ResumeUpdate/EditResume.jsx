@@ -8,21 +8,21 @@ import { dataURLtoFile } from "../../utils/helper.js";
 import toast from "react-hot-toast";
 
 // Layout & UI
-import DashboardLayout from "../../COmponent/layouts/DashboardLayout.jsx";
-import Modal from "../../COmponent/Modal.jsx";
-import AccordionSection from "../../COmponent/AccordionSection.jsx";
+import DashboardLayout from "../../components/layouts/DashboardLayout.jsx";
+import Modal from "../../components/ui/Modal.jsx";
+import AccordionSection from "../../components/ui/AccordionSection.jsx";
 import ThemeSelector from "./ThemeSelector.jsx";
-import RenderResume from "../../COmponent/ResumeTemplates/RenderResume.jsx";
+import RenderResume from "../../components/resume-templates/RenderResume.jsx";
 
 // Form sections (unchanged props API)
-import ProfileInfoForm from "./Forms/ProfileInfoForm.jsx";
-import ContactInfoForm from "./Forms/ContactInfoForm.jsx";
-import WorkExperienceForm from "./Forms/WorkExperienceForm.jsx";
-import EducationForm from "./Forms/EducationForm.jsx";
-import SkillsForm from "./Forms/SkillsForm.jsx";
-import ProjectsForm from "./Forms/ProjectsForm.jsx";
-import CertificationsForm from "./Forms/CertificationsForm.jsx";
-import AdditionalInfoForm from "./Forms/AdditionalInfoForm.jsx";
+import ProfileInfoForm from "../../components/forms/ProfileInfoForm.jsx";
+import ContactInfoForm from "../../components/forms/ContactInfoForm.jsx";
+import WorkExperienceForm from "../../components/forms/WorkExperienceForm.jsx";
+import EducationForm from "../../components/forms/EducationForm.jsx";
+import SkillsForm from "../../components/forms/SkillsForm.jsx";
+import ProjectsForm from "../../components/forms/ProjectsForm.jsx";
+import CertificationsForm from "../../components/forms/CertificationsForm.jsx";
+import AdditionalInfoForm from "../../components/forms/AdditionalInfoForm.jsx";
 
 // Icons
 import {
@@ -133,6 +133,18 @@ function EditResume() {
     });
   }, []);
 
+  const moveArrayItem = useCallback((section, index, direction) => {
+    setResumeData(prev => {
+      const arr = [...prev[section]];
+      if (direction === 'up' && index > 0) {
+        [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+      } else if (direction === 'down' && index < arr.length - 1) {
+        [arr[index + 1], arr[index]] = [arr[index], arr[index + 1]];
+      }
+      return { ...prev, [section]: arr };
+    });
+  }, []);
+
   /* ── save logic (unchanged from original) ── */
   const updateResumeDetails = async (thumbnailLink, profilePreviewUrl) => {
     const clean = {
@@ -171,7 +183,7 @@ function EditResume() {
         startDate: String(e.startDate || ""),
         endDate: String(e.endDate || ""),
       })),
-      skills: (resumeData.skills || []).map(s => ({ name: String(s.name || ""), progress: Number(s.progress || 0) })),
+      skills: (resumeData.skills || []).map(s => ({ category: String(s.category || ""), name: String(s.name || ""), progress: Number(s.progress || 0) })),
       projects: (resumeData.projects || []).map(p => ({
         title: String(p.title || ""),
         description: String(p.description || ""),
@@ -394,6 +406,7 @@ function EditResume() {
                     updateArrayItem={updateArrayItem}
                     addArrayItem={addArrayItem}
                     removeArrayItem={removeArrayItem}
+                    moveArrayItem={moveArrayItem}
                   />
                 </AccordionSection>
 
@@ -410,6 +423,7 @@ function EditResume() {
                     updateArrayItem={updateArrayItem}
                     addArrayItem={addArrayItem}
                     removeArrayItem={removeArrayItem}
+                    moveArrayItem={moveArrayItem}
                   />
                 </AccordionSection>
 
@@ -426,6 +440,7 @@ function EditResume() {
                     updateArrayItem={updateArrayItem}
                     addArrayItem={addArrayItem}
                     removeArrayItem={removeArrayItem}
+                    moveArrayItem={moveArrayItem}
                   />
                 </AccordionSection>
 
@@ -442,6 +457,7 @@ function EditResume() {
                     updateArrayItem={updateArrayItem}
                     addArrayItem={addArrayItem}
                     removeArrayItem={removeArrayItem}
+                    moveArrayItem={moveArrayItem}
                   />
                 </AccordionSection>
 
@@ -458,6 +474,7 @@ function EditResume() {
                     updateArrayItem={updateArrayItem}
                     addArrayItem={addArrayItem}
                     removeArrayItem={removeArrayItem}
+                    moveArrayItem={moveArrayItem}
                   />
                 </AccordionSection>
 
@@ -474,6 +491,7 @@ function EditResume() {
                     updateArrayItem={updateArrayItem}
                     addArrayItem={addArrayItem}
                     removeArrayItem={removeArrayItem}
+                    moveArrayItem={moveArrayItem}
                   />
                 </AccordionSection>
               </div>
@@ -582,12 +600,14 @@ function EditResume() {
           actionBtnText="Download PDF"
           onActionClick={() => reactToPrint()}
         >
-          <div ref={resumeDownloadRef} className="w-[90vw] md:w-[794px] h-[80vh]">
-            <RenderResume
-              templateId={resumeData.template?.theme || "09"}
-              resumeData={resumeData}
-              colorPalette={resumeData.template?.colorPalette || []}
-            />
+          <div className="w-[90vw] md:w-[794px] h-[80vh] overflow-y-auto custom-scrollbar bg-slate-100">
+            <div ref={resumeDownloadRef}>
+              <RenderResume
+                templateId={resumeData.template?.theme || "09"}
+                resumeData={resumeData}
+                colorPalette={resumeData.template?.colorPalette || []}
+              />
+            </div>
           </div>
         </Modal>
       </div>{/* end escape wrapper */}

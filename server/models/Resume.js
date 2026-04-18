@@ -118,6 +118,10 @@ const ResumeSchema = new mongoose.Schema({
         },
     }],
     skills: [{
+        category: {
+            type: String,
+            default: ""
+        },
         name: {
             type: String,
             default: ""

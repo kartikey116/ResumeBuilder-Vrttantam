@@ -228,11 +228,34 @@ const AtsVisualizer = () => {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 
-        targetResumeData = r.data.parsed;
-        setParsedFileData(targetResumeData);
+        if (r.data.cached) {
+           targetResumeData = r.data.result;
+           setParsedFileData(targetResumeData);
+           setLoadingProgress((prev) => Math.max(prev, 25));
+        } else {
+           const parseJobId = r.data.jobId;
+           const parsedData = await new Promise((resolve, reject) => {
+              const interval = setInterval(async () => {
+                  try {
+                     const statusRes = await axiosInstance.get(`/api/ai/status/${parseJobId}`);
+                     if(statusRes.data.status === 'completed') {
+                         clearInterval(interval);
+                         resolve(statusRes.data.result);
+                     } else if (statusRes.data.status === 'failed') {
+                         clearInterval(interval);
+                         reject(new Error("Parse Failed"));
+                     }
+                  } catch (e) {
+                     clearInterval(interval);
+                     reject(e);
+                  }
+              }, 2000);
+           });
 
-        // Jump progress forward when PDF parsing is successfully done
-        setLoadingProgress((prev) => Math.max(prev, 25));
+           targetResumeData = parsedData;
+           setParsedFileData(targetResumeData);
+           setLoadingProgress((prev) => Math.max(prev, 25));
+        }
       }
 
       const res = await axiosInstance.post('/api/ai/ats-score', {
@@ -241,7 +264,31 @@ const AtsVisualizer = () => {
         jobDescription: jobDesc,
       });
 
-      setAiData(res.data.analysis);
+      if (res.data.cached) {
+         // Instant hit from Redis Cache
+         setAiData(res.data.analysis);
+      } else {
+         // Polling for ATS Queue Job
+         const atsJobId = res.data.jobId;
+         const atsResult = await new Promise((resolve, reject) => {
+            const interval = setInterval(async () => {
+                try {
+                   const statusRes = await axiosInstance.get(`/api/ai/status/${atsJobId}`);
+                   if(statusRes.data.status === 'completed') {
+                       clearInterval(interval);
+                       resolve(statusRes.data.result);
+                   } else if (statusRes.data.status === 'failed') {
+                       clearInterval(interval);
+                       reject(new Error("Analysis Failed"));
+                   }
+                } catch (e) {
+                   clearInterval(interval);
+                   reject(e);
+                }
+            }, 3000);
+         });
+         setAiData(atsResult);
+      }
 
       // API is finished! Snap progress to 100%, checking off all remaining steps instantly
       setLoadingProgress(100);
@@ -275,8 +322,25 @@ const AtsVisualizer = () => {
       const res = await axiosInstance.post('/api/ai/import-resume', fd, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      
+      const jobId = res.data.jobId;
+      const finalResult = await new Promise((resolve, reject) => {
+          const interval = setInterval(async () => {
+              try {
+                 const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
+                 if(statusRes.data.status === 'completed') {
+                     clearInterval(interval);
+                     resolve(statusRes.data.result);
+                 } else if (statusRes.data.status === 'failed') {
+                     clearInterval(interval);
+                     reject(new Error("Import Failed"));
+                 }
+              } catch(e) { clearInterval(interval); reject(e); }
+          }, 3000);
+      });
+
       toast.success('Imported! Redirecting…', { id: 'imp' });
-      navigate(`/resume/${res.data.resumeId}`);
+      navigate(`/resume/${finalResult.resumeId}`);
     } catch {
       toast.error('Import failed. Please try again.', { id: 'imp' });
     } finally {

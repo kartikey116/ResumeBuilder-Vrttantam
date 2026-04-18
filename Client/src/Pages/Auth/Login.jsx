@@ -2,14 +2,14 @@ import React from 'react';
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import Input from '../../COmponent/Inputs/Input.jsx';
+import Input from '../../components/Inputs/Input.jsx';
 import { validateEmail } from '../../utils/helper.js';
 import axiosInstance from '../../utils/axiosinstance.js';
 import { API_PATHS, BASE_URL } from '../../utils/apiPaths.js';
 import { UserContext } from '../../context/userContext.jsx';
 import toast from 'react-hot-toast';
 import { FaGoogle, FaGithub } from 'react-icons/fa';
-import AuthBackground from '../../COmponent/AuthBackground.jsx';
+import AuthBackground from '../../components/ui/AuthBackground.jsx';
 
 function Login({ setCurrentPage }) {
   const [email, setEmail] = useState('');

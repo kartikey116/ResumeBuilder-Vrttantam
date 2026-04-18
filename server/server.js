@@ -12,14 +12,37 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import passport from 'passport';
 import './config/passport.js';
+import './workers/aiWorker.js'; // Initialize the BullMQ Worker to process background AI jobs
 import templateRoutes from './routes/templateRoutes.js';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 connectDB();
 const app = express();
+
+// Security Middlewares
+app.use(helmet());
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Added urlencoded
+
+// WORKAROUND for Express 5 vs express-mongo-sanitize:
+// Express 5 makes req.query immutable. This makes it writable again so the sanitizer doesn't crash.
+app.use((req, res, next) => {
+  Object.defineProperty(req, 'query', {
+    value: req.query,
+    writable: true, // This is the crucial fix
+    enumerable: true,
+    configurable: true
+  });
+  next();
+});
+
+// Data Sanitization must come AFTER express.json()
+app.use(mongoSanitize());
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -103,11 +126,15 @@ app.use(
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-  console.error(`[Error]: ${err.message}`);
-  const statusCode = err.status || 500;
+  console.error(`[Error]: ${err.stack || err.message}`);
+
+  const statusCode = err.statusCode || err.status || 500;
+  const message = err.isOperational ? err.message : 'Internal Server Error. Please try again later.';
+
   res.status(statusCode).json({
     success: false,
-    error: err.message || 'Internal Server Error',
+    error: message,
+    ...(process.env.NODE_ENV === 'development' && { dev_error_details: err.message, stack: err.stack }),
   });
 });
 

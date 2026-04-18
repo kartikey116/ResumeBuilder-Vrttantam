@@ -5,9 +5,9 @@ import {
   themeColorPalette,
 } from '../../utils/data';
 import { LuCircleCheckBig } from 'react-icons/lu';
-import Tabs from '../../COmponent/Tabs';
-import TemplateCard from '../../COmponent/Cards/TemplateCard';
-import RenderResume from '../../COmponent/ResumeTemplates/RenderResume';
+import Tabs from '../../components/ui/Tabs';
+import TemplateCard from '../../components/Cards/TemplateCard';
+import RenderResume from '../../components/resume-templates/RenderResume';
 import FontSelector from './FontSelector';
 
 const TAB_DATA = [

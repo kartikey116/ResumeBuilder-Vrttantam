@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosinstance.js';
 import { API_PATHS } from '../../utils/apiPaths.js';
-import DashboardLayout from '../../COmponent/layouts/DashboardLayout.jsx';
+import DashboardLayout from '../../components/layouts/DashboardLayout.jsx';
 import { LuCirclePlus } from 'react-icons/lu';
 import { FiActivity, FiFileText, FiTarget, FiUsers, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import moment from 'moment';
-import Modal from '../../COmponent/Modal.jsx';
-import ResumeSummaryCard from '../../COmponent/Cards/ResumeSummaryCard.jsx';
-import CreateResumeForm from '../Home/CreateResumeForm.jsx';
+import Modal from '../../components/ui/Modal.jsx';
+import ResumeSummaryCard from '../../components/Cards/ResumeSummaryCard.jsx';
+import CreateResumeForm from '../../components/forms/CreateResumeForm.jsx';
 import toast from 'react-hot-toast';
 import DashboardSkeleton from './DashboardSkeleton.jsx';
 
@@ -43,10 +43,27 @@ function Dashboard() {
     if (!publishModal) return;
     setPublishing(true);
     try {
-      await axiosInstance.post('/api/ai/anonymize-publish', {
+      const res = await axiosInstance.post('/api/ai/anonymize-publish', {
         resumeId: publishModal.resumeId,
         creatorName: publishName || 'Anonymous',
       });
+      
+      const jobId = res.data.jobId;
+      await new Promise((resolve, reject) => {
+          const interval = setInterval(async () => {
+              try {
+                 const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
+                 if(statusRes.data.status === 'completed') {
+                     clearInterval(interval);
+                     resolve();
+                 } else if (statusRes.data.status === 'failed') {
+                     clearInterval(interval);
+                     reject(new Error("Publish Failed"));
+                 }
+              } catch(e) { clearInterval(interval); reject(e); }
+          }, 3000);
+      });
+
       toast.success('🎉 Template published to Community Gallery!');
       setPublishModal(null);
       setPublishName('');
