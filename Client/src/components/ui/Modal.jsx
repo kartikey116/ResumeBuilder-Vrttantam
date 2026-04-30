@@ -1,63 +1,114 @@
-import React from 'react'
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function Modal({
-    children,
-    isOpen,
-    onClose,
-    hideHeader,
-    showActionBtn,
-    actionBtnIcon = null,
-    actionBtnText,
-    onActionClick,
-    title
+  children,
+  isOpen,
+  onClose,
+  hideHeader,
+  showActionBtn,
+  actionBtnIcon = null,
+  actionBtnText,
+  onActionClick,
+  title
 }) {
+  if (!isOpen) return null;
 
-    if (!isOpen) return null;
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 100,
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            padding: 16,
+          }}
+        >
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            style={{
+              position: 'absolute', inset: 0,
+              background: 'rgba(4,4,14,0.75)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+            }}
+          />
 
-    return (
-        <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/40'>
-            {/* Modal Content */}
-            <div className={`relative flex flex-col bg-white shadow-lg rounded-lg overflow-hidden`}>
-                {/* Modal Header */}
-                {
-                    !hideHeader && (
-                        <div className='flex justify-between items-center p-4 border-b border-gray-200'>
-                            <h3  className='md:text-lg font-medium text-gray-900'>{title}</h3>
-                            {
-                                showActionBtn && (
-                                    <button className='btn-small-light mr-12' onClick={() => onActionClick()}>
-                                        {actionBtnIcon}
-                                        {actionBtnText}
-                                    </button>
-                                )
-                            }
-                        </div>
-                    )
-                }
+          {/* Modal Panel */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 20 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'relative', zIndex: 1,
+              display: 'flex', flexDirection: 'column',
+              background: 'rgba(13,13,32,0.92)',
+              backdropFilter: 'blur(30px) saturate(200%)',
+              WebkitBackdropFilter: 'blur(30px) saturate(200%)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 24,
+              boxShadow: '0 0 0 1px rgba(124,58,237,0.15), 0 40px 100px rgba(0,0,0,0.6)',
+              maxHeight: '90vh',
+              overflow: 'hidden',
+              minWidth: 320,
+            }}
+          >
+            {/* Header */}
+            {!hideHeader && (
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '18px 22px',
+                borderBottom: '1px solid rgba(255,255,255,0.07)',
+              }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.90)', margin: 0 }}>
+                  {title}
+                </h3>
+                {showActionBtn && (
+                  <button className='btn-small-light mr-10' onClick={() => onActionClick()}>
+                    {actionBtnIcon}
+                    {actionBtnText}
+                  </button>
+                )}
+              </div>
+            )}
 
-                <button type="button" className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 flex justify-center items-center absolute top-3.5 right-3.5' onClick={() => onClose()}>
-                    <svg className='w-4 h-3' aria-hidden="true" xmlns='http://www.w3.org/2000/svg' fill='none ' viewBox='0 0 14 14'>
-                        <path
-                            stroke='currentColor'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            strokeWidth='2'
-                            d='M1 1l12 12M13 1L1 13'
-                        />
-                    </svg>
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                position: 'absolute', top: 14, right: 14,
+                width: 30, height: 30,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                borderRadius: 8, cursor: 'pointer',
+                color: 'rgba(255,255,255,0.50)',
+                transition: 'all 0.2s',
+                zIndex: 2,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.50)'; }}
+            >
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1l12 12M13 1L1 13" />
+              </svg>
+            </button>
 
-                </button>
-
-
-                <div className='flex-1 overflow-y-auto custom-scrollbar'>
-                    {children}
-                </div>
-
+            {/* Content */}
+            <div style={{ flex: 1, overflowY: 'auto' }} className="custom-scrollbar">
+              {children}
             </div>
+          </motion.div>
         </div>
-
-
-    )
+      )}
+    </AnimatePresence>
+  );
 }
 
-export default Modal
+export default Modal;

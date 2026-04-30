@@ -35,6 +35,13 @@ Share your success without sacrificing your identity. Our **AI Anonymization Eng
 - **One-Click Switch**: Change your entire resume design without losing content.
 - **Dynamic Customization**: Full control over color palettes (HSL tailored), typography (Inter, Roboto, DM Serif), and spacing.
 
+### 5. 🔒 Hardened Security & Enterprise Scalability
+Recent infrastructure upgrades have transformed the platform into an enterprise-grade system:
+- **Resilient AI Processing**: Redis-backed BullMQ queueing handles high-volume Gemini API requests asynchronously, eliminating timeouts and rate limits.
+- **Multi-Core Clustering**: Native Node.js cluster mode maximizes CPU usage for concurrent user traffic and intensive ATS evaluations.
+- **Comprehensive Threat Prevention**: Integrated `helmet.js` for secure HTTP headers, `express-mongo-sanitize` to block NoSQL injections, and strict `zod` validation ensuring completely type-safe request payloads.
+- **Abuse Mitigation**: Robust rate-limiting shields API routes from brute-force tactics.
+
 ---
 
 ## 🛠️ Technology Stack
@@ -42,8 +49,10 @@ Share your success without sacrificing your identity. Our **AI Anonymization Eng
 | Layer | Technology |
 |---|---|
 | **Frontend** | React.js, Vite, Framer Motion (Animations), Recharts (Data Viz) |
-| **Backend** | Node.js, Express.js |
+| **Backend** | Node.js, Express.js, Native Clustering |
 | **Database** | MongoDB + Mongoose |
+| **Queueing & Cache** | Redis (Upstash) + BullMQ |
+| **Security** | Helmet.js, Zod, Express Rate Limit, Mongo Sanitize |
 | **AI Engine** | Google Gemini API (`gemini-2.0-flash`) |
 | **Storage** | AWS S3 (Signed URLs for secure PDF/Image hosting) |
 | **Auth** | Passport.js (Local, Google OAuth, GitHub OAuth) |

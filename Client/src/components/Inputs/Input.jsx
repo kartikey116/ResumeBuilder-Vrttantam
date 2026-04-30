@@ -10,7 +10,7 @@ function Input({value,onChange,label,type ,placeholder}) {
     }
   return (
     <div>
-        <label className='text-[13px] text-slate-800'>{label}</label>
+        <label className='text-[13px] text-white/70 font-medium ml-1'>{label}</label>
         <div className='input-box'>
             <input 
                 type={

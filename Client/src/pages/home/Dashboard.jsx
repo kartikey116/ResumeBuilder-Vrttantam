@@ -5,7 +5,7 @@ import axiosInstance from '../../utils/axiosinstance.js';
 import { API_PATHS } from '../../utils/apiPaths.js';
 import DashboardLayout from '../../components/layouts/DashboardLayout.jsx';
 import { LuCirclePlus } from 'react-icons/lu';
-import { FiActivity, FiFileText, FiTarget, FiUsers, FiX } from 'react-icons/fi';
+import { FiActivity, FiFileText, FiTarget, FiUsers, FiX, FiZap } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 import Modal from '../../components/ui/Modal.jsx';
@@ -18,10 +18,9 @@ function Dashboard() {
   const navigate = useNavigate();
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [allresumes, setAllResumes] = useState([]);
-  const [publishModal, setPublishModal] = useState(null); // { resumeId, title }
+  const [publishModal, setPublishModal] = useState(null);
   const [publishing, setPublishing] = useState(false);
   const [publishName, setPublishName] = useState('');
-
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchAllResumes = async () => {
@@ -33,11 +32,9 @@ function Dashboard() {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
-  useEffect(() => {
-    fetchAllResumes();
-  }, []);
+  useEffect(() => { fetchAllResumes(); }, []);
 
   const handlePublishTemplate = async () => {
     if (!publishModal) return;
@@ -47,23 +44,16 @@ function Dashboard() {
         resumeId: publishModal.resumeId,
         creatorName: publishName || 'Anonymous',
       });
-      
       const jobId = res.data.jobId;
       await new Promise((resolve, reject) => {
-          const interval = setInterval(async () => {
-              try {
-                 const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
-                 if(statusRes.data.status === 'completed') {
-                     clearInterval(interval);
-                     resolve();
-                 } else if (statusRes.data.status === 'failed') {
-                     clearInterval(interval);
-                     reject(new Error("Publish Failed"));
-                 }
-              } catch(e) { clearInterval(interval); reject(e); }
-          }, 3000);
+        const interval = setInterval(async () => {
+          try {
+            const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
+            if (statusRes.data.status === 'completed') { clearInterval(interval); resolve(); }
+            else if (statusRes.data.status === 'failed') { clearInterval(interval); reject(new Error('Publish Failed')); }
+          } catch (e) { clearInterval(interval); reject(e); }
+        }, 3000);
       });
-
       toast.success('🎉 Template published to Community Gallery!');
       setPublishModal(null);
       setPublishName('');
@@ -74,13 +64,7 @@ function Dashboard() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <DashboardSkeleton />
-      </DashboardLayout>
-    );
-  }
+  if (isLoading) return <DashboardLayout><DashboardSkeleton /></DashboardLayout>;
 
   const totalResumes = allresumes.length;
   const scoredResumes = allresumes.filter(r => r.atsScore > 0);
@@ -90,85 +74,176 @@ function Dashboard() {
 
   return (
     <DashboardLayout>
-      {/* Hero Stats Banner */}
+
+      {/* ── Hero Stats Banner ── */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8 p-8 rounded-3xl bg-[#1e2330] text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative border border-slate-700"
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          marginBottom: 28,
+          padding: '28px 32px',
+          borderRadius: 24,
+          background: 'rgba(255,255,255,0.04)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(124,58,237,0.10)',
+          display: 'flex', flexWrap: 'wrap',
+          alignItems: 'center', justifyContent: 'space-between',
+          gap: 20, overflow: 'hidden', position: 'relative',
+        }}
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-3xl rounded-full translate-x-1/3 -translate-y-1/3"></div>
+        {/* Top accent line */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #7c3aed, #4f46e5, #db2777)' }} />
+        {/* Ambient glow orb */}
+        <div style={{ position: 'absolute', top: '-50%', right: '-5%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        <div className="relative z-10 space-y-2 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Career Hub</span></h1>
-          <p className="text-slate-400 text-sm max-w-sm">Manage your resumes, run ATS scans, and publish templates to the Community Gallery.</p>
+        {/* Title */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <h1 style={{ fontSize: 'clamp(22px, 4vw, 30px)', fontWeight: 800, color: '#fff', margin: '0 0 6px 0', letterSpacing: '-0.02em' }}>
+            Your{' '}
+            <span style={{
+              background: 'linear-gradient(135deg, #a855f7, #ec4899)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>
+              Career Hub
+            </span>
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: 13, margin: 0, maxWidth: 360 }}>
+            Manage resumes, run ATS scans, and publish to the Community Gallery.
+          </p>
         </div>
 
-        <div className="flex gap-4 md:gap-6 relative z-10">
-          <div className="flex flex-col items-center bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md min-w-[100px]">
-            <FiFileText className="text-blue-400 mb-1 w-6 h-6" />
-            <span className="text-2xl font-bold">{totalResumes}</span>
-            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Resumes</span>
-          </div>
-          <div className="flex flex-col items-center bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-md min-w-[100px]">
-            <FiActivity className={avgAtsScore > 75 ? "text-green-400 mb-1 w-6 h-6" : "text-amber-400 mb-1 w-6 h-6"} />
-            <span className="text-2xl font-bold">{avgAtsScore}%</span>
-            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Avg Score</span>
-          </div>
+        {/* Stat chips */}
+        <div style={{ display: 'flex', gap: 12, position: 'relative', zIndex: 1, flexWrap: 'wrap' }}>
+          {[
+            { icon: <FiFileText size={18} color="#818cf8" />, value: totalResumes, label: 'Resumes', color: '#818cf8', glow: 'rgba(99,102,241,0.20)' },
+            {
+              icon: <FiActivity size={18} color={avgAtsScore >= 75 ? '#4ade80' : '#fbbf24'} />,
+              value: `${avgAtsScore}%`, label: 'Avg Score',
+              color: avgAtsScore >= 75 ? '#4ade80' : '#fbbf24',
+              glow: avgAtsScore >= 75 ? 'rgba(74,222,128,0.15)' : 'rgba(251,191,36,0.15)',
+            },
+          ].map(({ icon, value, label, color, glow }) => (
+            <div key={label} style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.09)',
+              borderRadius: 16, padding: '14px 20px', minWidth: 100,
+              backdropFilter: 'blur(10px)',
+              boxShadow: `0 0 20px ${glow}`,
+            }}>
+              {icon}
+              <span style={{ fontSize: 22, fontWeight: 800, color: color, marginTop: 4 }}>{value}</span>
+              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginTop: 2 }}>{label}</span>
+            </div>
+          ))}
         </div>
 
-        <div className="relative z-10 w-full md:w-auto mt-4 md:mt-0 flex flex-col gap-3">
+        {/* Action buttons */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1, minWidth: 180 }}>
           <button
             onClick={() => navigate('/ats-check')}
-            className="w-full bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white px-8 py-3 rounded-2xl font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all flex items-center justify-center gap-2 transform hover:scale-105"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              padding: '12px 20px', borderRadius: 14, border: 'none', cursor: 'pointer',
+              background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+              color: '#fff', fontWeight: 700, fontSize: 13,
+              boxShadow: '0 4px 20px rgba(79,70,229,0.35)',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(79,70,229,0.50)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(79,70,229,0.35)'; }}
           >
-            <FiTarget className="w-5 h-5" />
-            Global ATS Scan
+            <FiTarget size={15} /> Global ATS Scan
           </button>
           <button
             onClick={() => navigate('/community')}
-            className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-3 rounded-2xl font-bold transition-all flex items-center justify-center gap-2"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              padding: '12px 20px', borderRadius: 14, cursor: 'pointer',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              color: 'rgba(255,255,255,0.80)', fontWeight: 700, fontSize: 13,
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.borderColor = 'rgba(124,58,237,0.35)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
           >
-            <FiUsers className="w-5 h-5" />
-            Community Gallery
+            <FiUsers size={15} /> Community Gallery
           </button>
         </div>
       </motion.div>
 
-      {/* Grid Section */}
+      {/* ── Resume Grid ── */}
       <motion.div
         initial="hidden"
         animate="show"
-        variants={{
-          hidden: { opacity: 0 },
-          show: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 }
-          }
-        }}
-        className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-1 pb-10 px-4 md:px-0'
+        variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } }}
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 pb-12"
       >
+        {/* Create Card */}
         <motion.div
           variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-          className='group min-h-[300px] flex flex-col gap-4 items-center justify-center bg-slate-50/50 backdrop-blur-lg rounded-2xl border-2 border-dashed border-slate-300 hover:border-purple-400 hover:bg-purple-50/30 p-4 cursor-pointer transition-all shadow-sm'
           onClick={() => setOpenCreateModal(true)}
+          style={{
+            minHeight: 300, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 14,
+            background: 'rgba(124,58,237,0.04)',
+            border: '2px dashed rgba(124,58,237,0.25)',
+            borderRadius: 20, cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative', overflow: 'hidden',
+          }}
+          whileHover={{
+            borderColor: 'rgba(124,58,237,0.55)',
+            background: 'rgba(124,58,237,0.08)',
+            boxShadow: '0 0 40px rgba(124,58,237,0.12)',
+            y: -4,
+          }}
         >
-          <div className='w-16 h-16 flex items-center justify-center bg-white border border-slate-100 shadow-sm rounded-2xl transform transition-transform duration-300 group-hover:scale-110 group-hover:shadow-md'>
-            <LuCirclePlus className='w-8 h-8 text-purple-600' />
+          {/* Subtle inner glow */}
+          <div style={{
+            position: 'absolute', top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 120, height: 120, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(124,58,237,0.10) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+
+          <div style={{
+            width: 56, height: 56,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(124,58,237,0.15)',
+            border: '1px solid rgba(124,58,237,0.30)',
+            borderRadius: 16,
+            boxShadow: '0 0 20px rgba(124,58,237,0.20)',
+            transition: 'all 0.3s',
+          }}>
+            <LuCirclePlus size={24} color="#a855f7" />
           </div>
-          <h3 className='font-bold text-slate-700 tracking-wide'>Create New Resume</h3>
+
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.80)', margin: '0 0 4px 0' }}>
+              Create New Resume
+            </p>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.30)', margin: 0 }}>
+              Start from scratch
+            </p>
+          </div>
         </motion.div>
 
+        {/* Resume Cards */}
         {allresumes?.map((resume, index) => (
-          <motion.div key={resume._id || `resume-${index}`} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}>
+          <motion.div
+            key={resume._id || `resume-${index}`}
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+          >
             <ResumeSummaryCard
               imgUrl={resume.thumbnailLink || null}
               title={resume.title}
-              lastUpdated={
-                resume.updatedAt
-                  ? moment(resume.updatedAt).format('Do MMM YYYY , h:mm a')
-                  : ""
-              }
+              lastUpdated={resume.updatedAt ? moment(resume.updatedAt).format('Do MMM YYYY, h:mm a') : ''}
               atsScore={resume.atsScore}
               onAtsCheck={() => navigate(`/ats-check?resumeId=${resume._id}`)}
               onSelect={() => navigate(`/resume/${resume._id}`)}
@@ -178,49 +253,110 @@ function Dashboard() {
         ))}
       </motion.div>
 
-      {/* Create Resume Modal */}
+      {/* ── Create Modal ── */}
       <Modal isOpen={openCreateModal} onClose={() => setOpenCreateModal(false)} hideHeader>
-        <div className=''><CreateResumeForm /></div>
+        <CreateResumeForm />
       </Modal>
 
-      {/* Publish Template Modal */}
+      {/* ── Publish Modal ── */}
       <AnimatePresence>
         {publishModal && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setPublishModal(null)}
+              style={{ position: 'absolute', inset: 0, background: 'rgba(4,4,14,0.80)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                position: 'relative', zIndex: 1,
+                background: 'rgba(13,13,32,0.95)',
+                backdropFilter: 'blur(30px) saturate(200%)',
+                WebkitBackdropFilter: 'blur(30px) saturate(200%)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                borderRadius: 24,
+                padding: '32px',
+                maxWidth: 440, width: '100%',
+                boxShadow: '0 0 0 1px rgba(124,58,237,0.15), 0 40px 100px rgba(0,0,0,0.6)',
+              }}
             >
-              <button onClick={() => setPublishModal(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <FiX size={20} />
+              <button
+                onClick={() => setPublishModal(null)}
+                style={{ position: 'absolute', top: 14, right: 14, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', color: 'rgba(255,255,255,0.50)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <FiX size={14} />
               </button>
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">Publish Template</h2>
-              <p className="text-gray-500 text-sm mb-6">
-                AI will anonymize <span className="font-semibold text-purple-600">"{publishModal.title}"</span> — removing ALL personal data — before making it public.
-              </p>
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, rgba(124,58,237,0.3), rgba(219,39,119,0.2))', border: '1px solid rgba(124,58,237,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FiZap size={16} color="#a855f7" />
+                  </div>
+                  <h2 style={{ fontSize: 20, fontWeight: 800, color: '#fff', margin: 0 }}>Publish Template</h2>
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+                  AI will anonymize <span style={{ color: '#a855f7', fontWeight: 700 }}>"{publishModal.title}"</span> — removing ALL personal data — before making it public.
+                </p>
+              </div>
+
+              {/* Privacy notice */}
+              <div style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.20)', borderRadius: 14, padding: '12px 14px', marginBottom: 20, fontSize: 12, color: 'rgba(251,191,36,0.85)', lineHeight: 1.6 }}>
                 🔒 <strong>Privacy First:</strong> Gemini AI will replace your name, email, company, and all personal details with fictional dummy data.
               </div>
-              <label className="block text-sm font-semibold text-gray-600 mb-2">Your display name (optional)</label>
-              <input
-                type="text"
-                value={publishName}
-                onChange={(e) => setPublishName(e.target.value)}
-                placeholder="Anonymous"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-purple-400 transition-colors mb-6"
-              />
-              <div className="flex gap-3">
-                <button onClick={() => setPublishModal(null)} className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50">
+
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: 8 }}>
+                  Display name (optional)
+                </label>
+                <input
+                  type="text" value={publishName}
+                  onChange={e => setPublishName(e.target.value)}
+                  placeholder="Anonymous"
+                  style={{
+                    width: '100%', padding: '12px 14px', borderRadius: 14,
+                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)',
+                    color: '#fff', fontSize: 14, outline: 'none',
+                    transition: 'border-color 0.2s',
+                    boxSizing: 'border-box',
+                  }}
+                  onFocus={e => { e.target.style.borderColor = 'rgba(124,58,237,0.55)'; e.target.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.12)'; }}
+                  onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.10)'; e.target.style.boxShadow = 'none'; }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  onClick={() => setPublishModal(null)}
+                  style={{ flex: 1, padding: '12px', borderRadius: 14, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.60)', fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                >
                   Cancel
                 </button>
                 <button
                   onClick={handlePublishTemplate}
                   disabled={publishing}
-                  className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl text-sm font-bold disabled:opacity-50"
+                  style={{
+                    flex: 1, padding: '12px', borderRadius: 14,
+                    background: publishing ? 'rgba(124,58,237,0.4)' : 'linear-gradient(135deg, #7c3aed, #db2777)',
+                    color: '#fff', fontWeight: 700, fontSize: 13, cursor: publishing ? 'not-allowed' : 'pointer',
+                    border: 'none',
+                    boxShadow: '0 4px 20px rgba(124,58,237,0.30)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                    transition: 'all 0.2s',
+                  }}
                 >
-                  {publishing ? '🤖 AI Processing...' : '🚀 Publish Template'}
+                  {publishing ? (
+                    <>
+                      <span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
+                      AI Processing…
+                    </>
+                  ) : '🚀 Publish Template'}
                 </button>
               </div>
             </motion.div>
@@ -228,8 +364,9 @@ function Dashboard() {
         )}
       </AnimatePresence>
 
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </DashboardLayout>
-  )
+  );
 }
 
 export default Dashboard;

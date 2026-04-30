@@ -3,7 +3,6 @@ import { callGemini } from '../utils/geminiHelper.js';
 import Resume from '../models/Resume.js';
 import PublicTemplate from '../models/PublicTemplate.js';
 import { redisClient } from '../config/redisClient.js';
-
 export const aiWorker = new Worker('ai-tasks', async (job) => {
   const { type, payload } = job.data;
   console.log(`[Worker] Processing Job ID: ${job.id} | Type: ${type}`);

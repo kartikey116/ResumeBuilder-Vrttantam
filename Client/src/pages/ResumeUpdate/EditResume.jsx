@@ -281,20 +281,20 @@ function EditResume() {
       {/* Escape DashboardLayout's container mx-auto pt-4 pb-4 */}
       <div className="-mx-4 md:-mx-8 lg:-mx-16 -mt-4 -mb-4">
         {/* ── TOP BAR ── */}
-        <div className="sticky top-16 z-30 flex items-center justify-between gap-3 bg-white/90 backdrop-blur border-b border-purple-100 px-4 py-2.5 shadow-sm">
+        <div className="sticky top-16 z-30 flex items-center justify-between gap-3 bg-[rgba(7,7,19,0.75)] backdrop-blur border-b border-[rgba(255,255,255,0.08)] px-4 py-2.5 shadow-sm" style={{ backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)' }}>
           {/* Left: Back + title */}
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => navigate("/dashboard")}
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-purple-700 shrink-0 transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-[rgba(255,255,255,0.6)] hover:text-white shrink-0 transition-colors"
             >
               <LuArrowLeft size={15} /> Back
             </button>
-            <div className="w-px h-5 bg-slate-200" />
+            <div className="w-px h-5 bg-[rgba(255,255,255,0.1)]" />
             <input
               value={resumeData.title}
               onChange={e => setResumeData(p => ({ ...p, title: e.target.value }))}
-              className="text-sm font-semibold text-slate-800 bg-transparent border-none outline-none min-w-0 w-48 truncate focus:bg-purple-50/60 focus:px-2 rounded transition-all"
+              className="text-sm font-semibold text-white bg-transparent border-none outline-none min-w-0 w-48 truncate focus:bg-[rgba(255,255,255,0.05)] focus:px-2 rounded transition-all placeholder-[rgba(255,255,255,0.3)]"
               placeholder="Resume title"
             />
           </div>
@@ -337,7 +337,8 @@ function EditResume() {
           {/* ═══ LEFT PANEL ═══ */}
           <div
             ref={panelRef}
-            className="w-[380px] shrink-0 overflow-y-auto custom-scrollbar bg-[#f9f8fc] border-r border-purple-100 p-3"
+            className="w-[380px] shrink-0 overflow-y-auto custom-scrollbar border-r border-[rgba(255,255,255,0.05)] p-3"
+            style={{ background: 'var(--bg-deep)' }}
           >
             {/* Mobile-only quick actions (theme + preview on small screens) */}
             <div className="flex gap-2 mb-3 sm:hidden">
@@ -350,11 +351,11 @@ function EditResume() {
             </div>
 
             {/* ATS tip banner */}
-            <div className="bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-100 rounded-xl px-3 py-2.5 mb-3 flex items-start gap-2">
+            <div className="glass bg-[rgba(124,58,237,0.1)] border-[rgba(124,58,237,0.2)] rounded-xl px-3 py-2.5 mb-4 flex items-start gap-2">
               <span className="text-lg">⚡</span>
               <div>
-                <p className="text-xs font-semibold text-purple-800">ATS Tip</p>
-                <p className="text-[10.5px] text-purple-600 leading-relaxed">
+                <p className="text-xs font-semibold text-purple-300">ATS Tip</p>
+                <p className="text-[10.5px] text-white/70 leading-relaxed">
                   Use the <strong>Harvard Clean</strong> template for the highest ATS compatibility. Quantify achievements with numbers!
                 </p>
               </div>
@@ -511,10 +512,10 @@ function EditResume() {
           </div>
 
           {/* ═══ LIVE PREVIEW PANEL ═══ */}
-          <div className="flex-1 flex flex-col overflow-hidden bg-[#e8e8f0]">
+          <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#0a0a18' }}>
             {/* Preview toolbar */}
-            <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur border-b border-slate-200 shrink-0">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-[rgba(255,255,255,0.05)] shrink-0" style={{ background: 'rgba(255,255,255,0.02)' }}>
+              <span className="text-xs font-semibold text-white/50 uppercase tracking-wide">
                 Live Preview
               </span>
               <div className="flex items-center gap-2">
@@ -525,7 +526,7 @@ function EditResume() {
                 >
                   <LuZoomOut size={13} />
                 </button>
-                <span className="text-xs font-mono text-slate-500 w-12 text-center">
+                <span className="text-xs font-mono text-white/50 w-12 text-center">
                   {Math.round(previewScale * 100)}%
                 </span>
                 <button

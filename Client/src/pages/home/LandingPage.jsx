@@ -66,7 +66,7 @@ const MockATS = ({ isVisible }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
       <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
         <svg width="72" height="72" viewBox="0 0 72 72" style={{ transform: "rotate(-90deg)" }}>
-          <circle cx="36" cy="36" r="28" fill="none" stroke="#f1f5f9" strokeWidth="6" />
+          <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
           <circle cx="36" cy="36" r="28" fill="none" stroke="#d97706" strokeWidth="6"
             strokeLinecap="round" strokeDasharray="176"
             strokeDashoffset={isVisible ? "74" : "176"}
@@ -155,17 +155,17 @@ const MockImport = ({ isVisible }) => {
   return (
     <div className="lp-mock">
       <div className="lp-mock-topbar" />
-      <div style={{ border: step > 0 ? "2px solid #16a34a" : "2px dashed #e2e8f0", background: step > 0 ? "#f0fdf4" : "transparent", borderRadius: 10, padding: "16px 12px", textAlign: "center", marginBottom: 12, transition: "all 0.4s ease" }}>
+      <div style={{ border: step > 0 ? "2px solid #16a34a" : "2px dashed rgba(255,255,255,0.12)", background: step > 0 ? "rgba(22,163,74,0.08)" : "rgba(255,255,255,0.03)", borderRadius: 10, padding: "16px 12px", textAlign: "center", marginBottom: 12, transition: "all 0.4s ease" }}>
         <div style={{ fontSize: 22, marginBottom: 4, transform: step > 0 ? "scale(1.1)" : "scale(1)", transition: "transform 0.3s" }}>📄</div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: step > 0 ? "#14532d" : "#334155" }}>resume_2024.pdf</div>
-        <div style={{ fontSize: 10, color: step > 0 ? "#16a34a" : "#94a3b8", marginTop: 2 }}>{step > 0 ? "Analyzed successfully" : "Drop your resume here"}</div>
+        <div style={{ fontSize: 11, fontWeight: 700, color: step > 0 ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.60)" }}>resume_2024.pdf</div>
+        <div style={{ fontSize: 10, color: step > 0 ? "#4ade80" : "rgba(255,255,255,0.30)", marginTop: 2 }}>{step > 0 ? "Analyzed successfully" : "Drop your resume here"}</div>
       </div>
       <div style={{ fontSize: 10, fontWeight: 700, color: "#64748b", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>Extracted sections</div>
       {items.map(([label, count], i) => (
         <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, marginBottom: 7, opacity: step > i ? 1 : 0, transform: step > i ? 'translateX(0)' : 'translateX(-10px)', transition: "all 0.3s ease" }}>
-          <span style={{ color: "#16a34a", fontSize: 13 }}>✓</span>
-          <span style={{ color: "#334155", fontWeight: 600 }}>{label}</span>
-          <span style={{ marginLeft: "auto", color: "#94a3b8", fontSize: 10 }}>{count}</span>
+          <span style={{ color: "#4ade80", fontSize: 13 }}>✓</span>
+          <span style={{ color: "rgba(255,255,255,0.80)", fontWeight: 600 }}>{label}</span>
+          <span style={{ marginLeft: "auto", color: "rgba(255,255,255,0.35)", fontSize: 10 }}>{count}</span>
         </div>
       ))}
       <div style={{ marginTop: 10, background: "linear-gradient(135deg,#7c3aed,#db2777)", borderRadius: 8, padding: "7px 12px", textAlign: "center", color: "#fff", fontSize: 11, fontWeight: 700, opacity: step > 3 ? 1 : 0, transform: step > 3 ? "translateY(0)" : "translateY(10px)", transition: "all 0.4s ease" }}>
@@ -208,9 +208,9 @@ const MockAnon = ({ isVisible }) => {
           <span style={{ fontSize: 10, color: "#16a34a", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", opacity: step > i ? 1 : 0, transform: step > i ? "translateX(0)" : "translateX(-5px)", transition: "all 0.3s" }}>{after}</span>
         </div>
       ))}
-      <div style={{ marginTop: 12, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: "8px 10px", display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ marginTop: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 8, padding: "8px 10px", display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 14 }}>🔒</span>
-        <span style={{ fontSize: 10, color: "#64748b", lineHeight: 1.4 }}>Zero personal information leaves your account</span>
+        <span style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", lineHeight: 1.4 }}>Zero personal information leaves your account</span>
       </div>
     </div>
   );
@@ -246,7 +246,7 @@ const MockBullet = ({ isVisible }) => {
       </div>
       <div style={{ opacity: step === 2 ? 1 : 0, transform: step === 2 ? "translateY(0)" : "translateY(10px)", transition: "all 0.5s ease" }}>
         <div style={{ fontSize: 10, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>Enhanced bullet</div>
-        <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8, padding: "8px 10px", fontSize: 10, color: "#14532d", lineHeight: 1.5 }}>
+        <div style={{ background: "rgba(22,163,74,0.10)", border: "1px solid rgba(74,222,128,0.25)", borderRadius: 8, padding: "8px 10px", fontSize: 10, color: "#4ade80", lineHeight: 1.5 }}>
           Led end-to-end deployment pipeline for 6 client-facing features, reducing release cycle time by <strong>40%</strong> through automated CI/CD integration.
         </div>
       </div>
@@ -263,22 +263,23 @@ const FAQItem = ({ q, a }) => {
     <div
       onClick={() => setOpen(!open)}
       style={{
-        border: "1px solid", borderColor: open ? "#c4b5fd" : "#e2e8f0",
+        border: "1px solid", borderColor: open ? "rgba(124,58,237,0.5)" : "rgba(255,255,255,0.09)",
         borderRadius: 14, overflow: "hidden", cursor: "pointer",
-        background: open ? "#faf5ff" : "#fff",
+        background: open ? "rgba(124,58,237,0.08)" : "rgba(255,255,255,0.04)",
+        backdropFilter: "blur(12px)",
         transition: "border-color .2s, background .2s",
       }}
     >
       <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-        <span style={{ fontSize: 14, fontWeight: 600, color: "#1e293b", lineHeight: 1.4 }}>{q}</span>
+        <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.88)", lineHeight: 1.4 }}>{q}</span>
         <span style={{
-          width: 24, height: 24, borderRadius: "50%", background: open ? "#7c3aed" : "#f1f5f9",
-          color: open ? "#fff" : "#64748b", display: "flex", alignItems: "center", justifyContent: "center",
+          width: 24, height: 24, borderRadius: "50%", background: open ? "#7c3aed" : "rgba(255,255,255,0.08)",
+          color: open ? "#fff" : "rgba(255,255,255,0.50)", display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 14, flexShrink: 0, transition: "all .2s", transform: open ? "rotate(180deg)" : "none",
         }}>⌄</span>
       </div>
       <div style={{ maxHeight: open ? 200 : 0, overflow: "hidden", transition: "max-height .35s ease" }}>
-        <p style={{ padding: "0 20px 16px", fontSize: 13, color: "#64748b", lineHeight: 1.7 }}>{a}</p>
+        <p style={{ padding: "0 20px 16px", fontSize: 13, color: "rgba(255,255,255,0.48)", lineHeight: 1.7 }}>{a}</p>
       </div>
     </div>
   );
@@ -393,7 +394,7 @@ export default function LandingPages() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const COLORS = ["#a855f7", "#ec4899", "#c084fc", "#f9a8d4", "#818cf8"];
+    const COLORS = ["#a855f7", "#ec4899", "#c084fc", "#818cf8", "#06b6d4"];
     let W, H, dots = [];
 
     const resize = () => {
@@ -565,6 +566,102 @@ export default function LandingPages() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap');
 
+        /* ═══ GLASSMORPHISM AMBIENT LAYER ═══ */
+        .lp-ambient-layer {
+          position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+        }
+        .lp-orb {
+          position: absolute; border-radius: 50%; filter: blur(90px);
+          animation: orb-drift 18s ease-in-out infinite alternate;
+        }
+        .lp-orb-1 {
+          width: 700px; height: 700px; top: -200px; left: -150px;
+          background: radial-gradient(circle, rgba(124,58,237,0.55) 0%, rgba(79,70,229,0.20) 50%, transparent 70%);
+          animation-duration: 22s;
+        }
+        .lp-orb-2 {
+          width: 600px; height: 600px; top: 30%; right: -150px;
+          background: radial-gradient(circle, rgba(219,39,119,0.45) 0%, rgba(168,85,247,0.15) 50%, transparent 70%);
+          animation-duration: 28s; animation-delay: -6s;
+        }
+        .lp-orb-3 {
+          width: 500px; height: 500px; bottom: 10%; left: 20%;
+          background: radial-gradient(circle, rgba(6,182,212,0.35) 0%, rgba(79,70,229,0.10) 50%, transparent 70%);
+          animation-duration: 20s; animation-delay: -12s;
+        }
+        .lp-orb-4 {
+          width: 400px; height: 400px; top: 60%; left: 55%;
+          background: radial-gradient(circle, rgba(236,72,153,0.30) 0%, transparent 70%);
+          animation-duration: 16s; animation-delay: -4s;
+        }
+        @keyframes orb-drift {
+          0%   { transform: translate(0, 0) scale(1); }
+          33%  { transform: translate(60px, -80px) scale(1.08); }
+          66%  { transform: translate(-40px, 50px) scale(0.95); }
+          100% { transform: translate(30px, -30px) scale(1.03); }
+        }
+
+        /* ═══ TRUE GLASSMORPHISM PANELS ═══ */
+        .glass-section {
+          position: relative; z-index: 1;
+          background: rgba(255, 255, 255, 0.04);
+          backdrop-filter: blur(24px) saturate(180%);
+          -webkit-backdrop-filter: blur(24px) saturate(180%);
+          border-top: 1px solid rgba(255,255,255,0.10);
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .glass-card-true {
+          background: rgba(255,255,255,0.06);
+          backdrop-filter: blur(20px) saturate(160%);
+          -webkit-backdrop-filter: blur(20px) saturate(160%);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-top: 1px solid rgba(255,255,255,0.20);
+          border-radius: 20px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.10);
+          transition: all 0.3s ease;
+        }
+        .glass-card-true:hover {
+          background: rgba(255,255,255,0.09);
+          border-color: rgba(124,58,237,0.40);
+          box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.25), inset 0 1px 0 rgba(255,255,255,0.14);
+          transform: translateY(-3px);
+        }
+        .glass-mock-true {
+          background: rgba(255,255,255,0.07);
+          backdrop-filter: blur(30px) saturate(200%);
+          -webkit-backdrop-filter: blur(30px) saturate(200%);
+          border: 1px solid rgba(255,255,255,0.15);
+          border-top: 1px solid rgba(255,255,255,0.25);
+          border-radius: 20px;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .glass-hero-tag {
+          background: rgba(124,58,237,0.20);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(124,58,237,0.45);
+          box-shadow: 0 0 24px rgba(124,58,237,0.30), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .glass-stat-card {
+          text-align: center; padding: 2.5rem 2rem;
+          border-right: 1px solid rgba(255,255,255,0.07);
+          position: relative;
+        }
+        .glass-stat-card::before {
+          content: '';
+          position: absolute; inset: 12px; border-radius: 16px;
+          background: rgba(255,255,255,0.03);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.06);
+          transition: all 0.3s;
+        }
+        .glass-stat-card:hover::before {
+          background: rgba(124,58,237,0.08);
+          border-color: rgba(124,58,237,0.20);
+        }
+        .glass-stat-card:last-child { border-right: none; }
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
@@ -572,14 +669,14 @@ export default function LandingPages() {
           --pk: #db2777;
           --pu2: #a855f7;
           --pk2: #ec4899;
-          --pu-l: #f5f3ff;
-          --pk-l: #fdf2f8;
-          --bg: #fafaf9;
-          --fg: #0f172a;
-          --fg2: #475569;
-          --fg3: #94a3b8;
-          --border: #e2e8f0;
-          --card: #ffffff;
+          --pu-l: rgba(124,58,237,0.15);
+          --pk-l: rgba(219,39,119,0.10);
+          --bg: #070713;
+          --fg: rgba(255,255,255,0.93);
+          --fg2: rgba(255,255,255,0.55);
+          --fg3: rgba(255,255,255,0.30);
+          --border: rgba(255,255,255,0.09);
+          --card: rgba(255,255,255,0.05);
           --serif: 'DM Serif Display', Georgia, serif;
           --sans: 'Instrument Sans', system-ui, sans-serif;
           --script: 'Dancing Script', cursive;
@@ -591,10 +688,17 @@ export default function LandingPages() {
           color: var(--fg);
           overflow-x: hidden;
         }
+        body {
+          background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,58,237,0.20) 0%, transparent 60%);
+        }
 
         @keyframes float-particle {
           from { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
           to   { transform: translate(-50%, -50%) scale(1.3) translate(20px, -15px); opacity: 1; }
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
 
         .lp-grad-text {
@@ -617,20 +721,23 @@ export default function LandingPages() {
 
         .lp-btn-ghost {
           display: inline-flex; align-items: center; gap: 8px;
-          background: transparent; color: var(--fg);
+          background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.80);
           padding: 12px 24px; border-radius: 50px;
           font-family: var(--sans); font-size: 14px; font-weight: 600;
-          border: 1.5px solid var(--border); cursor: pointer;
-          transition: border-color .2s, color .2s;
+          border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+          transition: all .2s;
+          backdrop-filter: blur(8px);
         }
-        .lp-btn-ghost:hover { border-color: var(--pu); color: var(--pu); }
+        .lp-btn-ghost:hover { border-color: rgba(124,58,237,0.5); color: #a855f7; background: rgba(124,58,237,0.10); }
 
         /* NAV */
         .lp-nav {
           position: sticky; top: 0; z-index: 50;
-          backdrop-filter: blur(14px);
-          background: rgba(250,250,249,0.82);
-          border-bottom: 1px solid var(--border);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          background: rgba(7,7,19,0.80);
+          border-bottom: 1px solid rgba(255,255,255,0.07);
+          box-shadow: 0 4px 30px rgba(0,0,0,0.3);
         }
         .lp-nav-inner {
           max-width: 1140px; margin: 0 auto; padding: 0 24px; height: 64px;
@@ -641,33 +748,30 @@ export default function LandingPages() {
           background: linear-gradient(135deg, var(--pu), var(--pk));
           -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1;
         }
-        .lp-logo-deva { font-size: .75rem; color: var(--fg3); font-family: var(--sans); font-weight: 500; letter-spacing: .04em; margin-left: 6px; }
+        .lp-logo-deva { font-size: .75rem; color: rgba(255,255,255,0.30); font-family: var(--sans); font-weight: 500; letter-spacing: .04em; margin-left: 6px; }
 
         /* HERO */
-        .lp-hero {
-          position: relative; overflow: hidden; min-height: 68vh;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .lp-hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-        .lp-hero-inner { position: relative; z-index: 2; text-align: center; max-width: 780px; padding: 4rem 24px 5rem; }
+        .lp-hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .lp-hero-eyebrow {
-          display: inline-flex; align-items: center; gap: 8px; background: var(--pu-l); border: 1px solid #ddd6fe;
-          color: var(--pu); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;
-          letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeUp .5s ease forwards;
+          display: inline-flex; align-items: center; gap: 8px;
+          background: rgba(124,58,237,0.18); border: 1px solid rgba(124,58,237,0.45);
+          color: #a855f7; font-size: 11px; font-weight: 700; padding: 7px 16px; border-radius: 20px;
+          letter-spacing: .08em; text-transform: uppercase;
+          box-shadow: 0 0 28px rgba(124,58,237,0.28);
+          backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+          animation: fadeUp .5s ease forwards;
         }
-        .lp-hero-h1 { font-family: var(--serif); font-size: clamp(2.8rem, 6vw, 4.5rem); font-weight: 400; line-height: 1.12; color: var(--fg); margin-bottom: 1.5rem; animation: fadeUp .6s .1s ease both; }
-        .lp-hero-sub { font-size: 16px; color: var(--fg2); line-height: 1.75; max-width: 560px; margin: 0 auto 2.5rem; min-height: 3.5rem; animation: fadeUp .6s .2s ease both; }
-        .lp-hero-actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; animation: fadeUp .6s .3s ease both; }
-        .lp-cursor { display: inline-block; width: 2px; height: 1em; background: var(--pu); margin-left: 2px; vertical-align: middle; animation: blink 1s step-end infinite; }
+        .lp-cursor { display: inline-block; width: 2px; height: 1em; background: #a855f7; margin-left: 2px; vertical-align: middle; animation: blink 1s step-end infinite; }
+        @media (max-width: 768px) { .lp-hero-split-right { display: none !important; } }
 
         /* STATS */
         .lp-stats { max-width: 1140px; margin: 0 auto; padding: 5rem 24px; }
         .lp-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
         @media (max-width: 600px) { .lp-stats-grid { grid-template-columns: 1fr; } }
-        .lp-stat { text-align: center; padding: 3rem 2rem; border-right: 1px solid var(--border); }
+        .lp-stat { text-align: center; padding: 3rem 2rem; border-right: 1px solid rgba(255,255,255,0.07); }
         .lp-stat:last-child { border-right: none; }
         .lp-stat-num { font-family: var(--serif); font-size: 3.5rem; line-height: 1; margin-bottom: .5rem; }
-        .lp-stat-label { font-size: 13px; color: var(--fg2); font-weight: 500; }
+        .lp-stat-label { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 500; }
 
         /* ── CAROUSEL SECTION ── */
         .lp-carousel-section {
@@ -760,14 +864,15 @@ export default function LandingPages() {
         .lp-progress-pill {
           height: 4px;
           border-radius: 2px;
-          background: var(--border);
+          background: rgba(255,255,255,0.12);
           cursor: pointer;
           transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
           width: 24px;
         }
         .lp-progress-pill.active {
-          background: linear-gradient(90deg, var(--pu), var(--pk));
+          background: linear-gradient(90deg, #7c3aed, #db2777);
           width: 48px;
+          box-shadow: 0 0 10px rgba(124,58,237,0.5);
         }
 
         /* Slide counter badge (top-right of section) */
@@ -783,18 +888,24 @@ export default function LandingPages() {
         }
 
         /* Feature tag */
-        .lp-feat-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--pu); margin-bottom: .75rem; }
-        .lp-feat-tag::before { content: ''; width: 18px; height: 1.5px; background: linear-gradient(90deg, var(--pu), var(--pk)); display: block; border-radius: 2px; }
-        .lp-feat-h2 { font-family: var(--serif); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 400; line-height: 1.2; color: var(--fg); margin-bottom: 1rem; }
-        .lp-feat-body { font-size: 15px; color: var(--fg2); line-height: 1.8; margin-bottom: 1.5rem; }
+        .lp-feat-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #a855f7; margin-bottom: .75rem; }
+        .lp-feat-tag::before { content: ''; width: 18px; height: 1.5px; background: linear-gradient(90deg, #7c3aed, #db2777); display: block; border-radius: 2px; }
+        .lp-feat-h2 { font-family: var(--serif); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 400; line-height: 1.2; color: rgba(255,255,255,0.93); margin-bottom: 1rem; }
+        .lp-feat-body { font-size: 15px; color: rgba(255,255,255,0.52); line-height: 1.8; margin-bottom: 1.5rem; }
         .lp-perk-list { display: flex; flex-direction: column; gap: 8px; }
-        .lp-perk { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--fg); }
-        .lp-perk-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--pu), var(--pk)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 9px; }
+        .lp-perk { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.82); }
+        .lp-perk-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, #7c3aed, #db2777); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 9px; }
 
         /* Mock card */
         .lp-mock {
-          width: 100%; max-width: 360px; background: var(--card); border: 1px solid var(--border); border-radius: 18px;
-          padding: 24px; box-shadow: 0 12px 48px rgba(124,58,237,0.1), 0 2px 8px rgba(0,0,0,0.04);
+          width: 100%; max-width: 360px;
+          background: rgba(255,255,255,0.05);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          border: 1px solid rgba(255,255,255,0.10);
+          border-radius: 18px;
+          padding: 24px;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(124,58,237,0.12), inset 0 1px 0 rgba(255,255,255,0.08);
         }
         .lp-mock-topbar { height: 5px; border-radius: 3px; margin-bottom: 20px; background: linear-gradient(90deg, var(--pu), var(--pk)); width: 55%; }
 
@@ -811,55 +922,238 @@ export default function LandingPages() {
         }
 
         /* Why Us */
-        .lp-why { background: linear-gradient(170deg, var(--pu-l) 0%, var(--pk-l) 100%); position: relative; overflow: hidden; }
+        .lp-why { background: linear-gradient(170deg, rgba(124,58,237,0.08) 0%, rgba(219,39,119,0.05) 100%); position: relative; overflow: hidden; }
         .lp-why-inner { max-width: 1140px; margin: 0 auto; padding: 6rem 24px; position: relative; z-index: 1; }
         .lp-why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 3rem; }
         @media (max-width: 600px) { .lp-why-grid { grid-template-columns: 1fr; } }
-        .lp-why-card { background: #fff; border-radius: 16px; padding: 28px; border: 1px solid rgba(124,58,237,.12); transition: box-shadow 0.2s, transform 0.2s; }
-        .lp-why-card:hover { box-shadow: 0 8px 32px rgba(124,58,237,0.1); transform: translateY(-2px); }
-        .lp-why-icon { font-size: 20px; color: var(--pu); margin-bottom: 14px; display: block; }
-        .lp-why-name { font-size: 15px; font-weight: 700; color: var(--fg); margin-bottom: 8px; }
-        .lp-why-body { font-size: 13px; color: var(--fg2); line-height: 1.7; }
+        .lp-why-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 16px; padding: 28px; border: 1px solid rgba(255,255,255,0.08); transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s; }
+        .lp-why-card:hover { box-shadow: 0 12px 40px rgba(124,58,237,0.18), 0 0 0 1px rgba(124,58,237,0.25); transform: translateY(-3px); border-color: rgba(124,58,237,0.28); }
+        .lp-why-icon { font-size: 20px; color: var(--pu2); margin-bottom: 14px; display: block; }
+        .lp-why-name { font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.90); margin-bottom: 8px; }
+        .lp-why-body { font-size: 13px; color: rgba(255,255,255,0.50); line-height: 1.7; }
 
         /* FAQ */
         .lp-faq { max-width: 760px; margin: 0 auto; padding: 6rem 24px; }
         .lp-faq-list { display: flex; flex-direction: column; gap: 8px; margin-top: 2.5rem; }
 
+        /* Stamp Scene (Formerly Laptop Scene) */
+        .lp-stamp-scene {
+          position: relative; width: 100%; padding: 8rem 0 12rem; display: flex;
+          flex-direction: column; align-items: center; justify-content: center;
+          overflow: hidden; z-index: 1;
+          background: linear-gradient(180deg, rgba(4,4,14,0) 0%, rgba(25,30,50,0.3) 15%, rgba(110,125,160,0.7) 28%, rgba(240,244,255,1) 45%, rgba(248,250,252,1) 100%);
+          color: #0f172a;
+        }
+        .lp-stamp-wrapper {
+          position: relative; width: 600px; max-width: 92vw;
+          margin-bottom: 2rem; display: flex; justify-content: center;
+        }
+        
+
+
+        /* The Floating Resume Document */
+        .lp-doc-slide {
+          position: relative;
+          width: 70%;
+          border-radius: 6px;
+          overflow: hidden;
+          background: #fff;
+          box-shadow: 0 30px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+          z-index: 10;
+        }
+        .lp-doc-slide img { width: 100%; height: auto; display: block; }
+
+        /* Stamp */
+        .lp-stamp {
+          position: absolute;
+          left: 50%; top: 20%;
+          transform: translateX(-50%) translateY(200px) scale(0.3) rotate(-15deg);
+          width: 180px; height: 180px;
+          z-index: 20;
+          opacity: 0;
+          pointer-events: none;
+        }
+        .lp-stamp-ring {
+          width: 100%; height: 100%; border-radius: 50%;
+          border: 8px solid rgba(59,130,246,0.9);
+          display: flex; align-items: center; justify-content: center;
+          flex-direction: column;
+          background: rgba(255,255,255,0.8);
+          box-shadow: 0 0 20px rgba(59,130,246,0.3);
+        }
+        .lp-stamp-text-top {
+          font-size: 10px; font-weight: 900; color: rgba(59,130,246,0.9);
+          letter-spacing: 0.15em; text-transform: uppercase; font-family: var(--sans);
+        }
+        .lp-stamp-main {
+          font-size: 20px; font-weight: 900; color: rgba(59,130,246,1);
+          letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--sans);
+          line-height: 1.1; margin: 4px 0;
+        }
+        .lp-stamp-text-bot {
+          font-size: 9px; font-weight: 800; color: rgba(59,130,246,0.8);
+          letter-spacing: 0.12em; text-transform: uppercase; font-family: var(--sans);
+        }
+
         /* CTA */
-        .lp-cta { max-width: 1140px; margin: 0 auto; padding: 0 24px 6rem; }
+        .lp-cta { max-width: 860px; margin: 0 auto; padding: 0 24px 6rem; }
         .lp-cta-inner {
-          background: linear-gradient(135deg, var(--pu) 0%, #4f46e5 40%, var(--pk) 100%);
-          border-radius: 24px; padding: 5rem 3rem; text-align: center; color: #fff; position: relative; overflow: hidden;
+          background: rgba(255,255,255,0.04);
+          backdrop-filter: blur(24px) saturate(180%);
+          -webkit-backdrop-filter: blur(24px) saturate(180%);
+          border-radius: 28px;
+          padding: 5rem 3rem;
+          text-align: center;
+          color: #fff;
+          position: relative;
+          overflow: hidden;
+          /* gradient border via box-shadow */
+          box-shadow: 0 0 0 1px rgba(124,58,237,0.35), 0 0 80px rgba(124,58,237,0.18), 0 32px 64px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10);
+          border: 1px solid rgba(255,255,255,0.10);
+          border-top: 1px solid rgba(255,255,255,0.18);
         }
         .lp-cta-inner::before {
-          content: ''; position: absolute; inset: 0; pointer-events: none;
-          background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+          content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 28px;
+          background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.20) 0%, transparent 70%);
         }
-        .lp-cta-h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; margin-bottom: 1rem; position: relative; }
-        .lp-cta-body { font-size: 16px; opacity: .85; line-height: 1.7; margin-bottom: 2.5rem; position: relative; }
-        .lp-btn-white {
-          display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--pu); padding: 14px 32px; border-radius: 50px;
-          font-family: var(--sans); font-size: 15px; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.15); transition: transform .2s, box-shadow .2s; position: relative;
+        .lp-cta-h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; margin-bottom: 1rem; position: relative;
+          background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(192,132,252,0.90)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .lp-btn-white:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(0,0,0,.2); }
+        .lp-cta-body { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 2.5rem; position: relative; }
+        .lp-btn-cta {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: linear-gradient(135deg, #7c3aed, #db2777);
+          color: #fff; padding: 14px 36px; border-radius: 50px;
+          font-family: var(--sans); font-size: 15px; font-weight: 700; border: none; cursor: pointer;
+          box-shadow: 0 4px 24px rgba(124,58,237,0.40); transition: transform .2s, box-shadow .2s; position: relative;
+        }
+        .lp-btn-cta:hover { transform: scale(1.04); box-shadow: 0 8px 36px rgba(124,58,237,0.55); }
+
+        /* Hero 3D Cascade Showcase */
+        .lp-hero-visual {
+          position: relative; display: flex; justify-content: center; align-items: center;
+          perspective: 1500px; height: 650px; margin-top: -2rem;
+        }
+        
+        /* The Massive Diagonal Aura */
+        .lp-light-beam {
+          position: absolute; top: -100px; right: -200px;
+          width: 800px; height: 800px; z-index: 0; pointer-events: none;
+          background: radial-gradient(circle at center, rgba(192,132,252,0.3) 0%, rgba(219,39,119,0.15) 40%, transparent 70%);
+          transform: rotateZ(-30deg) scaleY(1.5);
+          filter: blur(60px);
+          animation: auraPulse 6s ease-in-out infinite alternate;
+        }
+        @keyframes auraPulse {
+          from { opacity: 0.6; transform: rotateZ(-30deg) scaleY(1.5) translateX(0); }
+          to { opacity: 1; transform: rotateZ(-30deg) scaleY(1.6) translateX(-30px); }
+        }
+
+        .lp-cascade-container {
+          position: relative;
+          width: 340px; height: 460px;
+          transform-style: preserve-3d;
+          transform: rotateZ(-25deg) rotateY(20deg) rotateX(15deg);
+          animation: cascadeFloat 8s ease-in-out infinite alternate;
+          cursor: crosshair;
+        }
+        @keyframes cascadeFloat {
+          from { transform: rotateZ(-25deg) rotateY(20deg) rotateX(15deg) translateY(0); }
+          to { transform: rotateZ(-23deg) rotateY(18deg) rotateX(12deg) translateY(-25px); }
+        }
+
+        /* Base styling for all layers */
+        .lp-cascade-layer {
+          position: absolute; inset: 0; border-radius: 8px; overflow: hidden;
+          transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        /* Deep Background Layer (Ghost wireframe) */
+        .lp-layer-bg {
+          transform: translateZ(-100px) translateX(-50px) translateY(50px);
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.08);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          filter: brightness(0.4) blur(1px);
+        }
+        
+        /* Center Layer (The Bright Resume) */
+        .lp-layer-center {
+          transform: translateZ(0) translateX(0) translateY(0);
+          background: #fff;
+          box-shadow: -30px 40px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.2), 0 0 40px rgba(192,132,252,0.3);
+        }
+        
+        /* Foreground Layer (Ghost glass panel) */
+        .lp-layer-fg {
+          transform: translateZ(100px) translateX(50px) translateY(-50px);
+          background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+          border: 1px solid rgba(255,255,255,0.15);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
+          pointer-events: none;
+        }
+
+        /* Hover spreading effect */
+        .lp-cascade-container:hover .lp-layer-bg { transform: translateZ(-140px) translateX(-70px) translateY(70px); }
+        .lp-cascade-container:hover .lp-layer-center { transform: translateZ(20px); }
+        .lp-cascade-container:hover .lp-layer-fg { transform: translateZ(160px) translateX(80px) translateY(-80px); }
+
+        .lp-resume-img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; filter: contrast(1.02); }
+        
+        /* Dummy wireframe content for ghost layers */
+        .lp-wireframe { padding: 24px; display: flex; flex-direction: column; gap: 12px; height: 100%; opacity: 0.3; }
+        .lp-wf-line { height: 6px; background: rgba(255,255,255,0.4); border-radius: 4px; }
 
         /* Footer */
-        .lp-footer { background: #0f172a; color: #94a3b8; }
+        .lp-footer { background: rgba(4,4,14,0.95); border-top: 1px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.40); }
         .lp-footer-inner { max-width: 1140px; margin: 0 auto; padding: 4rem 24px 2rem; }
-        .lp-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
-        @media (max-width: 700px) { .lp-footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
-        .lp-footer-logo { font-family: var(--script); font-size: 1.75rem; background: linear-gradient(135deg, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: .5rem; display: block; }
-        .lp-footer-desc { font-size: 13px; line-height: 1.7; }
-        .lp-footer-col h4 { font-size: 12px; font-weight: 700; color: #e2e8f0; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
-        .lp-footer-col a { display: block; font-size: 13px; color: #64748b; text-decoration: none; margin-bottom: .5rem; transition: color .15s; }
+        
+        /* Giant Animated Footer Logo */
+        .lp-footer-giant {
+          font-family: var(--sans);
+          font-size: clamp(5rem, 20vw, 18rem);
+          font-weight: 800;
+          text-align: center;
+          line-height: 0.9;
+          margin-top: 1rem;
+          color: #04040e; /* inside is dark, matching background */
+          -webkit-text-stroke: 1px rgba(255,255,255,0.15); /* Base outline */
+          position: relative;
+          letter-spacing: -0.04em;
+          user-select: none;
+          padding-bottom: 2rem;
+          cursor: crosshair;
+        }
+        
+        /* The glow layer that follows the mouse */
+        .lp-footer-giant::after {
+          content: "Vṛttāntam.";
+          position: absolute;
+          inset: 0;
+          top: 0;
+          left: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: transparent;
+          -webkit-text-stroke: 2px transparent; 
+          background: radial-gradient(circle 350px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(236,72,153,1) 0%, rgba(124,58,237,1) 40%, transparent 80%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          pointer-events: none;
+        }
+        .lp-footer-col h4 { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.70); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
+        .lp-footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; margin-bottom: .5rem; transition: color .15s; }
         .lp-footer-col a:hover { color: #c084fc; }
-        .lp-footer-copy { border-top: 1px solid #1e293b; padding-top: 1.5rem; font-size: 12px; text-align: center; color: #475569; }
+        .lp-footer-copy { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; font-size: 12px; text-align: center; color: rgba(255,255,255,0.25); }
 
         /* Section header */
         .lp-sec-header { text-align: center; margin-bottom: 1rem; }
-        .lp-sec-eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--pu); margin-bottom: .75rem; }
-        .lp-sec-h2 { font-family: var(--serif); font-size: clamp(1.8rem, 3.5vw, 2.75rem); font-weight: 400; color: var(--fg); line-height: 1.2; }
-        .lp-sec-sub { font-size: 15px; color: var(--fg2); line-height: 1.7; max-width: 520px; margin: .75rem auto 0; }
+        .lp-sec-eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #a855f7; margin-bottom: .75rem; }
+        .lp-sec-h2 { font-family: var(--serif); font-size: clamp(1.8rem, 3.5vw, 2.75rem); font-weight: 400; color: rgba(255,255,255,0.93); line-height: 1.2; }
+        .lp-sec-sub { font-size: 15px; color: rgba(255,255,255,0.50); line-height: 1.7; max-width: 520px; margin: .75rem auto 0; }
 
         /* Animations */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
@@ -877,21 +1171,24 @@ export default function LandingPages() {
         .lp-carousel-arrow {
           width: 38px; height: 38px;
           border-radius: 50%;
-          border: 1.5px solid var(--border);
-          background: var(--card);
-          color: var(--fg2);
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.06);
+          backdrop-filter: blur(8px);
+          color: rgba(255,255,255,0.60);
           font-size: 16px;
           cursor: pointer;
           display: flex; align-items: center; justify-content: center;
           transition: all 0.2s;
         }
         .lp-carousel-arrow:hover {
-          border-color: var(--pu);
-          color: var(--pu);
+          border-color: rgba(124,58,237,0.5);
+          color: #a855f7;
+          background: rgba(124,58,237,0.12);
           transform: scale(1.08);
+          box-shadow: 0 0 16px rgba(124,58,237,0.25);
         }
         .lp-carousel-arrow:disabled {
-          opacity: 0.3;
+          opacity: 0.25;
           cursor: default;
           transform: none;
         }
@@ -899,8 +1196,16 @@ export default function LandingPages() {
 
       <ScrollReveal />
 
+      {/* ── AMBIENT GLASSMORPHISM ORBS (always behind everything) ── */}
+      <div className="lp-ambient-layer" aria-hidden="true">
+        <div className="lp-orb lp-orb-1" />
+        <div className="lp-orb lp-orb-2" />
+        <div className="lp-orb lp-orb-3" />
+        <div className="lp-orb lp-orb-4" />
+      </div>
+
       {/* NAV */}
-      <nav className="lp-nav">
+      <nav className="lp-nav" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
         <div className="lp-nav-inner">
           <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
             <span className="lp-logo">Vṛttāntam</span>
@@ -919,35 +1224,73 @@ export default function LandingPages() {
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="lp-hero">
+      {/* HERO — Aurora Split */}
+      <section style={{ position: 'relative', overflow: 'hidden', minHeight: '92vh', display: 'flex', alignItems: 'center', background: 'transparent' }}>
         <canvas ref={canvasRef} className="lp-hero-canvas" />
-        <div className="lp-hero-inner">
-          <div className="lp-hero-eyebrow">✦ AI-powered resume builder</div>
-          <h1 className="lp-hero-h1">
-            Craft the resume that <br />
-            <em className="lp-grad-text">gets you the interview</em>
-          </h1>
-          <p className="lp-hero-sub">
-            {typedText}
-            {cursorVisible && <span className="lp-cursor" />}
-          </p>
-          <div className="lp-hero-actions">
-            <button className="lp-btn-primary" onClick={() => navigate(user ? "/dashboard" : "/login")}>
-              {user ? "Go to Dashboard →" : "Start for free →"}
-            </button>
-            <button className="lp-btn-ghost" onClick={() => document.getElementById("lp-features")?.scrollIntoView({ behavior: "smooth" })}>
-              See how it works
-            </button>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto', padding: '5rem 32px', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'center' }}>
+          {/* TEXT */}
+          <div>
+            <div className="lp-hero-eyebrow glass-hero-tag" style={{ marginBottom: '1.5rem', display: 'inline-flex' }}>✦ AI-powered resume builder</div>
+            <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 'clamp(2.8rem,5vw,4.2rem)', fontWeight: 400, lineHeight: 1.1, color: 'rgba(255,255,255,0.96)', margin: '0 0 1.2rem', animation: 'fadeUp .6s .1s ease both' }}>
+              Craft the resume<br />that <em className="lp-grad-text">gets you hired</em>
+            </h1>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.50)', lineHeight: 1.8, marginBottom: '2.5rem', maxWidth: 460, minHeight: '3.5rem' }}>
+              {typedText}{cursorVisible && <span className="lp-cursor" />}
+            </p>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+              <button className="lp-btn-primary" onClick={() => navigate(user ? "/dashboard" : "/login")}>{user ? "Open Dashboard →" : "Start for free →"}</button>
+              <button className="lp-btn-ghost" onClick={() => document.getElementById("lp-features")?.scrollIntoView({ behavior: "smooth" })}>See how it works</button>
+            </div>
+
+          </div>
+          {/* VISUAL - 3D CASCADE SHOWCASE */}
+          <div className="lp-hero-visual">
+            <div className="lp-light-beam" />
+
+            <div className="lp-cascade-container">
+              {/* Background Ghost Layer */}
+              <div className="lp-cascade-layer lp-layer-bg">
+                <div className="lp-wireframe">
+                  <div className="lp-wf-line" style={{ width: '60%', height: '12px', marginBottom: '10px' }} />
+                  <div className="lp-wf-line" style={{ width: '100%' }} />
+                  <div className="lp-wf-line" style={{ width: '90%' }} />
+                  <div className="lp-wf-line" style={{ width: '95%' }} />
+                  <div className="lp-wf-line" style={{ width: '40%', marginTop: '20px' }} />
+                  <div className="lp-wf-line" style={{ width: '100%' }} />
+                  <div className="lp-wf-line" style={{ width: '85%' }} />
+                </div>
+              </div>
+
+              {/* Center Bright Layer (Actual Image) */}
+              <div className="lp-cascade-layer lp-layer-center">
+                <img src="/sample-resume.png" alt="Sample Resume" className="lp-resume-img" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.innerHTML = 'Please save image as Client/public/sample-resume.png'; e.target.nextSibling.style.display = 'flex'; e.target.nextSibling.style.alignItems = 'center'; e.target.nextSibling.style.justifyContent = 'center'; e.target.nextSibling.style.color = '#111'; e.target.nextSibling.style.background = '#f8f9fa'; e.target.nextSibling.style.height = '100%'; e.target.nextSibling.style.padding = '20px'; e.target.nextSibling.style.textAlign = 'center'; e.target.nextSibling.style.fontSize = '14px'; e.target.nextSibling.style.fontWeight = '600'; }} />
+                <div style={{ display: 'none' }}></div>
+              </div>
+
+              {/* Foreground Ghost Layer */}
+              <div className="lp-cascade-layer lp-layer-fg">
+                <div className="lp-wireframe" style={{ opacity: 0.15 }}>
+                  <div className="lp-wf-line" style={{ width: '70%', height: '12px', marginBottom: '10px' }} />
+                  <div className="lp-wf-line" style={{ width: '100%' }} />
+                  <div className="lp-wf-line" style={{ width: '80%' }} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <style>{`
+          @keyframes heroFloat { from{transform:translateY(0px) rotate(-1deg)} to{transform:translateY(-18px) rotate(1deg)} }
+          @media(max-width:768px){.lp-hero-grid>div:last-child{display:none!important}}
+        `}</style>
       </section>
 
-      {/* ── CAROUSEL SECTION ── */}
+
+      {/* ── CAROUSEL SECTION (true glass panel) ── */}
       <div
         id="lp-features"
         ref={carouselSectionRef}
-        className="lp-carousel-section"
+        className="lp-carousel-section glass-section"
+        style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)', borderTop: '1px solid rgba(255,255,255,0.09)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
         {/* Floating decorative blobs */}
         <FloatingParticles />
@@ -1047,8 +1390,8 @@ export default function LandingPages() {
         </div>
       </div>
 
-      {/* STATS */}
-      <div style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", background: "#fff" }}>
+      {/* STATS — glass panel */}
+      <div style={{ position: 'relative', zIndex: 1, background: 'rgba(255,255,255,0.025)', backdropFilter: 'blur(30px) saturate(180%)', WebkitBackdropFilter: 'blur(30px) saturate(180%)', borderTop: '1px solid rgba(255,255,255,0.10)', borderBottom: '1px solid rgba(255,255,255,0.06)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)' }}>
         <div className="lp-stats">
           <div className="lp-stats-grid">
             {[
@@ -1062,8 +1405,8 @@ export default function LandingPages() {
         </div>
       </div>
 
-      {/* WHY US */}
-      <div className="lp-why">
+      {/* WHY US — glass section */}
+      <div className="lp-why" style={{ position: 'relative', zIndex: 1 }}>
         <FloatingParticles />
         <div className="lp-why-inner">
           <div className="lp-sec-header lp-reveal">
@@ -1073,7 +1416,7 @@ export default function LandingPages() {
           </div>
           <div className="lp-why-grid">
             {WHY_US.map((item, i) => (
-              <div key={item.title} className="lp-why-card lp-reveal" style={{ transitionDelay: `${i * 0.08}s` }}>
+              <div key={item.title} className="glass-card-true lp-why-card lp-reveal" style={{ transitionDelay: `${i * 0.08}s`, padding: 28 }}>
                 <span className="lp-why-icon">{item.icon}</span>
                 <div className="lp-why-name">{item.title}</div>
                 <p className="lp-why-body">{item.body}</p>
@@ -1083,8 +1426,8 @@ export default function LandingPages() {
         </div>
       </div>
 
-      {/* FAQ */}
-      <div className="lp-faq">
+      {/* FAQ — glass panel */}
+      <div className="lp-faq" style={{ position: 'relative', zIndex: 1 }}>
         <div className="lp-sec-header lp-reveal">
           <span className="lp-sec-eyebrow">Common questions</span>
           <h2 className="lp-sec-h2">Frequently asked <em className="lp-grad-text">questions</em></h2>
@@ -1096,53 +1439,44 @@ export default function LandingPages() {
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="lp-cta">
+      {/* CTA — dark glass card */}
+      {/* LAPTOP → STAMP CINEMATIC SECTION */}
+      <LaptopStampScene navigate={navigate} user={user} />
+
+      {/* CTA — dark glass card */}
+      <div className="lp-cta" style={{ position: 'relative', zIndex: 1 }}>
         <div className="lp-cta-inner lp-reveal">
           <h2 className="lp-cta-h2">Ready to build your future?</h2>
           <p className="lp-cta-body">
             Join thousands of professionals creating standout resumes with Vṛttāntam.<br />
             Free to start. No credit card required.
           </p>
-          <button className="lp-btn-white" onClick={() => navigate(user ? "/dashboard" : "/login")}>
+          <button className="lp-btn-cta" onClick={() => navigate(user ? "/dashboard" : "/login")}>
             {user ? "Open Dashboard →" : "Start building now →"}
           </button>
         </div>
       </div>
 
       {/* FOOTER */}
-      <footer className="lp-footer">
-        <div className="lp-footer-inner">
-          <div className="lp-footer-grid">
-            <div>
-              <span className="lp-footer-logo">Vṛttāntam</span>
-              <p className="lp-footer-desc">Crafting professional narratives that empower your career journey. Inspired by the Sanskrit art of storytelling.</p>
-            </div>
-            <div className="lp-footer-col">
-              <h4>Product</h4>
-              <a href="#">Features</a>
-              <a href="#">Templates</a>
-              <a href="#">ATS Scanner</a>
-              <a href="#">Community</a>
-            </div>
-            <div className="lp-footer-col">
-              <h4>Support</h4>
-              <a href="#">Help centre</a>
-              <a href="#">Contact us</a>
-              <a href="#">Privacy policy</a>
-              <a href="#">Terms of use</a>
-            </div>
-            <div className="lp-footer-col">
-              <h4>Connect</h4>
-              <a href="#">Twitter / X</a>
-              <a href="#">LinkedIn</a>
-              <a href="#">GitHub</a>
-              <a href="#">Discord</a>
-            </div>
-          </div>
-          <div className="lp-footer-copy">
-            © {new Date().getFullYear()} Vṛttāntam. All rights reserved. &nbsp;·&nbsp; वृत्तान्तम् — the art of narrative.
-          </div>
+      <footer style={{ position: 'relative', zIndex: 1, borderTop: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', paddingBottom: '2rem' }}>
+        <div style={{ maxWidth: 1140, margin: '0 auto', paddingTop: '2rem', paddingLeft: '24px', paddingRight: '24px', textAlign: 'center', fontSize: 13, color: 'rgba(255,255,255,0.30)', fontFamily: 'var(--sans)' }}>
+          © {new Date().getFullYear()} Vṛttāntam. All rights reserved. &nbsp;·&nbsp; वृत्तान्तम् — the art of narrative.
+        </div>
+        <div
+          className="lp-footer-giant"
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            e.currentTarget.style.setProperty('--mouse-x', `${x}%`);
+            e.currentTarget.style.setProperty('--mouse-y', `${y}%`);
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.setProperty('--mouse-x', `50%`);
+            e.currentTarget.style.setProperty('--mouse-y', `50%`);
+          }}
+        >
+          Vṛttāntam.
         </div>
       </footer>
     </>
@@ -1168,4 +1502,94 @@ function ScrollReveal() {
     return () => obs.disconnect();
   }, []);
   return null;
+}
+
+/* ─── Scroll Animation Component ─────────────────────────────────────── */
+function LaptopStampScene() {
+  const containerRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate progress: 0 when container top hits middle of screen, 1 when container top reaches top of screen
+      const startTrigger = windowHeight * 0.8;
+      const endTrigger = windowHeight * 0.2;
+
+      let progress = (startTrigger - rect.top) / (startTrigger - endTrigger);
+      progress = Math.max(0, Math.min(1, progress));
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const slideProgress = Math.min(1, scrollProgress / 0.7);
+  // Document slides up slightly into focus
+  const translateY = 50 - (slideProgress * 50);
+  const opacity = 0.5 + (slideProgress * 0.5);
+
+  let stampScale = 1.3;
+  let stampRotation = -20;
+  let stampOpacity = 0;
+
+  if (scrollProgress > 0.6) {
+    const stampProgress = Math.min(1, (scrollProgress - 0.6) / 0.2);
+    stampOpacity = stampProgress;
+
+    if (stampProgress < 1) {
+      stampScale = 1.3 - (stampProgress * 0.3);
+      stampRotation = -20 + (stampProgress * 8);
+    } else {
+      stampScale = 1;
+      stampRotation = -12;
+    }
+  }
+
+  return (
+    <div className="lp-stamp-scene" ref={containerRef}>
+
+      <div className="lp-stamp-wrapper lp-reveal">
+        {/* The Floating Document */}
+        <div
+          className="lp-doc-slide"
+          style={{ transform: `translateY(${translateY}px)`, opacity: opacity }}
+        >
+          <img src="/sample-resume.png" alt="Exported Resume" onError={(e) => { e.target.style.display = 'none'; }} />
+
+          {/* The Stamp */}
+          <div
+            className="lp-stamp"
+            style={{
+              opacity: stampOpacity,
+              transform: `translateX(-50%) translateY(0px) scale(${stampScale}) rotate(${stampRotation}deg)`
+            }}
+          >
+            <div className="lp-stamp-ring">
+              <div className="lp-stamp-text-top">Certified</div>
+              <div className="lp-stamp-main">Shortlisted</div>
+              <div className="lp-stamp-text-bot">Top 5% Candidate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="lp-laptop-scene-header lp-reveal" style={{ marginTop: '3rem', zIndex: 10, textAlign: 'center' }}>
+        <h2 style={{ fontFamily: "var(--sans)", fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)', color: '#0f172a', margin: 0, fontWeight: 500, letterSpacing: '-0.02em' }}>
+          Crafted with care, shared with confidence.
+        </h2>
+        <p style={{ fontFamily: "var(--sans)", fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: '#64748b', margin: '0.5rem 0 0 0', fontWeight: 400 }}>
+          Let your resume do the talking.
+        </p>
+      </div>
+
+    </div>
+  );
 }

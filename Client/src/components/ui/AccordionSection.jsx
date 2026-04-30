@@ -13,18 +13,18 @@ import { LuChevronDown } from 'react-icons/lu';
  */
 function AccordionSection({ title, icon, isOpen, onToggle, children, badge }) {
   return (
-    <div className="border border-slate-100 rounded-xl overflow-hidden mb-2 bg-white shadow-sm">
+    <div className="glass-card mb-3 overflow-hidden">
       {/* Header */}
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-purple-50/60 transition-colors duration-150"
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-[rgba(255,255,255,0.03)] transition-colors duration-150"
       >
         <div className="flex items-center gap-2.5">
-          <span className="text-purple-600 text-base">{icon}</span>
-          <span className="text-sm font-semibold text-slate-700">{title}</span>
+          <span className="text-purple-400 text-base">{icon}</span>
+          <span className="text-sm font-semibold text-white/90">{title}</span>
           {badge && (
-            <span className="text-[10px] font-bold bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded-full border border-purple-500/30">
               {badge}
             </span>
           )}
@@ -42,7 +42,7 @@ function AccordionSection({ title, icon, isOpen, onToggle, children, badge }) {
           transition: 'max-height 0.35s cubic-bezier(0.4,0,0.2,1)',
         }}
       >
-        <div className="px-4 pb-4 pt-1 border-t border-slate-50">
+        <div className="px-4 pb-4 pt-1 border-t border-[rgba(255,255,255,0.05)]">
           {children}
         </div>
       </div>

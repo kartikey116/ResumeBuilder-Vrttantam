@@ -51,6 +51,15 @@ export const callGemini = async (prompt, expectJson = true) => {
         return expectJson ? extractJson(text) : text;
     } catch (error) {
         console.error('[AI] Gemini API Error:', error.message);
-        throw error;
+        
+        // Map common Gemini API errors to specific error codes for the worker to handle
+        if (error.status === 429 || error.message?.includes('429') || error.message?.includes('Too Many Requests')) {
+            throw new Error('AI_RATE_LIMIT_EXCEEDED');
+        }
+        if (error.message?.includes('quota') || error.message?.includes('billing')) {
+            throw new Error('AI_QUOTA_EXHAUSTED');
+        }
+        
+        throw new Error(`AI_API_ERROR: ${error.message}`);
     }
 };

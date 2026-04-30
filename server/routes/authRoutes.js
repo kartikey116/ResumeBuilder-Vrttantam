@@ -34,7 +34,7 @@ router.post("/upload-image", upload.single("image"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ msg: "Please upload a file" });
     }
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    const imageUrl = req.file.location;
     res.status(200).json({ imageUrl });
 });
 

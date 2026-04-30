@@ -45,14 +45,6 @@ const uploadResumeImages = async (req, res) => {
                     });
                 }
 
-                const uploadsFolder = path.join(__dirname, '..', 'uploads');
-                const baseUrl = `${req.protocol}://${req.get("host")}`;
-
-                // Ensure uploads folder exists
-                if (!fs.existsSync(uploadsFolder)) {
-                    fs.mkdirSync(uploadsFolder, { recursive: true });
-                }
-
                 const newThumbnail = req.files?.thumbnail?.[0];
                 const newProfileImage = req.files?.profileImage?.[0];
 
@@ -62,15 +54,7 @@ const uploadResumeImages = async (req, res) => {
                 // Handle thumbnail upload
                 if (newThumbnail) {
                     try {
-                        // Delete old thumbnail if it exists
-                        if (resume.thumbnailLink) {
-                            const oldThumbnailPath = path.join(uploadsFolder, path.basename(resume.thumbnailLink));
-                            if (fs.existsSync(oldThumbnailPath)) {
-                                fs.unlinkSync(oldThumbnailPath);
-                            }
-                        }
-                        
-                        thumbnailLink = `${baseUrl}/uploads/${newThumbnail.filename}`;
+                        thumbnailLink = newThumbnail.location;
                         resume.thumbnailLink = thumbnailLink;
                     } catch (thumbnailError) {
                         console.error("Error processing thumbnail:", thumbnailError);
@@ -86,15 +70,7 @@ const uploadResumeImages = async (req, res) => {
                             resume.profileInfo = {};
                         }
 
-                        // Delete old profile image if it exists
-                        if (resume.profileInfo.profilePreviewUrl) {
-                            const oldProfileImagePath = path.join(uploadsFolder, path.basename(resume.profileInfo.profilePreviewUrl));
-                            if (fs.existsSync(oldProfileImagePath)) {
-                                fs.unlinkSync(oldProfileImagePath);
-                            }
-                        }
-
-                        profilePreviewUrl = `${baseUrl}/uploads/${newProfileImage.filename}`;
+                        profilePreviewUrl = newProfileImage.location;
                         resume.profileInfo.profilePreviewUrl = profilePreviewUrl;
                     } catch (profileError) {
                         console.error("Error processing profile image:", profileError);

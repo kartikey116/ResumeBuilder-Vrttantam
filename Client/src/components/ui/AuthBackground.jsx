@@ -3,63 +3,61 @@ import { motion } from 'framer-motion';
 
 const AuthBackground = ({ children }) => {
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a0c]">
-      {/* Dynamic Ambient Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Large Primary Orb */}
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden" style={{ background: 'var(--bg-deep)' }}>
+      
+      {/* ── Ambient Orbs ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.2, 1],
+          animate={{ x: [0, 80, -30, 0], y: [0, -60, 40, 0], scale: [1, 1.15, 0.95, 1] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute', top: '-15%', left: '-10%',
+            width: 600, height: 600, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(124,58,237,0.30) 0%, rgba(79,70,229,0.12) 50%, transparent 70%)',
+            filter: 'blur(60px)',
           }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
+        />
+        <motion.div
+          animate={{ x: [0, -100, 50, 0], y: [0, 80, -40, 0], scale: [1, 1.2, 0.9, 1] }}
+          transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+          style={{
+            position: 'absolute', bottom: '-20%', right: '-10%',
+            width: 700, height: 700, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(219,39,119,0.22) 0%, rgba(168,85,247,0.08) 50%, transparent 70%)',
+            filter: 'blur(70px)',
           }}
-          className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{ x: [0, 120, -60, 0], y: [0, -80, 60, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 7 }}
+          style={{
+            position: 'absolute', top: '35%', left: '40%',
+            width: 350, height: 350, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(79,70,229,0.20) 0%, transparent 70%)',
+            filter: 'blur(50px)',
+          }}
         />
 
-        {/* Secondary Orb */}
-        <motion.div
-          animate={{
-            x: [0, -80, 0],
-            y: [0, 120, 0],
-            scale: [1, 1.1, 1],
+        {/* Subtle grid */}
+        <div
+          style={{
+            position: 'absolute', inset: 0, opacity: 0.025,
+            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
+            backgroundSize: '44px 44px',
           }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-          className="absolute -bottom-40 -right-20 w-[600px] h-[600px] bg-pink-600/10 rounded-full blur-[130px]"
         />
 
-        {/* Accent Orb */}
-        <motion.div
-          animate={{
-            x: [0, 150, 0],
-            y: [0, -100, 0],
+        {/* Subtle radial vignette */}
+        <div
+          style={{
+            position: 'absolute', inset: 0,
+            background: 'radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, rgba(4,4,14,0.6) 100%)',
           }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 5,
-          }}
-          className="absolute top-1/4 left-1/3 w-[300px] h-[300px] bg-indigo-500/15 rounded-full blur-[100px]"
-        />
-        
-        {/* Grid Pattern Overlay */}
-        <div className="absolute inset-0 opacity-[0.03]" 
-             style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} 
         />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 w-full flex items-center justify-center px-4">
+      {/* Content */}
+      <div className="relative z-10 w-full flex items-center justify-center px-4 py-8">
         {children}
       </div>
     </div>
