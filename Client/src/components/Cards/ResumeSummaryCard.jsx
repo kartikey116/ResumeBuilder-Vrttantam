@@ -106,7 +106,8 @@ function ResumeSummaryCard({ imgUrl, title, lastUpdated, onSelect, atsScore, onA
             {lastUpdated}
           </p>
           <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-            <button
+            {/* Temporarily commented out — ATS & Publish buttons */}
+            {/* <button
               onClick={e => { e.stopPropagation(); onAtsCheck && onAtsCheck(); }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 4,
@@ -137,7 +138,7 @@ function ResumeSummaryCard({ imgUrl, title, lastUpdated, onSelect, atsScore, onA
               >
                 <FiShare2 size={9} /> Publish
               </button>
-            )}
+            )} */}
           </div>
         </div>
       </div>

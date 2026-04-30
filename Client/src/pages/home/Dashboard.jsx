@@ -142,7 +142,7 @@ function Dashboard() {
         </div>
 
         {/* Action buttons */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1, minWidth: 180 }}>
+    { /*   <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1, minWidth: 180 }}>
           <button
             onClick={() => navigate('/ats-check')}
             style={{
@@ -173,7 +173,7 @@ function Dashboard() {
           >
             <FiUsers size={15} /> Community Gallery
           </button>
-        </div>
+        </div> */}
       </motion.div>
 
       {/* ── Resume Grid ── */}
