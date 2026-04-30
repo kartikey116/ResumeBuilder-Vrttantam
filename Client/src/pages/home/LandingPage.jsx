@@ -941,8 +941,8 @@ export default function LandingPages() {
           position: relative; width: 100%; padding: 8rem 0 12rem; display: flex;
           flex-direction: column; align-items: center; justify-content: center;
           overflow: hidden; z-index: 1;
-          background: linear-gradient(180deg, rgba(4,4,14,0) 0%, rgba(25,30,50,0.3) 15%, rgba(110,125,160,0.7) 28%, rgba(240,244,255,1) 45%, rgba(248,250,252,1) 100%);
-          color: #0f172a;
+          background: linear-gradient(180deg, rgba(4,4,14,0) 0%, rgba(30,35,55,0.4) 15%, rgba(240,244,255,1) 35%, rgba(240,244,255,1) 65%, rgba(20,24,40,0.6) 85%, rgba(4,4,14,0) 100%);
+          color: rgba(255, 255, 255, 0.96);
         }
         .lp-stamp-wrapper {
           position: relative; width: 600px; max-width: 92vw;
@@ -1582,10 +1582,10 @@ function LaptopStampScene() {
       </div>
 
       <div className="lp-laptop-scene-header lp-reveal" style={{ marginTop: '3rem', zIndex: 10, textAlign: 'center' }}>
-        <h2 style={{ fontFamily: "var(--sans)", fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)', color: '#0f172a', margin: 0, fontWeight: 500, letterSpacing: '-0.02em' }}>
+        <h2 style={{ fontFamily: "var(--sans)", fontSize: 'clamp(1.5rem, 3.5vw, 2.5rem)', color: 'rgba(255, 255, 255, 0.96)', margin: 0, fontWeight: 500, letterSpacing: '-0.02em' }}>
           Crafted with care, shared with confidence.
         </h2>
-        <p style={{ fontFamily: "var(--sans)", fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: '#64748b', margin: '0.5rem 0 0 0', fontWeight: 400 }}>
+        <p style={{ fontFamily: "var(--sans)", fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', color: 'rgba(255, 255, 255, 0.6)', margin: '0.5rem 0 0 0', fontWeight: 400 }}>
           Let your resume do the talking.
         </p>
       </div>
