@@ -227,6 +227,33 @@ const TemplateOne = ({ resumeData, colorPalette, containerWidth }) => {
                         </div>
                     </div>}
 
+                    {resumeData.customSections && resumeData.customSections.map((sec, sIdx) => {
+                        if (!sec.title || !sec.items || sec.items.length === 0) return null;
+                        return (
+                            <div className='mt-4' key={sIdx}>
+                                <Title text={sec.title} color={themeColors[1]} />
+                                {sec.items.map((item, iIdx) => (
+                                    <div key={iIdx} className="mb-2">
+                                        <div className="flex justify-between items-baseline">
+                                            <h3 className="text-sm font-bold">{item.heading}</h3>
+                                            {(item.startDate || item.endDate) && (
+                                                <span className="text-xs text-slate-500 font-medium">
+                                                    {item.startDate} {item.startDate && item.endDate && '–'} {item.endDate}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {item.subHeading && (
+                                            <p className="text-xs italic text-slate-600">{item.subHeading}</p>
+                                        )}
+                                        {item.description && (
+                                            <p className="text-sm mt-1 whitespace-pre-wrap">{item.description}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        );
+                    })}
+
                 </div>
             </div>
         </div>

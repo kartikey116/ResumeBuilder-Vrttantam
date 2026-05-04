@@ -36,12 +36,12 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
   };
 
   return (
-    <div className="pt-3">
+    <div className="p-4 flex flex-col gap-4">
       <div className="space-y-4">
         {projects.map((project, index) => (
-          <div key={index} className="border border-slate-100 rounded-xl p-4 bg-slate-50/50">
+          <div key={index} className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-xl p-4 transition-all hover:border-[rgba(255,255,255,0.1)]">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+              <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wide">
                 Project {index + 1}
               </h3>
               <div className="flex gap-2 items-center">
@@ -49,7 +49,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                   <>
                     <button
                       type="button"
-                      className="text-slate-400 hover:text-slate-600 transition-colors px-1"
+                      className="text-slate-400 hover:text-white transition-colors px-1 disabled:opacity-30 disabled:cursor-not-allowed"
                       onClick={() => moveArrayItem('projects', index, 'up')}
                       disabled={index === 0}
                     >
@@ -57,7 +57,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                     </button>
                     <button
                       type="button"
-                      className="text-slate-400 hover:text-slate-600 transition-colors px-1"
+                      className="text-slate-400 hover:text-white transition-colors px-1 disabled:opacity-30 disabled:cursor-not-allowed"
                       onClick={() => moveArrayItem('projects', index, 'down')}
                       disabled={index === projects.length - 1}
                     >
@@ -68,7 +68,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                 {projects.length > 1 && (
                   <button
                     type="button"
-                    className="text-red-400 hover:text-red-600 flex items-center gap-1 text-xs transition-colors ml-2"
+                    className="text-red-400 hover:text-red-300 flex items-center gap-1 text-xs transition-colors ml-2"
                     onClick={() => removeArrayItem('projects', index)}
                   >
                     <LuTrash2 size={13} />
@@ -90,12 +90,12 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
               {/* Description + AI enhance */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-medium text-slate-600">Description</label>
+                  <label className="text-[13px] text-white/70 font-medium ml-1">Description</label>
                   <button
                     type="button"
                     onClick={() => handleAIEnhance(index)}
                     disabled={enhancing[index]}
-                    className="flex items-center gap-1.5 text-[11px] font-semibold text-purple-700 bg-purple-100 hover:bg-purple-200 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-purple-300 bg-[rgba(124,58,237,0.15)] border border-[rgba(124,58,237,0.3)] hover:bg-[rgba(124,58,237,0.25)] hover:border-[rgba(124,58,237,0.5)] px-2.5 py-1 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {enhancing[index]
                       ? <LuLoader size={11} className="animate-spin" />
@@ -106,14 +106,14 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
                 </div>
                 <textarea
                   placeholder={"• Built with React and Node.js...\n• Reduced API response time by 30%...\n• Deployed on AWS with 99.9% uptime..."}
-                  className="from-input"
+                  className="from-input min-h-[90px] resize-y custom-scrollbar"
                   rows={3}
                   value={project.description || ""}
                   onChange={({ target }) => updateArrayItem("projects", index, "description", target.value)}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Input
                   label="GitHub Link"
                   placeholder="https://github.com/..."
@@ -135,7 +135,7 @@ function ProjectsForm({ projects, updateArrayItem, addArrayItem, removeArrayItem
 
         <button
           type="button"
-          className="btn-small-light flex items-center gap-2 text-xs"
+          className="btn-small-light flex items-center gap-2 text-xs w-fit"
           onClick={() => addArrayItem("projects", {
             title: "",
             description: "",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaGlobe, FaLinkedin, FaGithub, FaLink } from 'react-icons/fa';
 
 /**
  * Template 09 — "Harvard Clean"
@@ -18,12 +19,15 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
     projects = [],
     certifications = [],
     languages = [],
+    interests = [],
+    customSections = [],
   } = resumeData || {};
 
-  const groupedSkills = skills.reduce((acc, skill) => {
-    const cat = skill.category?.trim() || 'Technical Skills';
+  const groupedSkills = (skills || []).reduce((acc, skill) => {
+    const cat = skill?.category?.trim() || 'Technical Skills';
     if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(skill.name);
+    const names = (skill?.name || "").split(",").map(s => s.trim()).filter(Boolean);
+    acc[cat].push(...names);
     return acc;
   }, {});
 
@@ -32,22 +36,24 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
   const dark = colorPalette?.[4] || '#111111';
   const font = fontFamily || 'Georgia, "Times New Roman", serif';
 
+  const layout = resumeData?.template?.layout || {};
+
   const s = {
     page: {
-      fontFamily: font,
-      fontSize: '10pt',
-      lineHeight: 1.5,
-      color: dark,
+      fontFamily: layout.descriptionFont || font,
+      fontSize: layout.descriptionSize ? `${layout.descriptionSize}pt` : (layout.fontSize ? `${layout.fontSize}pt` : '10pt'),
+      lineHeight: layout.descriptionLineHeight || 1.5,
+      color: layout.descriptionColor || dark,
       background: '#ffffff',
-      padding: '36px 48px',
+      padding: `${layout.sidePaddingTop ?? layout.padding ?? 36}px ${layout.sidePaddingRight ?? layout.padding ?? 48}px ${layout.sidePaddingBottom ?? layout.padding ?? 36}px ${layout.sidePaddingLeft ?? layout.padding ?? 48}px`,
       boxSizing: 'border-box',
     },
     name: {
       textAlign: 'center',
-      fontSize: '22pt',
+      fontFamily: layout.headingFont || font,
+      fontSize: layout.headingSize ? `${layout.headingSize}pt` : '22pt',
       fontWeight: 'bold',
-      letterSpacing: '1px',
-      color: dark,
+      color: layout.headingColor || dark,
       margin: '0 0 4px 0',
       textTransform: 'uppercase',
     },
@@ -62,15 +68,16 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
       margin: '4px 0 10px 0',
     },
     sectionTitle: {
-      fontSize: '10pt',
+      fontFamily: layout.sectionHeaderFont || font,
+      fontSize: layout.sectionHeaderSize ? `${layout.sectionHeaderSize}pt` : '10pt',
       fontWeight: 'bold',
       textTransform: 'uppercase',
       letterSpacing: '1.5px',
-      color: dark,
+      color: layout.sectionHeaderColor || dark,
       borderBottom: `1.5px solid ${accent}`,
       paddingBottom: '2px',
-      marginBottom: '10px',
-      marginTop: '16px',
+      marginBottom: `${layout.sectionGap ?? 10}px`,
+      marginTop: `${layout.sectionGap ?? 16}px`,
     },
     jobHeader: {
       display: 'flex',
@@ -79,9 +86,10 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
       marginBottom: '1px',
     },
     jobTitle: {
+      fontFamily: layout.subHeadingFont || font,
       fontWeight: 'bold',
-      fontSize: '10pt',
-      color: dark,
+      fontSize: layout.subHeadingSize ? `${layout.subHeadingSize}pt` : '10pt',
+      color: layout.subHeadingColor || dark,
     },
     jobDates: {
       fontSize: '9pt',
@@ -97,12 +105,12 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
       marginBottom: '4px',
     },
     bulletList: {
-      margin: '4px 0 10px 0',
+      margin: `${layout.itemSpacing ?? 4}px 0 ${layout.itemSpacing ?? 10}px 0`,
       paddingLeft: '18px',
       listStyle: 'disc',
     },
     bulletItem: {
-      fontSize: '9.5pt',
+      fontSize: layout.descriptionSize ? `${layout.descriptionSize - 0.5}pt` : '9.5pt',
       marginBottom: '2px',
       lineHeight: 1.5,
     },
@@ -116,8 +124,10 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
       fontSize: '9pt',
     },
     projectTitle: {
+      fontFamily: layout.subHeadingFont || font,
       fontWeight: 'bold',
-      fontSize: '10pt',
+      fontSize: layout.subHeadingSize ? `${layout.subHeadingSize}pt` : '10pt',
+      color: layout.subHeadingColor || dark,
     },
     certRow: {
       display: 'flex',
@@ -137,12 +147,36 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
   };
 
   const contactParts = [
-    contactInfo.phone,
-    contactInfo.email,
-    contactInfo.location,
-    contactInfo.linkedin && <a href={contactInfo.linkedin} style={s.link} key="li">LinkedIn</a>,
-    contactInfo.github && <a href={contactInfo.github} style={s.link} key="gh">GitHub</a>,
-    contactInfo.website && <a href={contactInfo.website} style={s.link} key="web">Portfolio</a>,
+    contactInfo.phone && (
+      <span key="ph" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+        <FaPhoneAlt style={{ fontSize: '8pt', color: accent }} /> {contactInfo.phone}
+      </span>
+    ),
+    contactInfo.email && (
+      <span key="em" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+        <FaEnvelope style={{ fontSize: '8.5pt', color: accent }} /> {contactInfo.email}
+      </span>
+    ),
+    contactInfo.location && (
+      <span key="loc" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+        <FaMapMarkerAlt style={{ fontSize: '9pt', color: accent }} /> {contactInfo.location}
+      </span>
+    ),
+    contactInfo.linkedin && (
+      <a href={contactInfo.linkedin} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }} key="li">
+        <FaLinkedin style={{ color: accent }} /> LinkedIn
+      </a>
+    ),
+    contactInfo.github && (
+      <a href={contactInfo.github} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }} key="gh">
+        <FaGithub style={{ color: accent }} /> GitHub
+      </a>
+    ),
+    contactInfo.website && (
+      <a href={contactInfo.website} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }} key="web">
+        <FaGlobe style={{ color: accent }} /> Portfolio
+      </a>
+    ),
   ].filter(Boolean);
 
   const renderBullets = (description) => {
@@ -175,7 +209,6 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
           </span>
         ))}
       </p>
-      <div style={s.divider} />
 
       {/* Summary */}
       {profileInfo.summary && (
@@ -212,7 +245,9 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
             <div key={i} style={{ marginBottom: '10px' }} className="print-safe-section">
               <div style={s.jobHeader}>
                 <span style={s.jobTitle}>{exp.role}</span>
-                <span style={s.jobDates}>{formatDate(exp.startDate)} – {exp.isCurrentlyWorking ? 'Present' : formatDate(exp.endDate)}</span>
+                <span style={s.jobDates}>
+                  {formatDate(exp.startDate)} – {exp.isCurrentlyWorking || !exp.endDate ? 'Present' : formatDate(exp.endDate)}
+                </span>
               </div>
               <div style={s.company}>{exp.company}{exp.location ? `, ${exp.location}` : ''}</div>
               {renderBullets(exp.description)}
@@ -228,9 +263,9 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
             <div key={i} style={{ marginBottom: '10px' }} className="print-safe-section">
               <div style={s.jobHeader}>
                 <span style={s.projectTitle}>{proj.title}</span>
-                <span>
-                  {proj.github && <a href={proj.github} style={{ ...s.link, marginRight: '8px' }}>GitHub</a>}
-                  {proj.liveDemo && <a href={proj.liveDemo} style={s.link}>Live Demo</a>}
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  {proj.github && <a href={proj.github} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }}><FaGithub style={{ color: accent }} /> GitHub</a>}
+                  {proj.liveDemo && <a href={proj.liveDemo} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }}><FaLink style={{ color: accent }} /> Live Demo</a>}
                 </span>
               </div>
               {renderBullets(proj.description)}
@@ -246,9 +281,14 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
             <div key={i} style={{ marginBottom: '8px' }} className="print-safe-section">
               <div style={s.jobHeader}>
                 <span style={s.jobTitle}>{edu.institution}</span>
-                <span style={s.jobDates}>{formatDate(edu.startDate)} – {formatDate(edu.endDate)}</span>
+                <span style={s.jobDates}>
+                  {formatDate(edu.startDate)} – {edu.isCurrentlyStudying || !edu.endDate ? 'Present' : formatDate(edu.endDate)}
+                </span>
               </div>
-              <div style={s.company}>{edu.degree}</div>
+              <div style={{ ...s.company, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <span>{edu.degree}</span>
+                {edu.grade && <span style={{ whiteSpace: 'nowrap', marginLeft: '12px' }}><strong>Grade: {edu.grade}</strong></span>}
+              </div>
             </div>
           ))}
         </section>
@@ -265,6 +305,40 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
           ))}
         </section>
       )}
+
+      {interests.length > 0 && interests[0] && (
+        <section className="print-safe-section">
+          <div style={s.sectionTitle}>Interests</div>
+          <p style={s.skillRow}>
+            {interests.join(', ')}
+          </p>
+        </section>
+      )}
+
+      {customSections && customSections.map((sec, sIdx) => {
+        if (!sec.title || !sec.items || sec.items.length === 0) return null;
+        return (
+          <section key={sIdx} className="print-safe-section">
+            <div style={s.sectionTitle}>{sec.title}</div>
+            {sec.items.map((item, iIdx) => (
+              <div key={iIdx} style={{ marginBottom: '8px' }}>
+                <div style={s.jobHeader}>
+                  <span style={s.jobTitle}>{item.heading}</span>
+                  {(item.startDate || item.endDate) && (
+                    <span style={s.jobDates}>
+                      {item.startDate} {item.startDate && item.endDate && '–'} {item.endDate}
+                    </span>
+                  )}
+                </div>
+                {item.subHeading && (
+                  <div style={s.company}>{item.subHeading}</div>
+                )}
+                {renderBullets(item.description)}
+              </div>
+            ))}
+          </section>
+        );
+      })}
     </div>
   );
 };

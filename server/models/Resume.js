@@ -116,6 +116,10 @@ const ResumeSchema = new mongoose.Schema({
             type: String,
             default: ""
         },
+        grade: {
+            type: String,
+            default: ""
+        },
     }],
     skills: [{
         category: {
@@ -180,6 +184,34 @@ const ResumeSchema = new mongoose.Schema({
     interests: [{
         type: String,
         default: ""
+    }],
+    customSections: [{
+        title: {
+            type: String,
+            default: ""
+        },
+        items: [{
+            heading: {
+                type: String,
+                default: ""
+            },
+            subHeading: {
+                type: String,
+                default: ""
+            },
+            startDate: {
+                type: String,
+                default: ""
+            },
+            endDate: {
+                type: String,
+                default: ""
+            },
+            description: {
+                type: String,
+                default: ""
+            }
+        }]
     }],
     atsScore: {
         type: Number,

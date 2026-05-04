@@ -22,12 +22,10 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
   };
 
   const handleCurrentlyWorkingChange = (index, isChecked) => {
-    updateArrayItem('workExperience', index, 'isCurrentlyWorking', isChecked);
-    if (isChecked) {
-      updateArrayItem('workExperience', index, 'endDate', 'Present');
-    } else {
-      updateArrayItem('workExperience', index, 'endDate', '');
-    }
+    updateArrayItem('workExperience', index, {
+      isCurrentlyWorking: isChecked,
+      endDate: isChecked ? 'Present' : ''
+    });
   };
 
   const handleAIEnhance = async (index) => {
@@ -58,12 +56,12 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
   };
 
   return (
-    <div className="pt-3">
-      <div className="mt-2 space-y-5">
+    <div className="p-4 flex flex-col gap-4">
+      <div className="space-y-4">
         {workExperience.map((exp, index) => (
-          <div key={index} className="mb-4 border border-slate-100 rounded-xl p-4 bg-slate-50/50">
+          <div key={index} className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.06)] rounded-xl p-4 transition-all hover:border-[rgba(255,255,255,0.1)]">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+              <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wide">
                 Experience {index + 1}
               </h3>
               <div className="flex gap-2 items-center">
@@ -71,7 +69,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                   <>
                     <button
                       type="button"
-                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                      className="text-slate-400 hover:text-white transition-colors px-1 disabled:opacity-30 disabled:cursor-not-allowed"
                       onClick={() => moveArrayItem('workExperience', index, 'up')}
                       disabled={index === 0}
                     >
@@ -79,7 +77,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                     </button>
                     <button
                       type="button"
-                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                      className="text-slate-400 hover:text-white transition-colors px-1 disabled:opacity-30 disabled:cursor-not-allowed"
                       onClick={() => moveArrayItem('workExperience', index, 'down')}
                       disabled={index === workExperience.length - 1}
                     >
@@ -90,7 +88,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                 {workExperience.length > 0 && (
                   <button
                     type="button"
-                    className="text-red-400 hover:text-red-600 flex items-center gap-1 text-xs transition-colors ml-2"
+                    className="text-red-400 hover:text-red-300 flex items-center gap-1 text-xs transition-colors ml-2"
                     onClick={() => removeArrayItem('workExperience', index)}
                   >
                     <LuTrash2 size={13} />
@@ -100,7 +98,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
               </div>
             </div>
             <div className="grid grid-cols-1 gap-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Input
                   value={exp?.company ?? ""}
                   onChange={(val) => updateArrayItem('workExperience', index, 'company', val)}
@@ -116,7 +114,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                   placeholder="Software Engineer"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Input
                   value={exp?.startDate ?? ""}
                   onChange={(val) => updateArrayItem('workExperience', index, 'startDate', val)}
@@ -131,15 +129,15 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                   disabled={exp.isCurrentlyWorking}
                 />
               </div>
-              <div className="flex items-center gap-2 -mt-1">
+              <div className="flex items-center gap-2 -mt-1 ml-1 mb-2">
                 <input
                   type="checkbox"
                   id={`currentlyWorking-${index}`}
                   checked={exp.isCurrentlyWorking || false}
                   onChange={(e) => handleCurrentlyWorkingChange(index, e.target.checked)}
-                  className="accent-purple-600"
+                  className="accent-purple-600 w-3.5 h-3.5"
                 />
-                <label htmlFor={`currentlyWorking-${index}`} className="text-xs text-slate-600">
+                <label htmlFor={`currentlyWorking-${index}`} className="text-xs text-slate-300 cursor-pointer">
                   Currently working here
                 </label>
               </div>
@@ -147,14 +145,14 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
               {/* Description with AI enhance */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-medium text-slate-600">
+                  <label className="text-[13px] text-white/70 font-medium ml-1">
                     Description & Achievements
                   </label>
                   <button
                     type="button"
                     onClick={() => handleAIEnhance(index)}
                     disabled={enhancing[index]}
-                    className="flex items-center gap-1.5 text-[11px] font-semibold text-purple-700 bg-purple-100 hover:bg-purple-200 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-purple-300 bg-[rgba(124,58,237,0.15)] border border-[rgba(124,58,237,0.3)] hover:bg-[rgba(124,58,237,0.25)] hover:border-[rgba(124,58,237,0.5)] px-2.5 py-1 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     title="AI-enhance this description"
                   >
                     {enhancing[index]
@@ -166,12 +164,12 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                 </div>
                 <textarea
                   placeholder={"• Led a team of 5 engineers...\n• Reduced load time by 40%...\n• Built CI/CD pipeline using GitHub Actions..."}
-                  className="from-input"
+                  className="from-input min-h-[100px] resize-y custom-scrollbar"
                   rows={4}
                   value={exp?.description ?? ""}
                   onChange={(e) => updateArrayItem('workExperience', index, 'description', e.target.value)}
                 />
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p className="text-[10px] text-slate-500 mt-1.5 ml-1">
                   💡 Tip: Write one bullet per line. Use numbers & outcomes for higher ATS scores.
                 </p>
               </div>
@@ -181,7 +179,7 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
 
         <button
           type="button"
-          className="btn-small-light flex items-center gap-2 text-xs"
+          className="btn-small-light flex items-center gap-2 text-xs w-fit"
           onClick={handleAddExperience}
         >
           <LuPlus size={14} />

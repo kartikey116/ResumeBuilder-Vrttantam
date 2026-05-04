@@ -207,6 +207,33 @@ const TemplateEight = ({ resumeData }) => {
                         ))}
                     </section>
                 )}
+
+                {resumeData?.customSections && resumeData.customSections.map((sec, sIdx) => {
+                    if (!sec.title || !sec.items || sec.items.length === 0) return null;
+                    return (
+                        <section style={styles.section} key={sIdx}>
+                            <h2 style={styles.sectionTitle}>{sec.title}</h2>
+                            {sec.items.map((item, index) => (
+                                <div key={index} style={{ marginBottom: '20px' }} className="print-safe-section">
+                                    <Subheading left={item.heading} right={item.subHeading || ''} />
+                                    {(item.startDate || item.endDate) && (
+                                        <Subheading left="" right={`${item.startDate} – ${item.endDate}`} />
+                                    )}
+                                    {item.description && (
+                                        <ul style={styles.itemList}>
+                                            {item.description.split('\n').map((desc, i) => desc && (
+                                                <li key={i} style={styles.item}>
+                                                    <span style={styles.bullet}></span>
+                                                    {desc}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            ))}
+                        </section>
+                    );
+                })}
             </main>
         </div>
     );

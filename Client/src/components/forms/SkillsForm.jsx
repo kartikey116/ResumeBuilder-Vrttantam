@@ -1,93 +1,121 @@
-
 import React from 'react';
-import Input from '../Inputs/Input.jsx';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
-import RatingInput from '../resume-sections/RatingInput.jsx';
 
-function SkillsForm({ skills, updateArrayItem, addArrayItem, removeArrayItem, onNext }) {
+function SkillsForm({ skills = [], updateArrayItem, addArrayItem, removeArrayItem, moveArrayItem }) {
   console.log("SkillsForm skills:", skills);
 
   const handleAddSkill = () => {
     addArrayItem('skills', {
       category: "",
       name: "",
-      progress: 0,
     });
   };
 
   return (
     <div className="px-5 pt-5">
-      <h2 className="text-lg font-semibold text-gray-900">Skills</h2>
-      <div className="mt-4">
-        {skills.map((skill, index) => (
-          <div key={index} className="mb-6 border-b border-slate-100 pb-4">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-sm font-medium text-gray-700">Skill Group {index + 1}</h3>
-              <div className="flex gap-2 items-center">
-                {skills.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      className="text-slate-400 hover:text-slate-600 transition-colors px-1"
-                      onClick={() => moveArrayItem('skills', index, 'up')}
-                      disabled={index === 0}
-                    >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      className="text-slate-400 hover:text-slate-600 transition-colors px-1"
-                      onClick={() => moveArrayItem('skills', index, 'down')}
-                      disabled={index === skills.length - 1}
-                    >
-                      ↓
-                    </button>
-                  </>
-                )}
-                <button
-                  className="text-red-500 hover:text-red-600 flex items-center gap-1 text-sm ml-2"
-                  onClick={() => removeArrayItem('skills', index)}
-                >
-                  <LuTrash2 size={16} />
-                </button>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-5 mb-4">
-               <Input
-                 value={skill.category || ""}
-                 onChange={(val) => updateArrayItem('skills', index, 'category', val)}
-                 label="Category Title (Optional)"
-                 type="text"
-                 placeholder="e.g. Languages, Frontend, Backend"
-               />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <Input
-                value={skill.name || ""}
-                onChange={(val) => updateArrayItem('skills', index, 'name', val)}
-                label="Skills (Comma separated)"
-                type="text"
-                placeholder="e.g., JavaScript, React, Node.js"
-              />
-              <div className='flex flex-col'>
-                <label className="text-[13px] text-slate-800 mb-1">Proficiency ({Math.round((skill.progress / 100) * 5 * 10) / 10}/5)</label>
-                <div className='mt-5'>
-                  <RatingInput
-                    value = {skill.progress || 0}
-                    total = {5}
-                    onChange={(newValue) => updateArrayItem('skills', index, 'progress', newValue)}
-                  />
+      <h2 className="text-lg font-semibold text-slate-100 mb-1 select-none">Skills</h2>
+      <p className="text-xs text-slate-400 mb-4 select-none">Add your skills grouped by category. Comma separate individual skills.</p>
+      
+      <div className="flex flex-col gap-4">
+        {skills.map((skill, index) => {
+          const pills = (skill?.name || "")
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+
+          return (
+            <div 
+              key={index} 
+              className="p-4 rounded-xl border border-[rgba(255,255,255,0.04)] bg-[#0c0c1e]/60 backdrop-blur-md shadow-xl flex flex-col gap-3 transition hover:border-[rgba(255,255,255,0.08)]"
+            >
+              <div className="flex justify-between items-center select-none">
+                <span className="text-xs font-bold text-slate-400 font-mono tracking-wider">Group {index + 1}</span>
+                <div className="flex items-center gap-2">
+                  {skills.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        className="text-slate-400 hover:text-slate-200 transition px-1 text-sm font-bold"
+                        onClick={() => moveArrayItem && moveArrayItem('skills', index, 'up')}
+                        disabled={index === 0}
+                        title="Move Up"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        className="text-slate-400 hover:text-slate-200 transition px-1 text-sm font-bold"
+                        onClick={() => moveArrayItem && moveArrayItem('skills', index, 'down')}
+                        disabled={index === skills.length - 1}
+                        title="Move Down"
+                      >
+                        ↓
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    className="text-red-400 hover:text-red-300 transition-colors flex items-center gap-1 text-xs"
+                    onClick={() => removeArrayItem && removeArrayItem('skills', index)}
+                    title="Delete Group"
+                  >
+                    <LuTrash2 size={15} />
+                  </button>
                 </div>
               </div>
+
+              {/* Category Input */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-300 select-none">
+                  Category Title
+                </label>
+                <input
+                  type="text"
+                  value={skill?.category || ""}
+                  onChange={(e) => updateArrayItem && updateArrayItem('skills', index, 'category', e.target.value)}
+                  placeholder="e.g., Programming Languages"
+                  className="bg-[#070713] border border-[rgba(255,255,255,0.06)] rounded-xl text-xs p-2.5 w-full text-slate-100 outline-none focus:border-purple-500/40 select-text transition"
+                />
+              </div>
+
+              {/* Skills Input */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-300 select-none">
+                  Skills (Comma separated)
+                </label>
+                <input
+                  type="text"
+                  value={skill?.name || ""}
+                  onChange={(e) => updateArrayItem && updateArrayItem('skills', index, 'name', e.target.value)}
+                  placeholder="e.g., JavaScript, TypeScript, Python"
+                  className="bg-[#070713] border border-[rgba(255,255,255,0.06)] rounded-xl text-xs p-2.5 w-full text-slate-100 outline-none focus:border-purple-500/40 select-text transition"
+                />
+              </div>
+
+              {/* Live Pill Preview to match the premium screenshot exactly */}
+              {pills.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-1 border-t border-[rgba(255,255,255,0.03)] pt-2.5">
+                  {pills.map((p, idx) => (
+                    <span 
+                      key={idx} 
+                      className="text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-lg border border-purple-500/20 bg-purple-500/10 text-purple-300 shadow-sm transition hover:scale-105 select-none"
+                    >
+                      {p}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
+
         <button
-          className="btn-small-light flex items-center gap-2"
+          type="button"
+          className="flex items-center justify-center gap-2 p-3 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/20 hover:border-purple-500/40 rounded-xl transition text-xs font-bold w-full select-none"
           onClick={handleAddSkill}
         >
           <LuPlus size={16} />
-          Add Skill
+          Add Skill Group
         </button>
       </div>
     </div>

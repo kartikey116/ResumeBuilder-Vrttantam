@@ -1,54 +1,48 @@
 import React from 'react';
-import ProfilePhotoSelector from '../Inputs/ProfilePhotoSelector.jsx'; // Corrected path
+import ProfilePhotoSelector from '../Inputs/ProfilePhotoSelector.jsx';
 import Input from '../Inputs/Input.jsx';
 
 function ProfileInfoForm({ profileData, updateSection}) {
   return (
-    <div className="px-5 pt-5">
-      <h2 className="text-lg font-semibold text-gray-900">
-        Personal Information
-      </h2>
+    <div className="p-4 flex flex-col">
+      <ProfilePhotoSelector
+        image={profileData?.profileImg || profileData?.profilePreviewUrl}
+        setImage={(value) => updateSection("profileImg", value)}
+        preview={profileData?.profilePreviewUrl}
+        setPreview={(value) => updateSection("profilePreviewUrl", value)}
+      />
 
-      <div className="mt-4">
-        <ProfilePhotoSelector
-          image={profileData?.profileImg || profileData?.profilePreviewUrl}
-          setImage={(value) => updateSection("profileImg", value)}
-          preview={profileData?.profilePreviewUrl}
-          setPreview={(value) => updateSection("profilePreviewUrl", value)}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          value={profileData?.fullName || ""}
+          onChange={(val) => updateSection("fullName", val)}
+          label="Full Name"
+          type="text"
+          placeholder="Enter your full name"
+        />
+        <Input
+          value={profileData?.designation || ""}
+          onChange={(val) => updateSection("designation", val)}
+          label="Designation"
+          type="text"
+          placeholder="Enter your designation"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Input
-            value={profileData?.fullName || ""}
-            onChange={(val) => updateSection("fullName", val)}
-            label="Full Name"
-            type="text"
-            placeholder="Enter your full name"
+        <div className="col-span-1 md:col-span-2 mt-1">
+          <label className="text-[13px] text-white/70 font-medium ml-1">
+            Summary
+          </label>
+          <textarea
+            placeholder="Short Introduction"
+            className="from-input min-h-[100px] resize-y custom-scrollbar"
+            rows={4}
+            value={profileData?.summary || ""}
+            onChange={({ target }) => updateSection("summary", target.value)}
           />
-          <Input
-            value={profileData?.designation || ""}
-            onChange={(val) => updateSection("designation", val)}
-            label="Designation"
-            type="text"
-            placeholder="Enter your designation"
-          />
-
-          <div className="col-span-2 mt-3">
-            <label className="text-xs font-medium text-slate-600">
-              Summary
-            </label>
-            <textarea
-              placeholder="Short Introduction" // Fixed typo
-              className="from-input"
-              rows={4}
-              value={profileData?.summary || ""}
-              onChange={({ target }) => updateSection("summary", target.value)}
-            />
-          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default ProfileInfoForm; // Fixed export
+export default ProfileInfoForm;
