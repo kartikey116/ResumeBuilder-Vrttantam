@@ -268,8 +268,8 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
               <div style={s.jobHeader}>
                 <span style={s.projectTitle}>{proj.title}</span>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                  {proj.github && <a href={proj.github} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }}><FaGithub style={{ color: accent }} /> GitHub</a>}
-                  {proj.liveDemo && <a href={proj.liveDemo} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }}><FaLink style={{ color: accent }} /> Live Demo</a>}
+                  {proj.github && proj.github.trim() && <a href={proj.github} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }}><FaGithub style={{ color: accent }} /> GitHub</a>}
+                  {proj.liveDemo && proj.liveDemo.trim() && <a href={proj.liveDemo} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }}><FaLink style={{ color: accent }} /> Live Demo</a>}
                 </span>
               </div>
               {renderBullets(proj.description)}

@@ -184,7 +184,7 @@ const TemplateOne = ({ resumeData, colorPalette, containerWidth }) => {
                               title={project.title}
                               description={project.description}
                               githubLink={project.github}
-                              liveDemoLink={project.liveDemo}
+                              liveDemoUrl={project.liveDemo}
                               bgColor={themeColors[2]}
                             />
                         ))}

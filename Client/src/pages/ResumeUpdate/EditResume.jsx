@@ -1174,13 +1174,16 @@ function EditResume() {
         actionBtnText="Download / Print"
         onActionClick={() => reactToPrint()}
       >
-        <div className="w-[90vw] md:w-[794px] h-[80vh] overflow-y-auto custom-scrollbar bg-[#f8fafc] text-black">
-          <div ref={resumeDownloadRef}>
-            <RenderResume
-              templateId={resumeData.template?.theme || "09"}
-              resumeData={resumeData}
-              colorPalette={resumeData.template?.colorPalette || []}
-            />
+        <div className="w-[90vw] md:w-[794px] h-[80vh] overflow-y-auto custom-scrollbar bg-gray-200 flex justify-center py-8">
+          {/* This wrapper ensures the content inside always behaves like a strict A4 page */}
+          <div className="bg-white shadow-2xl print:shadow-none" style={{ width: '794px', minHeight: '1122px', margin: '0 auto', boxSizing: 'border-box' }}>
+            <div ref={resumeDownloadRef} style={{ width: '100%', height: '100%', background: 'white' }}>
+              <RenderResume
+                templateId={resumeData.template?.theme || "09"}
+                resumeData={resumeData}
+                colorPalette={resumeData.template?.colorPalette || []}
+              />
+            </div>
           </div>
         </div>
       </Modal>

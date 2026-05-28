@@ -169,8 +169,8 @@ const TemplateEight = ({ resumeData }) => {
                             <div key={index} style={{ marginBottom: '20px' }} className="print-safe-section">
                                 <Subheading left={project.title} />
                                 <div>
-                                    {project.githubLink && <a href={project.githubLink} style={styles.link}>GitHub</a>}
-                                    {project.liveDemoLink && <a href={project.liveDemoLink} style={styles.link}>Live Demo</a>}
+                                    {(project.githubLink || project.github) && (project.githubLink || project.github).trim() && <a href={project.githubLink || project.github} style={styles.link}>GitHub</a>}
+                                    {(project.liveDemoLink || project.liveDemo) && (project.liveDemoLink || project.liveDemo).trim() && <a href={project.liveDemoLink || project.liveDemo} style={styles.link}>Live Demo</a>}
                                 </div>
                                 <ul style={styles.itemList}>
                                     {project.description.split('\n').map((desc, i) => desc && (

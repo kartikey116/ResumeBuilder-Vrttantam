@@ -27,6 +27,10 @@ const ResumeSchema = new mongoose.Schema({
         fontFamily: {
             type: String,
             default: ""
+        },
+        layout: {
+            type: mongoose.Schema.Types.Mixed,
+            default: {}
         }
     },
     profileInfo: {

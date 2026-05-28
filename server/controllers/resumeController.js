@@ -137,7 +137,8 @@ const updateResume = async (req, res) => {
             resume.template = {
                 theme: req.body.template.theme || resume.template?.theme || "",
                 colorPalette: req.body.template.colorPalette || resume.template?.colorPalette || [],
-                fontFamily: req.body.template.fontFamily || resume.template?.fontFamily || ""
+                fontFamily: req.body.template.fontFamily || resume.template?.fontFamily || "",
+                layout: req.body.template.layout || resume.template?.layout || {}
             };
         }
 

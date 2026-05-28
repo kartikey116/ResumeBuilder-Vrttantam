@@ -392,6 +392,21 @@
 
 /* ═══ PRINT UTILITIES ═══════════════════════════════════════ */
 @media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: white !important;
+  }
+
   .print-safe-section {
     page-break-inside: avoid;
     break-inside: avoid;

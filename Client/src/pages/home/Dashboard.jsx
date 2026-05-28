@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosinstance.js';
 import { API_PATHS } from '../../utils/apiPaths.js';
 import DashboardLayout from '../../components/layouts/DashboardLayout.jsx';
 import { LuCirclePlus } from 'react-icons/lu';
-import { FiActivity, FiFileText, FiTarget, FiUsers, FiX, FiZap } from 'react-icons/fi';
+import { FiActivity, FiFileText, FiTarget, FiUsers, FiX, FiZap, FiUploadCloud } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import moment from 'moment';
 import Modal from '../../components/ui/Modal.jsx';
@@ -22,6 +22,10 @@ function Dashboard() {
   const [publishing, setPublishing] = useState(false);
   const [publishName, setPublishName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = useRef(null);
 
   const fetchAllResumes = async () => {
     try {
@@ -63,6 +67,56 @@ function Dashboard() {
       setPublishing(false);
     }
   };
+
+  // const handleImportResume = async (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file || file.type !== 'application/pdf') {
+  //     toast.error('Please upload a valid PDF file.');
+  //     return;
+  //   }
+
+  //   setIsImporting(true);
+  //   setImportModalOpen(true);
+    
+  //   const formData = new FormData();
+  //   formData.append('resumePdf', file);
+  //   // You can also pass templateTheme etc here if you want defaults, but the backend handles defaults.
+
+  //   try {
+  //     const res = await axiosInstance.post('/api/ai/import-resume', formData, {
+  //       headers: { 'Content-Type': 'multipart/form-data' }
+  //     });
+  //     const jobId = res.data.jobId;
+      
+  //     const interval = setInterval(async () => {
+  //       try {
+  //         const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
+  //         if (statusRes.data.status === 'completed') {
+  //           clearInterval(interval);
+  //           toast.success('🎉 Resume imported successfully!');
+  //           setImportModalOpen(false);
+  //           setIsImporting(false);
+  //           navigate(`/resume/${statusRes.data.result.resumeId}`);
+  //         } else if (statusRes.data.status === 'failed') {
+  //           clearInterval(interval);
+  //           toast.error(statusRes.data.error || 'Failed to parse resume.');
+  //           setImportModalOpen(false);
+  //           setIsImporting(false);
+  //         }
+  //       } catch (e) {
+  //         clearInterval(interval);
+  //         toast.error('Error checking import status.');
+  //         setImportModalOpen(false);
+  //         setIsImporting(false);
+  //       }
+  //     }, 3000);
+      
+  //   } catch (error) {
+  //     toast.error('Failed to upload resume. Please try again.');
+  //     setImportModalOpen(false);
+  //     setIsImporting(false);
+  //   }
+  // };
 
   if (isLoading) return <DashboardLayout><DashboardSkeleton /></DashboardLayout>;
 
@@ -234,6 +288,64 @@ function Dashboard() {
           </div>
         </motion.div>
 
+        {/* Import Card */}
+        
+        {/* <motion.div
+          variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+          onClick={() => fileInputRef.current?.click()}
+          style={{
+            minHeight: 300, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 14,
+            background: 'rgba(236,72,153,0.04)',
+            border: '2px dashed rgba(236,72,153,0.25)',
+            borderRadius: 20, cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative', overflow: 'hidden',
+          }}
+          whileHover={{
+            borderColor: 'rgba(236,72,153,0.55)',
+            background: 'rgba(236,72,153,0.08)',
+            boxShadow: '0 0 40px rgba(236,72,153,0.12)',
+            y: -4,
+          }}
+        >
+          <div style={{
+            position: 'absolute', top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 120, height: 120, borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(236,72,153,0.10) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+
+          <div style={{
+            width: 56, height: 56,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(236,72,153,0.15)',
+            border: '1px solid rgba(236,72,153,0.30)',
+            borderRadius: 16,
+            boxShadow: '0 0 20px rgba(236,72,153,0.20)',
+            transition: 'all 0.3s',
+          }}>
+            <FiUploadCloud size={24} color="#ec4899" />
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.80)', margin: '0 0 4px 0' }}>
+              Import Resume
+            </p>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.30)', margin: 0 }}>
+              Upload a PDF to parse
+            </p>
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            accept="application/pdf"
+            onChange={handleImportResume}
+          />
+        </motion.div>  */}
+
         {/* Resume Cards */}
         {allresumes?.map((resume, index) => (
           <motion.div
@@ -359,6 +471,45 @@ function Dashboard() {
                   ) : '🚀 Publish Template'}
                 </button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Import Loading Modal ── */}
+      <AnimatePresence>
+        {importModalOpen && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ position: 'absolute', inset: 0, background: 'rgba(4,4,14,0.80)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                position: 'relative', zIndex: 1,
+                background: 'rgba(13,13,32,0.95)',
+                backdropFilter: 'blur(30px) saturate(200%)',
+                WebkitBackdropFilter: 'blur(30px) saturate(200%)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                borderRadius: 24,
+                padding: '40px 32px',
+                maxWidth: 400, width: '100%',
+                boxShadow: '0 0 0 1px rgba(236,72,153,0.15), 0 40px 100px rgba(0,0,0,0.6)',
+                textAlign: 'center'
+              }}
+            >
+              <div style={{ width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg, rgba(236,72,153,0.3), rgba(124,58,237,0.2))', border: '1px solid rgba(236,72,153,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                <span style={{ width: 20, height: 20, border: '3px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
+              </div>
+              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#fff', margin: '0 0 8px 0' }}>Importing Resume...</h2>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+                Our AI is extracting and mapping your professional history. This usually takes about 10-15 seconds.
+              </p>
             </motion.div>
           </div>
         )}

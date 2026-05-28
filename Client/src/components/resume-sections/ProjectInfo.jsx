@@ -9,8 +9,8 @@ const ProjectInfo = ({title,description,githubLink,liveDemoUrl,bgColor,isPreview
 
         <p className='text-sm text-gray-700 font-medium mt-1'>{description}</p>
         <div className='flex items-center gap-3 mt-2'>
-            {githubLink && <ActionLink icon={<LuGithub />} link={githubLink} isPreview={isPreview} bgColor={bgColor} />}
-            {liveDemoUrl && <ActionLink icon={<LuExternalLink />} link={liveDemoUrl} isPreview={isPreview} bgColor={bgColor} />}
+            {githubLink && githubLink.trim() && <ActionLink icon={<LuGithub />} link={githubLink} isPreview={isPreview} bgColor={bgColor} />}
+            {liveDemoUrl && liveDemoUrl.trim() && <ActionLink icon={<LuExternalLink />} link={liveDemoUrl} isPreview={isPreview} bgColor={bgColor} />}
             </div>
       
     </div>
