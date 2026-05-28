@@ -147,32 +147,32 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
   };
 
   const contactParts = [
-    contactInfo.phone && (
+    contactInfo.phone && contactInfo.phone.trim() && (
       <span key="ph" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
         <FaPhoneAlt style={{ fontSize: '8pt', color: accent }} /> {contactInfo.phone}
       </span>
     ),
-    contactInfo.email && (
+    contactInfo.email && contactInfo.email.trim() && (
       <span key="em" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
         <FaEnvelope style={{ fontSize: '8.5pt', color: accent }} /> {contactInfo.email}
       </span>
     ),
-    contactInfo.location && (
+    contactInfo.location && contactInfo.location.trim() && (
       <span key="loc" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
         <FaMapMarkerAlt style={{ fontSize: '9pt', color: accent }} /> {contactInfo.location}
       </span>
     ),
-    contactInfo.linkedin && (
+    contactInfo.linkedin && contactInfo.linkedin.trim() && (
       <a href={contactInfo.linkedin} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }} key="li">
         <FaLinkedin style={{ color: accent }} /> LinkedIn
       </a>
     ),
-    contactInfo.github && (
+    contactInfo.github && contactInfo.github.trim() && (
       <a href={contactInfo.github} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }} key="gh">
         <FaGithub style={{ color: accent }} /> GitHub
       </a>
     ),
-    contactInfo.website && (
+    contactInfo.website && contactInfo.website.trim() && (
       <a href={contactInfo.website} style={{ ...s.link, display: 'inline-flex', alignItems: 'center', gap: '3px' }} key="web">
         <FaGlobe style={{ color: accent }} /> Portfolio
       </a>
@@ -229,12 +229,16 @@ const TemplateNine = ({ resumeData, colorPalette, fontFamily }) => {
               {items.join(', ')}
             </p>
           ))}
-          {languages.length > 0 && languages[0]?.name && (
-            <p style={s.skillRow}>
-              <strong>Languages: </strong>
-              {languages.map((l) => l.name).join(' · ')}
-            </p>
-          )}
+          {(() => {
+            const validLanguages = languages.filter((l) => l.name && l.name.trim());
+            if (validLanguages.length === 0) return null;
+            return (
+              <p style={s.skillRow}>
+                <strong>Languages: </strong>
+                {validLanguages.map((l) => l.name.trim()).join(' · ')}
+              </p>
+            );
+          })()}
         </section>
       )}
 

@@ -119,10 +119,11 @@ const TemplateEight = ({ resumeData }) => {
             <header style={styles.header}>
                 <h1 style={styles.name}>{profileInfo.fullName}</h1>
                 <p style={styles.contactLine}>
-                    {contactInfo.phone && <span>{contactInfo.phone} | </span>}
-                    {contactInfo.email && <a href={`mailto:${contactInfo.email}`} style={styles.contactLink}>{contactInfo.email}</a>}
-                    {contactInfo.linkedin && <span> | <a href={contactInfo.linkedin} style={styles.contactLink}>LinkedIn</a></span>}
-                    {contactInfo.github && <span> | <a href={contactInfo.github} style={styles.contactLink}>GitHub</a></span>}
+                    {contactInfo.phone && contactInfo.phone.trim() && <span>{contactInfo.phone} | </span>}
+                    {contactInfo.email && contactInfo.email.trim() && <a href={`mailto:${contactInfo.email}`} style={styles.contactLink}>{contactInfo.email}</a>}
+                    {contactInfo.linkedin && contactInfo.linkedin.trim() && <span> | <a href={contactInfo.linkedin} style={styles.contactLink}>LinkedIn</a></span>}
+                    {contactInfo.github && contactInfo.github.trim() && <span> | <a href={contactInfo.github} style={styles.contactLink}>GitHub</a></span>}
+                    {contactInfo.website && contactInfo.website.trim() && <span> | <a href={contactInfo.website} style={styles.contactLink}>Portfolio</a></span>}
                 </p>
             </header>
 

@@ -99,7 +99,7 @@ const TemplateOne = ({ resumeData, colorPalette, containerWidth }) => {
                               value={resumeData.contactInfo.phone}
                             />
 
-                            {resumeData.contactInfo.linkedin &&(
+                            {resumeData.contactInfo.linkedin && resumeData.contactInfo.linkedin.trim() &&(
                                 <ContactInfo
                                   icon={<RiLinkedinLine/>}
                                   iconBG = {themeColors[2]}
@@ -107,7 +107,7 @@ const TemplateOne = ({ resumeData, colorPalette, containerWidth }) => {
                                 />  
                             )}
 
-                            {resumeData.contactInfo.github &&(
+                            {resumeData.contactInfo.github && resumeData.contactInfo.github.trim() &&(
                                 <ContactInfo
                                   icon={<LuGithub/>}
                                   iconBG = {themeColors[2]}
@@ -115,11 +115,13 @@ const TemplateOne = ({ resumeData, colorPalette, containerWidth }) => {
                                 />  
                             )}
 
-                            <ContactInfo
-                              icon={<LuRss/>}
-                              iconBG = {themeColors[2]}
-                              value={resumeData.contactInfo.website}
-                            />
+                            {resumeData.contactInfo.website && resumeData.contactInfo.website.trim() &&(
+                                <ContactInfo
+                                  icon={<LuRss/>}
+                                  iconBG = {themeColors[2]}
+                                  value={resumeData.contactInfo.website}
+                                />
+                            )}
                         </div>
 
                         <div className='mt-5'>
@@ -138,15 +140,17 @@ const TemplateOne = ({ resumeData, colorPalette, containerWidth }) => {
                             )}
                         </div>
 
-                        <div className='mt-5'>
-                            <Title text='Languages' color={themeColors[1]}/>
+                        {resumeData.languages && resumeData.languages.filter(l => l.name && l.name.trim()).length > 0 && (
+                            <div className='mt-5'>
+                                <Title text='Languages' color={themeColors[1]}/>
 
-                            <Languagesection 
-                                languages={resumeData.languages}
-                                accentColor={themeColors[3]}
-                                bgColor={themeColors[2]}
-                            />
-                        </div>
+                                <Languagesection 
+                                    languages={resumeData.languages.filter(l => l.name && l.name.trim())}
+                                    accentColor={themeColors[3]}
+                                    bgColor={themeColors[2]}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
 
