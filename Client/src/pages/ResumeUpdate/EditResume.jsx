@@ -118,6 +118,8 @@ function EditResume() {
   const [showPreview, setShowPreview] = useState(false);
   const [mode, setMode] = useState("editor"); // editor | preview
   const [totalPages, setTotalPages] = useState(1);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
   // Undo / Redo history stack
   const [historyState, setHistoryState] = useState({
@@ -203,11 +205,27 @@ function EditResume() {
             }
           };
           setHistoryState({ history: [merged], index: 0 });
+          setInitialDataLoaded(true);
         }
       })
       .catch(err => console.error("Fetch resume error:", err))
       .finally(() => setIsFetching(false));
   }, [resumeId]);
+
+  // Autosave
+  useEffect(() => {
+    if (!initialDataLoaded || !resumeId || isFetching) return;
+
+    const timeoutId = setTimeout(() => {
+      setIsAutoSaving(true);
+      axiosInstance
+        .put(API_PATHS.RESUMES.UPDATE_RESUME(resumeId), resumeData)
+        .catch(err => console.error("Autosave failed", err))
+        .finally(() => setIsAutoSaving(false));
+    }, 2000); // 2 second debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [resumeData, resumeId, initialDataLoaded, isFetching]);
 
   // Page tracking after resume data updates
   useEffect(() => {
@@ -520,9 +538,12 @@ function EditResume() {
         <div className="w-[390px] h-screen bg-[rgba(7,7,19,0.4)] backdrop-blur border-r border-[rgba(255,255,255,0.04)] flex flex-col z-30 select-text overflow-hidden">
           {/* Header */}
           <div className="px-5 pt-5 pb-3 border-b border-[rgba(255,255,255,0.03)] flex items-center justify-between select-none">
-            <h2 className="text-sm font-bold text-slate-100 tracking-wide select-none">
-              {activeTab === "content" ? "Edit Content" : activeTab === "customize" ? "Customize Template" : "ATS Check"}
-            </h2>
+            <div className="flex items-center gap-3 select-none">
+              <h2 className="text-sm font-bold text-slate-100 tracking-wide">
+                {activeTab === "content" ? "Edit Content" : activeTab === "customize" ? "Customize Template" : "ATS Check"}
+              </h2>
+              {isAutoSaving && <span className="text-[10px] text-slate-400 animate-pulse font-medium">Saving...</span>}
+            </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleSave}
