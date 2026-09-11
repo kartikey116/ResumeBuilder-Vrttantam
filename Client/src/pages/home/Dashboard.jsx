@@ -68,55 +68,55 @@ function Dashboard() {
     }
   };
 
-  // const handleImportResume = async (event) => {
-  //   const file = event.target.files[0];
-  //   if (!file || file.type !== 'application/pdf') {
-  //     toast.error('Please upload a valid PDF file.');
-  //     return;
-  //   }
+  const handleImportResume = async (event) => {
+    const file = event.target.files[0];
+    if (!file || file.type !== 'application/pdf') {
+      toast.error('Please upload a valid PDF file.');
+      return;
+    }
 
-  //   setIsImporting(true);
-  //   setImportModalOpen(true);
+    setIsImporting(true);
+    setImportModalOpen(true);
     
-  //   const formData = new FormData();
-  //   formData.append('resumePdf', file);
-  //   // You can also pass templateTheme etc here if you want defaults, but the backend handles defaults.
+    const formData = new FormData();
+    formData.append('resumePdf', file);
+    // You can also pass templateTheme etc here if you want defaults, but the backend handles defaults.
 
-  //   try {
-  //     const res = await axiosInstance.post('/api/ai/import-resume', formData, {
-  //       headers: { 'Content-Type': 'multipart/form-data' }
-  //     });
-  //     const jobId = res.data.jobId;
+    try {
+      const res = await axiosInstance.post('/api/ai/import-resume', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const jobId = res.data.jobId;
       
-  //     const interval = setInterval(async () => {
-  //       try {
-  //         const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
-  //         if (statusRes.data.status === 'completed') {
-  //           clearInterval(interval);
-  //           toast.success('🎉 Resume imported successfully!');
-  //           setImportModalOpen(false);
-  //           setIsImporting(false);
-  //           navigate(`/resume/${statusRes.data.result.resumeId}`);
-  //         } else if (statusRes.data.status === 'failed') {
-  //           clearInterval(interval);
-  //           toast.error(statusRes.data.error || 'Failed to parse resume.');
-  //           setImportModalOpen(false);
-  //           setIsImporting(false);
-  //         }
-  //       } catch (e) {
-  //         clearInterval(interval);
-  //         toast.error('Error checking import status.');
-  //         setImportModalOpen(false);
-  //         setIsImporting(false);
-  //       }
-  //     }, 3000);
+      const interval = setInterval(async () => {
+        try {
+          const statusRes = await axiosInstance.get(`/api/ai/status/${jobId}`);
+          if (statusRes.data.status === 'completed') {
+            clearInterval(interval);
+            toast.success('🎉 Resume imported successfully!');
+            setImportModalOpen(false);
+            setIsImporting(false);
+            navigate(`/resume/${statusRes.data.result.resumeId}`);
+          } else if (statusRes.data.status === 'failed') {
+            clearInterval(interval);
+            toast.error(statusRes.data.error || 'Failed to parse resume.');
+            setImportModalOpen(false);
+            setIsImporting(false);
+          }
+        } catch (e) {
+          clearInterval(interval);
+          toast.error('Error checking import status.');
+          setImportModalOpen(false);
+          setIsImporting(false);
+        }
+      }, 3000);
       
-  //   } catch (error) {
-  //     toast.error('Failed to upload resume. Please try again.');
-  //     setImportModalOpen(false);
-  //     setIsImporting(false);
-  //   }
-  // };
+    } catch (error) {
+      toast.error('Failed to upload resume. Please try again.');
+      setImportModalOpen(false);
+      setIsImporting(false);
+    }
+  };
 
   if (isLoading) return <DashboardLayout><DashboardSkeleton /></DashboardLayout>;
 
@@ -196,7 +196,7 @@ function Dashboard() {
         </div>
 
         {/* Action buttons */}
-    { /*   <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1, minWidth: 180 }}>
+       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative', zIndex: 1, minWidth: 180 }}>
           <button
             onClick={() => navigate('/ats-check')}
             style={{
@@ -227,7 +227,7 @@ function Dashboard() {
           >
             <FiUsers size={15} /> Community Gallery
           </button>
-        </div> */}
+        </div> 
       </motion.div>
 
       {/* ── Resume Grid ── */}
@@ -290,7 +290,7 @@ function Dashboard() {
 
         {/* Import Card */}
         
-        {/* <motion.div
+         <motion.div
           variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
           onClick={() => fileInputRef.current?.click()}
           style={{
@@ -344,7 +344,7 @@ function Dashboard() {
             accept="application/pdf"
             onChange={handleImportResume}
           />
-        </motion.div>  */}
+        </motion.div> 
 
         {/* Resume Cards */}
         {allresumes?.map((resume, index) => (
